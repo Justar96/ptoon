@@ -17,10 +17,14 @@ def encode_primitive(value: JsonPrimitive, delimiter: str = COMMA) -> str:
 def encode_string_literal(value: str, delimiter: str = COMMA) -> str:
     if is_safe_unquoted(value, delimiter):
         return value
-    return f'{DOUBLE_QUOTE}{escape_string(value)}{DOUBLE_QUOTE}'
+    return f'{DOUBLE_QUOTE}{escape_string(value, delimiter, for_key=False)}{DOUBLE_QUOTE}'
 
-def escape_string(value: str) -> str:
-    return value.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
+def escape_string(value: str, delimiter: str = COMMA, for_key: bool = False) -> str:
+    s = value.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\r', '\\r')
+    # For values with tab delimiter active, keep literal tabs inside quoted strings
+    if for_key or delimiter != '\t':
+        s = s.replace('\t', '\\t')
+    return s
 
 def is_safe_unquoted(value: str, delimiter: str = COMMA) -> bool:
     if not value:
@@ -46,13 +50,16 @@ def is_safe_unquoted(value: str, delimiter: str = COMMA) -> bool:
     return True
 
 def is_numeric_like(value: str) -> bool:
-    # In python, "01" is not a valid octal literal anymore, so we don't need the second part of the regex.
-    return bool(re.fullmatch(r'-?\d+(\.\d+)?(e[+-]?\d+)?', value, re.IGNORECASE))
+    # Match standard numeric patterns OR octal-like strings such as "05", "007" (must be quoted in TOON)
+    return (
+        bool(re.fullmatch(r'-?\d+(?:\.\d+)?(?:e[+-]?\d+)?', value, re.IGNORECASE))
+        or bool(re.fullmatch(r'0\d+', value))
+    )
 
 def encode_key(key: str) -> str:
     if is_valid_unquoted_key(key):
         return key
-    return f'{DOUBLE_QUOTE}{escape_string(key)}{DOUBLE_QUOTE}'
+    return f'{DOUBLE_QUOTE}{escape_string(key, for_key=True)}{DOUBLE_QUOTE}'
 
 def is_valid_unquoted_key(key: str) -> bool:
     return bool(re.fullmatch(r'[A-Z_][\w.]*', key, re.IGNORECASE))

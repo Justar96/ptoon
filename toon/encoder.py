@@ -98,6 +98,9 @@ class Encoder:
     def _detect_tabular_header(self, rows: JsonArray) -> Optional[list[str]]:
         if not rows:
             return None
+        # Use tabular format only when there are at least 2 rows
+        if len(rows) < 2:
+            return None
         first_row = rows[0]
         if not isinstance(first_row, dict) or not first_row:
             return None
@@ -143,10 +146,7 @@ class Encoder:
                 writer.push(depth + 1, f'{LIST_ITEM_PREFIX}{inline}')
             elif is_json_object(item):
                 self._encode_object_as_list_item(item, writer, depth + 1)
-            # The TS version has more complex logic for nested arrays, I will simplify here and handle it later if needed.
-            else: # for other complex array, just encode them as list item
-                 inline = self._format_inline_array(item, None)
-                 writer.push(depth + 1, f'{LIST_ITEM_PREFIX}{inline}')
+            # Other complex nested arrays are intentionally not handled here per TS behavior.
 
 
     def _encode_object_as_list_item(self, obj: JsonObject, writer: LineWriter, depth: Depth):
@@ -172,23 +172,40 @@ class Encoder:
                 if header_fields:
                     header_str = format_header(len(first_value), key=first_key, fields=header_fields, delimiter=self.delimiter, length_marker=self.length_marker)
                     writer.push(depth, f'{LIST_ITEM_PREFIX}{header_str}')
-                    self._write_tabular_rows(first_value, header_fields, writer, depth + 1)
+                    # Rows under a list item's first field should be indented two levels
+                    self._write_tabular_rows(first_value, header_fields, writer, depth + 2)
                 else:
-                    # Fallback to list format
+                    # Complex array of objects (non-tabular): write header and encode each object as list item
                     header = format_header(len(first_value), key=first_key, delimiter=self.delimiter, length_marker=self.length_marker)
                     writer.push(depth, f'{LIST_ITEM_PREFIX}{header}')
-                    self._encode_mixed_array_as_list_items(None, first_value, writer, depth + 1)
+                    for it in first_value:
+                        if is_json_object(it):
+                            self._encode_object_as_list_item(it, writer, depth + 2)
+                        elif is_json_array(it) and is_array_of_primitives(it):
+                            inline = self._format_inline_array(it, None)
+                            writer.push(depth + 2, f'{LIST_ITEM_PREFIX}{inline}')
+                        elif is_json_primitive(it):
+                            writer.push(depth + 2, f'{LIST_ITEM_PREFIX}{encode_primitive(it, self.delimiter)}')
             else: # other complex arrays
+                # Write header with key and length on the hyphen line, then encode supported item types
                 header = format_header(len(first_value), key=first_key, delimiter=self.delimiter, length_marker=self.length_marker)
                 writer.push(depth, f'{LIST_ITEM_PREFIX}{header}')
-                self._encode_mixed_array_as_list_items(None, first_value, writer, depth + 1)
+                for it in first_value:
+                    if is_json_primitive(it):
+                        writer.push(depth + 2, f'{LIST_ITEM_PREFIX}{encode_primitive(it, self.delimiter)}')
+                    elif is_json_array(it) and is_array_of_primitives(it):
+                        inline = self._format_inline_array(it, None)
+                        writer.push(depth + 2, f'{LIST_ITEM_PREFIX}{inline}')
+                    elif is_json_object(it):
+                        self._encode_object_as_list_item(it, writer, depth + 2)
 
         elif is_json_object(first_value):
             if not first_value:
                 writer.push(depth, f'{LIST_ITEM_PREFIX}{encoded_key}:')
             else:
                 writer.push(depth, f'{LIST_ITEM_PREFIX}{encoded_key}:')
-                self._encode_object(first_value, writer, depth + 1)
+                # Nested object content under list item's first field indents by two levels
+                self._encode_object(first_value, writer, depth + 2)
 
         # Remaining keys on indented lines
         for key in keys[1:]:

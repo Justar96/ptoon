@@ -1,0 +1,160 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Source code
+*.py text eol=lf
+*.pyx text eol=lf
+*.pxd text eol=lf
+*.pxi text eol=lf
+
+# Configuration files
+*.cfg text eol=lf
+*.conf text eol=lf
+*.ini text eol=lf
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+
+# Documentation
+*.md text eol=lf
+*.rst text eol=lf
+*.txt text eol=lf
+*.rtf text eol=lf
+
+# Web files
+*.html text eol=lf
+*.htm text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.vue text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+*.bash text eol=lf
+*.zsh text eol=lf
+*.fish text eol=lf
+
+# Batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Dockerfile
+Dockerfile text eol=lf
+*.dockerfile text eol=lf
+
+# Makefile
+Makefile text eol=lf
+*.mk text eol=lf
+
+# XML files
+*.xml text eol=lf
+*.xsl text eol=lf
+*.xslt text eol=lf
+*.xsd text eol=lf
+*.wsdl text eol=lf
+
+# SQL files
+*.sql text eol=lf
+
+# CSV files
+*.csv text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.bmp binary
+*.tiff binary
+*.tif binary
+*.svg binary
+*.webp binary
+
+# Audio
+*.mp3 binary
+*.ogg binary
+*.wav binary
+*.flac binary
+
+# Video
+*.mp4 binary
+*.avi binary
+*.mov binary
+*.wmv binary
+*.flv binary
+*.webm binary
+
+# Archives
+*.zip binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.xz binary
+*.7z binary
+*.rar binary
+
+# Fonts
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+
+# Python compiled
+*.pyc binary
+*.pyo binary
+*.pyd binary
+
+# Executables
+*.exe binary
+*.dll binary
+*.so binary
+*.dylib binary
+
+# PDF files
+*.pdf binary
+
+# Office documents
+*.doc binary
+*.docx binary
+*.xls binary
+*.xlsx binary
+*.ppt binary
+*.pptx binary
+
+# Generated files (linguist)
+*.egg-info/* linguist-generated=true
+*/__pycache__/* linguist-generated=true
+*.pyc linguist-generated=true
+*.pyo linguist-generated=true
+*.pyd linguist-generated=true
+
+# Test files
+tests/* linguist-detectable=false
+
+# Lock files
+*.lock linguist-generated=true
+uv.lock linguist-generated=true
+poetry.lock linguist-generated=true
+Pipfile.lock linguist-generated=true
+pnpm-lock.yaml linguist-generated=true
+package-lock.json linguist-generated=true
+yarn.lock linguist-generated=true
+
+# IDE files
+.vscode/* linguist-generated=true
+.idea/* linguist-generated=true
+
+# Export-ignore (files to exclude from git archive)
+.git* export-ignore
+.editorconfig export-ignore
+tests/ export-ignore
+benchmarks/ export-ignore
+docs/plan/ export-ignore
+note.txt export-ignore
