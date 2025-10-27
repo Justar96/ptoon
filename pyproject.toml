@@ -1,21 +1,113 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "toon"
 version = "0.0.1"
-description = "Token-Oriented Object Notation - A Python implementation."
+description = "Token-Oriented Object Notation - A Python implementation optimized for LLM token efficiency."
 requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "TOON Contributors" }]
+keywords = ["llm", "token", "serialization", "encoding", "ai", "optimization"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing",
+]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
+    "pytest>=7.0.0,<9.0.0",
+    "pytest-cov>=4.0.0,<7.0.0",
+    "ruff>=0.8.0,<1.0.0",
 ]
+benchmark = [
+    "tiktoken>=0.12.0,<1.0.0",
+    "faker>=37.11.0,<40.0.0",
+]
+# Install all optional dependencies
+all = [
+    "toon[dev,benchmark]",
+]
+
+[project.scripts]
+toon-benchmark = "benchmarks.run_benchmarks:main"
+
+[tool.hatchling.build.targets.wheel]
+packages = ["toon"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
-addopts = ["-v", "--strict-markers"]
+addopts = ["-v", "--strict-markers", "--tb=short"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 
 [tool.coverage.run]
 source = ["toon"]
-omit = ["tests/*"]
+omit = ["tests/*", "benchmarks/*"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
+    "TCH",  # flake8-type-checking
+    "PTH",  # flake8-use-pathlib
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "B008",  # function call in default argument
+    "B904",  # raise from inside except without cause
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "N802",  # function name should be lowercase (test_* functions)
+]
+"benchmarks/**/*.py" = [
+    "T201",  # print statements allowed in benchmarks
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint.isort]
+known-first-party = ["toon"]
+force-single-line = false
+lines-after-imports = 2

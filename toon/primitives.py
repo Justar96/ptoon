@@ -1,9 +1,30 @@
 import re
-from .types import JsonPrimitive
+
 from .constants import (
-    NULL_LITERAL, TRUE_LITERAL, FALSE_LITERAL,
-    DOUBLE_QUOTE, BACKSLASH, COMMA, LIST_ITEM_MARKER, DEFAULT_DELIMITER
+    BACKSLASH,
+    COMMA,
+    CONTROL_CHARS_REGEX,
+    DEFAULT_DELIMITER,
+    DOUBLE_QUOTE,
+    ESCAPE_SEQUENCES,
+    FALSE_LITERAL,
+    LIST_ITEM_MARKER,
+    NULL_LITERAL,
+    NUMERIC_REGEX,
+    OCTAL_REGEX,
+    STRUCTURAL_CHARS_REGEX,
+    TRUE_LITERAL,
+    VALID_KEY_REGEX,
 )
+from .types import JsonPrimitive
+
+
+# Precompiled patterns
+_STRUCTURAL_CHARS_PATTERN = re.compile(STRUCTURAL_CHARS_REGEX)
+_CONTROL_CHARS_PATTERN = re.compile(CONTROL_CHARS_REGEX)
+_NUMERIC_PATTERN = re.compile(NUMERIC_REGEX, re.IGNORECASE)
+_OCTAL_PATTERN = re.compile(OCTAL_REGEX)
+_VALID_KEY_PATTERN = re.compile(VALID_KEY_REGEX, re.IGNORECASE)
 
 def encode_primitive(value: JsonPrimitive, delimiter: str = COMMA) -> str:
     if value is None:
@@ -20,41 +41,50 @@ def encode_string_literal(value: str, delimiter: str = COMMA) -> str:
     return f'{DOUBLE_QUOTE}{escape_string(value, delimiter, for_key=False)}{DOUBLE_QUOTE}'
 
 def escape_string(value: str, delimiter: str = COMMA, for_key: bool = False) -> str:
-    s = value.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\r', '\\r')
-    # For values with tab delimiter active, keep literal tabs inside quoted strings
-    if for_key or delimiter != '\t':
-        s = s.replace('\t', '\\t')
-    return s
+    # Single-pass escaping to reduce allocations
+    out: list[str] = []
+    escape_tab = for_key or (delimiter != '\t')
+    for ch in value:
+        if ch == BACKSLASH:
+            out.append(ESCAPE_SEQUENCES[BACKSLASH])
+        elif ch == '"':
+            out.append(ESCAPE_SEQUENCES[DOUBLE_QUOTE])
+        elif ch == '\n':
+            out.append(ESCAPE_SEQUENCES['\n'])
+        elif ch == '\r':
+            out.append(ESCAPE_SEQUENCES['\r'])
+        elif ch == '\t' and escape_tab:
+            out.append(ESCAPE_SEQUENCES['\t'])
+        else:
+            out.append(ch)
+    return ''.join(out)
 
 def is_safe_unquoted(value: str, delimiter: str = COMMA) -> bool:
     if not value:
         return False
-    if value != value.strip(): # isPaddedWithWhitespace
+    if value != value.strip():
         return False
-    if value in [TRUE_LITERAL, FALSE_LITERAL, NULL_LITERAL]:
-        return False
-    if is_numeric_like(value):
+    if value in (TRUE_LITERAL, FALSE_LITERAL, NULL_LITERAL):
         return False
     if ':' in value:
         return False
     if '"' in value or '\\' in value:
         return False
-    if re.search(r'[\[\]{}]', value):
-        return False
-    if re.search(r'[\n\r\t]', value):
-        return False
     if delimiter in value:
         return False
     if value.startswith(LIST_ITEM_MARKER):
         return False
+    if _STRUCTURAL_CHARS_PATTERN.search(value):
+        return False
+    if _CONTROL_CHARS_PATTERN.search(value):
+        return False
+    if is_numeric_like(value):
+        return False
     return True
 
 def is_numeric_like(value: str) -> bool:
-    # Match standard numeric patterns OR octal-like strings such as "05", "007" (must be quoted in TOON)
-    return (
-        bool(re.fullmatch(r'-?\d+(?:\.\d+)?(?:e[+-]?\d+)?', value, re.IGNORECASE))
-        or bool(re.fullmatch(r'0\d+', value))
-    )
+    # Octal-like strings such as 05 should be quoted
+    return bool(_OCTAL_PATTERN.fullmatch(value)) or bool(_NUMERIC_PATTERN.fullmatch(value))
 
 def encode_key(key: str) -> str:
     if is_valid_unquoted_key(key):
@@ -62,7 +92,7 @@ def encode_key(key: str) -> str:
     return f'{DOUBLE_QUOTE}{escape_string(key, for_key=True)}{DOUBLE_QUOTE}'
 
 def is_valid_unquoted_key(key: str) -> bool:
-    return bool(re.fullmatch(r'[A-Z_][\w.]*', key, re.IGNORECASE))
+    return bool(_VALID_KEY_PATTERN.fullmatch(key))
 
 def join_encoded_values(values: list[JsonPrimitive], delimiter: str = COMMA) -> str:
     return delimiter.join(encode_primitive(v, delimiter) for v in values)

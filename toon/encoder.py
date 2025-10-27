@@ -1,14 +1,19 @@
 from typing import Any, Optional
-from .types import JsonValue, JsonObject, JsonArray, Depth
+
+from .constants import DEFAULT_DELIMITER, LIST_ITEM_PREFIX
 from .normalize import (
-    normalize_value, is_json_primitive, is_json_array, is_json_object,
-    is_array_of_primitives, is_array_of_arrays, is_array_of_objects
+    is_array_of_arrays,
+    is_array_of_objects,
+    is_array_of_primitives,
+    is_json_array,
+    is_json_object,
+    is_json_primitive,
+    normalize_value,
 )
-from .primitives import (
-    encode_primitive, encode_key, format_header, join_encoded_values
-)
+from .primitives import encode_key, encode_primitive, format_header, join_encoded_values
+from .types import Depth, JsonArray, JsonObject, JsonValue
 from .writer import LineWriter
-from .constants import LIST_ITEM_PREFIX, DEFAULT_DELIMITER
+
 
 class Encoder:
     def __init__(self, indent: int = 2, delimiter: str = DEFAULT_DELIMITER, length_marker: bool = False):
@@ -83,10 +88,8 @@ class Encoder:
 
     def _format_inline_array(self, values: JsonArray, prefix: Optional[str]) -> str:
         header = format_header(len(values), key=prefix, delimiter=self.delimiter, length_marker=self.length_marker)
-        if not values:
-            return header
         joined_value = join_encoded_values(values, self.delimiter)
-        return f'{header} {joined_value}'
+        return f'{header} {joined_value}' if values else header
 
     def _encode_array_of_arrays_as_list_items(self, prefix: Optional[str], values: JsonArray, writer: LineWriter, depth: Depth):
         header = format_header(len(values), key=prefix, delimiter=self.delimiter, length_marker=self.length_marker)
@@ -108,16 +111,17 @@ class Encoder:
         first_keys = list(first_row.keys())
         if not first_keys:
             return None
+        first_keys_len = len(first_keys)
 
-        if self._is_tabular_array(rows, first_keys):
+        if self._is_tabular_array(rows, first_keys, first_keys_len):
             return first_keys
         return None
 
-    def _is_tabular_array(self, rows: JsonArray, header: list[str]) -> bool:
+    def _is_tabular_array(self, rows: JsonArray, header: list[str], header_len: int) -> bool:
         for row in rows:
             if not isinstance(row, dict):
                 return False
-            if len(row) != len(header):
+            if len(row) != header_len:
                 return False
             if not all(key in row and is_json_primitive(row[key]) for key in header):
                 return False

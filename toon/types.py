@@ -1,4 +1,5 @@
-from typing import Union, List, Dict, Any
+from typing import Any, Dict, List, Union
+
 
 JsonPrimitive = Union[str, int, float, bool, None]
 JsonArray = List['JsonValue']

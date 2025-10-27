@@ -40,3 +40,32 @@ DELIMITERS = {
 
 DEFAULT_DELIMITER = DELIMITERS['comma']
 # endregion
+
+# region Regex patterns
+# Pattern strings are compiled in modules that use them
+STRUCTURAL_CHARS_REGEX = r"[\[\]{}]"
+CONTROL_CHARS_REGEX = r"[\n\r\t]"
+NUMERIC_REGEX = r"^-?\d+(?:\.\d+)?(?:e[+-]?\d+)?$"
+OCTAL_REGEX = r"^0\d+$"
+VALID_KEY_REGEX = r"^[A-Z_][\w.]*$"
+HEADER_LENGTH_REGEX = r"^#?(\d+)([\|\t])?$"
+INTEGER_REGEX = r"^-?\d+$"
+# endregion
+
+# region Escape sequence maps
+ESCAPE_SEQUENCES = {
+    BACKSLASH: "\\\\",
+    DOUBLE_QUOTE: "\\\"",
+    NEWLINE: "\\n",
+    CARRIAGE_RETURN: "\\r",
+    TAB: "\\t",
+}
+
+UNESCAPE_SEQUENCES = {
+    'n': NEWLINE,
+    'r': CARRIAGE_RETURN,
+    't': TAB,
+    '\\': BACKSLASH,
+    '"': DOUBLE_QUOTE,
+}
+# endregion

@@ -235,6 +235,10 @@ pids/
 # Benchmarking
 benchmark-results/
 *.benchmark
+benchmarks/results/*.json
+benchmarks/**/__pycache__/
+benchmarks/temp/
+benchmarks/*.tmp
 
 # Temporary files
 tmp/

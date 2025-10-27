@@ -1,28 +1,38 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Optional, List, Dict
+from typing import Any, Dict, List, Optional
 
-from .types import JsonValue, JsonObject, JsonArray
+# Precompiled regex patterns
 from .constants import (
-    LIST_ITEM_PREFIX,
-    LIST_ITEM_MARKER,
-    COMMA,
-    COLON,
-    SPACE,
-    PIPE,
-    OPEN_BRACKET,
-    CLOSE_BRACKET,
-    OPEN_BRACE,
-    CLOSE_BRACE,
-    NULL_LITERAL,
-    TRUE_LITERAL,
-    FALSE_LITERAL,
     BACKSLASH,
-    DOUBLE_QUOTE,
-    TAB,
+    CLOSE_BRACE,
+    CLOSE_BRACKET,
+    COLON,
+    COMMA,
     DEFAULT_DELIMITER,
+    DOUBLE_QUOTE,
+    FALSE_LITERAL,
+    HEADER_LENGTH_REGEX,
+    INTEGER_REGEX,
+    LIST_ITEM_MARKER,
+    LIST_ITEM_PREFIX,
+    NULL_LITERAL,
+    NUMERIC_REGEX,
+    OPEN_BRACE,
+    OPEN_BRACKET,
+    PIPE,
+    SPACE,
+    TAB,
+    TRUE_LITERAL,
+    UNESCAPE_SEQUENCES,
 )
+from .types import JsonArray, JsonObject, JsonValue
+
+
+_HEADER_LENGTH_PATTERN = re.compile(HEADER_LENGTH_REGEX)
+_INTEGER_PATTERN = re.compile(INTEGER_REGEX)
+_NUMBER_PATTERN = re.compile(NUMERIC_REGEX, re.IGNORECASE)
 
 
 class _Ctx:
@@ -288,7 +298,7 @@ class Decoder:
 
         has_len_marker = False
         delim = DEFAULT_DELIMITER
-        m = re.fullmatch(r"#?(\d+)([\|\t])?", inside)
+        m = _HEADER_LENGTH_PATTERN.fullmatch(inside)
         if not m:
             raise ValueError("Invalid array header length block")
         if inside.startswith('#'):
@@ -441,7 +451,7 @@ class Decoder:
             return self._unquote_string(t)
         if self._is_number_like(t):
             # try int first, then float
-            if re.fullmatch(r'-?\d+', t):
+            if _INTEGER_PATTERN.fullmatch(t):
                 try:
                     return int(t)
                 except ValueError:
@@ -462,14 +472,8 @@ class Decoder:
         esc = False
         for ch in inner:
             if esc:
-                if ch == 'n':
-                    out.append('\n')
-                elif ch == 'r':
-                    out.append('\r')
-                elif ch == 't':
-                    out.append('\t')
-                else:
-                    out.append(ch)
+                mapped = UNESCAPE_SEQUENCES.get(ch)
+                out.append(mapped if mapped is not None else ch)
                 esc = False
                 continue
             if ch == BACKSLASH:
@@ -481,7 +485,7 @@ class Decoder:
         return ''.join(out)
 
     def _is_number_like(self, s: str) -> bool:
-        return bool(re.fullmatch(r'-?\d+(?:\.\d+)?(?:e[+-]?\d+)?', s, re.IGNORECASE))
+        return bool(_NUMBER_PATTERN.fullmatch(s))
 
     def _parse_key_token(self, token: str) -> str:
         t = token.strip()
@@ -492,11 +496,15 @@ class Decoder:
     def _split_values(self, s: str, delimiter: str) -> list[str]:
         if s == '':
             return []
+        # Fast path when there are no quotes or escapes
+        if '"' not in s and '\\' not in s:
+            return [part.strip() for part in s.split(delimiter)]
         parts: list[str] = []
         buf: list[str] = []
         in_quotes = False
         esc = False
         i = 0
+        delim_len = len(delimiter)
         while i < len(s):
             ch = s[i]
             if esc:
@@ -517,7 +525,7 @@ class Decoder:
             if not in_quotes and self._at_delimiter(s, i, delimiter):
                 parts.append(''.join(buf).strip())
                 buf = []
-                i += len(delimiter)
+                i += delim_len
                 continue
             buf.append(ch)
             i += 1
@@ -525,9 +533,7 @@ class Decoder:
         return parts
 
     def _at_delimiter(self, s: str, i: int, delimiter: str) -> bool:
-        if delimiter == COMMA or delimiter == PIPE:
-            return s[i] == delimiter
-        if delimiter == TAB:
-            return s[i] == '\t'
+        if len(delimiter) == 1:
+            return i < len(s) and s[i] == delimiter
         return s[i : i + len(delimiter)] == delimiter
 
