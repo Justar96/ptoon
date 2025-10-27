@@ -1,0 +1,5 @@
+[project]
+name = "toon"
+version = "0.0.1"
+description = "Token-Oriented Object Notation - A Python implementation."
+requires-python = ">=3.12"
