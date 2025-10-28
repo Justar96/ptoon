@@ -254,3 +254,10 @@ notes/
 .notes/
 TODO.md
 TODOS.md
+
+# Examples
+examples/output/
+examples/*.json
+examples/*.txt
+examples/__pycache__/
+examples/**/__pycache__/
