@@ -7,7 +7,7 @@ import tracemalloc
 from pathlib import Path
 from typing import Any
 
-import toon
+import pytoon
 
 from .datasets import get_all_datasets
 
@@ -53,7 +53,7 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
 
     for name, _emoji, _description, data in datasets:
         json_str = json.dumps(data, ensure_ascii=False)
-        toon_str = toon.encode(data)
+        toon_str = pytoon.encode(data)
 
         # output size comparison (bytes of Python str -> size in memory via getsizeof)
         json_size = sys.getsizeof(json_str)
@@ -74,7 +74,7 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
         _, cur_json, peak_json = measure_memory_repeated(
             lambda: json.dumps(data, ensure_ascii=False)
         )
-        _, cur_toon, peak_toon = measure_memory_repeated(lambda: toon.encode(data))
+        _, cur_toon, peak_toon = measure_memory_repeated(lambda: pytoon.encode(data))
         results["encoding"].append(
             {
                 "dataset": name,
@@ -89,7 +89,7 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
             lambda: json.loads(json_str)
         )
         _, cur_toon_d, peak_toon_d = measure_memory_repeated(
-            lambda: toon.decode(toon_str)
+            lambda: pytoon.decode(toon_str)
         )
         results["decoding"].append(
             {

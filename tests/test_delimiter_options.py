@@ -1,6 +1,6 @@
 import pytest
 
-from toon import decode, encode
+from pytoon import decode, encode
 
 
 # A. Basic Delimiter Usage

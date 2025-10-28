@@ -1,4 +1,4 @@
-from toon import decode, encode
+from pytoon import decode, encode
 
 
 def test_adds_length_marker_to_primitive_arrays():

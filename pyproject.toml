@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "toon"
+name = "pytoon"
 version = "0.0.1"
 description = "Token-Oriented Object Notation - A Python implementation optimized for LLM token efficiency."
 requires-python = ">=3.12"
@@ -42,14 +42,14 @@ examples = [
 ]
 # Install all optional dependencies
 all = [
-    "toon[dev,benchmark,examples]",
+    "pytoon[dev,benchmark,examples]",
 ]
 
 [project.scripts]
 toon-benchmark = "benchmarks.run_benchmarks:main"
 
 [tool.hatchling.build.targets.wheel]
-packages = ["toon"]
+packages = ["pytoon"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -61,7 +61,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["toon"]
+source = ["pytoon"]
 omit = ["tests/*", "benchmarks/*"]
 branch = true
 
@@ -116,6 +116,6 @@ skip-magic-trailing-comma = false
 line-ending = "auto"
 
 [tool.ruff.lint.isort]
-known-first-party = ["toon"]
+known-first-party = ["pytoon"]
 force-single-line = false
 lines-after-imports = 2

@@ -66,9 +66,9 @@ def _encode_json(data: Any) -> str:
 
 def _encode_toon(data: Any) -> str:
     # Import toon lazily to avoid circular imports in some tooling
-    import toon
+    import pytoon
 
-    return toon.encode(data)
+    return pytoon.encode(data)
 
 
 def generate_markdown_report(

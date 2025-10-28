@@ -1,4 +1,4 @@
-from toon import encode
+from pytoon import encode
 
 
 def test_produces_no_trailing_spaces_at_end_of_lines():
