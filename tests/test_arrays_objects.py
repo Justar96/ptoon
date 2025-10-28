@@ -141,3 +141,30 @@ def test_uses_list_format_for_one_object_with_nested_column():
         "items[2]:\n" "  - a: 1\n" "    b:\n" "      x: 1\n" "  - a: 2\n" "    b: 2"
     )
     assert encode(obj) == expected
+
+
+def test_roundtrip_nested_object_as_second_field_in_list_item():
+    """Test decoding nested objects that appear as subsequent fields (not first field) in list items."""
+    obj = {"items": [{"id": 1, "nested": {"a": 1, "b": 2}}]}
+    toon_str = encode(obj)
+    assert decode(toon_str) == obj
+
+
+def test_roundtrip_ecommerce_structure():
+    """Test decoding E-Commerce-like structures with nested customer objects."""
+    obj = {
+        "orders": [{
+            "orderId": "abc123",
+            "customer": {"id": 7825, "name": "Alice", "email": "alice@example.com"},
+            "total": 99.99
+        }]
+    }
+    toon_str = encode(obj)
+    assert decode(toon_str) == obj
+
+
+def test_roundtrip_deeply_nested_objects_in_list_items():
+    """Test decoding deeply nested object structures within list items."""
+    obj = {"items": [{"level1": {"level2": {"level3": 123}}}]}
+    toon_str = encode(obj)
+    assert decode(toon_str) == obj

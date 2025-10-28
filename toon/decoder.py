@@ -409,8 +409,10 @@ class Decoder:
             ctx.obj[key] = obj
             child = _Ctx("object", depth)
             child.obj = obj
-            child.content_depth = (depth + 2) if ctx.from_list_item else (depth + 1)
-            child.from_list_item = ctx.from_list_item
+            # Nested objects on hyphen line (first field of list item) indent by two levels
+            # All other nested objects indent by one level
+            child.content_depth = (depth + 2) if (ctx.from_list_item and depth == ctx.depth) else (depth + 1)
+            child.from_list_item = False  # Don't propagate flag to child contexts
             stack.append(child)
             return
         ctx.obj[key] = self._parse_primitive(right)
