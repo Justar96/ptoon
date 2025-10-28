@@ -71,7 +71,11 @@ def normalize_value(value: Any) -> JsonValue:
         return [normalize_value(item) for item in value]
 
     if isinstance(value, set):
-        return [normalize_value(item) for item in sorted(value)]
+        try:
+            return [normalize_value(item) for item in sorted(value)]
+        except TypeError:
+            # Fall back to stable conversion for heterogeneous sets
+            return [normalize_value(item) for item in sorted(value, key=lambda x: repr(x))]
 
     # Handle generic mapping types (Map-like) and dicts
     if isinstance(value, Mapping):

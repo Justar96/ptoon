@@ -18,7 +18,7 @@ When NOT to use TOON:
 - Real-time streaming where encoding overhead matters
 
 Installation:
-    pip install toon openai tiktoken
+    pip install pytoon openai tiktoken
 
 Usage:
     python examples/openai_integration.py
@@ -158,7 +158,7 @@ def example_token_comparison() -> None:
     toon_tokens = int(comparison["toon_tokens"])  # input-side only for cost calc
 
     # Pricing (as of Oct 2025) for input tokens
-    price_per_million_input = 0.150
+    price_per_million_input = 0.60
     json_cost = (json_tokens / 1_000_000) * price_per_million_input
     toon_cost = (toon_tokens / 1_000_000) * price_per_million_input
     cost_savings = json_cost - toon_cost

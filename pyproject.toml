@@ -40,9 +40,12 @@ examples = [
     "openai>=1.0.0,<2.0.0",
     "tiktoken>=0.12.0,<1.0.0",
 ]
+openai = [
+    "openai>=1.0.0,<2.0.0",
+]
 # Install all optional dependencies
 all = [
-    "pytoon[dev,benchmark,examples]",
+    "pytoon[dev,benchmark,examples,openai]",
 ]
 
 [project.scripts]

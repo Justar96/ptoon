@@ -27,7 +27,7 @@ The `examples/` directory contains practical demonstrations of using TOON with L
 
 See [`examples/openai_integration.py`](examples/openai_integration.py) for a comprehensive example demonstrating:
 
-- Basic Pattern: Encode data with `toon.encode()` → send to OpenAI → decode response
+- Basic Pattern: Encode data with `pytoon.encode()` → send to OpenAI → decode response
 - Token Comparison: Measure token savings vs JSON (typically 30-60%)
 - RAG Use Case: Question-answering over structured data
 - Error Handling: Robust parsing with fallback strategies
