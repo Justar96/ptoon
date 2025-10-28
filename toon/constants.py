@@ -1,44 +1,44 @@
 # region List markers
-LIST_ITEM_MARKER = '-'
-LIST_ITEM_PREFIX = '- '
+LIST_ITEM_MARKER = "-"
+LIST_ITEM_PREFIX = "- "
 # endregion
 
 # region Structural characters
-COMMA = ','
-COLON = ':'
-SPACE = ' '
-PIPE = '|'
+COMMA = ","
+COLON = ":"
+SPACE = " "
+PIPE = "|"
 # endregion
 
 # region Brackets and braces
-OPEN_BRACKET = '['
-CLOSE_BRACKET = ']'
-OPEN_BRACE = '{'
-CLOSE_BRACE = '}'
+OPEN_BRACKET = "["
+CLOSE_BRACKET = "]"
+OPEN_BRACE = "{"
+CLOSE_BRACE = "}"
 # endregion
 
 # region Literals
-NULL_LITERAL = 'null'
-TRUE_LITERAL = 'true'
-FALSE_LITERAL = 'false'
+NULL_LITERAL = "null"
+TRUE_LITERAL = "true"
+FALSE_LITERAL = "false"
 # endregion
 
 # region Escape characters
-BACKSLASH = '\\'
+BACKSLASH = "\\"
 DOUBLE_QUOTE = '"'
-NEWLINE = '\n'
-CARRIAGE_RETURN = '\r'
-TAB = '\t'
+NEWLINE = "\n"
+CARRIAGE_RETURN = "\r"
+TAB = "\t"
 # endregion
 
 # region Delimiters
 DELIMITERS = {
-    'comma': COMMA,
-    'tab': TAB,
-    'pipe': PIPE,
+    "comma": COMMA,
+    "tab": TAB,
+    "pipe": PIPE,
 }
 
-DEFAULT_DELIMITER = DELIMITERS['comma']
+DEFAULT_DELIMITER = DELIMITERS["comma"]
 # endregion
 
 # region Regex patterns
@@ -55,17 +55,17 @@ INTEGER_REGEX = r"^-?\d+$"
 # region Escape sequence maps
 ESCAPE_SEQUENCES = {
     BACKSLASH: "\\\\",
-    DOUBLE_QUOTE: "\\\"",
+    DOUBLE_QUOTE: '\\"',
     NEWLINE: "\\n",
     CARRIAGE_RETURN: "\\r",
     TAB: "\\t",
 }
 
 UNESCAPE_SEQUENCES = {
-    'n': NEWLINE,
-    'r': CARRIAGE_RETURN,
-    't': TAB,
-    '\\': BACKSLASH,
+    "n": NEWLINE,
+    "r": CARRIAGE_RETURN,
+    "t": TAB,
+    "\\": BACKSLASH,
     '"': DOUBLE_QUOTE,
 }
 # endregion

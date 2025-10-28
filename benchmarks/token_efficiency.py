@@ -4,7 +4,7 @@ import functools
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 from .datasets import get_all_datasets
 
@@ -36,7 +36,7 @@ def generate_bar_chart(percentage: float, max_width: int = 25) -> str:
     return f"{'█' * filled}{'░' * empty} {100 - pct:.1f}% TOON"
 
 
-def truncate_dataset_for_display(name: str, data: Dict[str, Any]) -> Dict[str, Any]:
+def truncate_dataset_for_display(name: str, data: dict[str, Any]) -> dict[str, Any]:
     # Heuristic truncation for readability
     if "repositories" in data:
         return {"repositories": data["repositories"][:3]}
@@ -71,13 +71,19 @@ def _encode_toon(data: Any) -> str:
     return toon.encode(data)
 
 
-def generate_markdown_report(results: List[DatasetResult], totals: Dict[str, Any], examples: Dict[str, Dict[str, Any]]) -> str:
-    lines: List[str] = []
+def generate_markdown_report(
+    results: list[DatasetResult],
+    totals: dict[str, Any],
+    examples: dict[str, dict[str, Any]],
+) -> str:
+    lines: list[str] = []
     lines.append("# Token Efficiency Benchmark")
     lines.append("")
     for r in results:
         bar = generate_bar_chart(r.savings_percent)
-        lines.append(f"- {r.emoji} {r.name}: {bar} — TOON {format_number(r.toon_tokens)} vs JSON {format_number(r.json_tokens)} | 💰 {r.savings_percent:.1f}% saved")
+        lines.append(
+            f"- {r.emoji} {r.name}: {bar} — TOON {format_number(r.toon_tokens)} vs JSON {format_number(r.json_tokens)} | 💰 {r.savings_percent:.1f}% saved"
+        )
     lines.append("")
     lines.append("---")
     lines.append("")
@@ -90,7 +96,9 @@ def generate_markdown_report(results: List[DatasetResult], totals: Dict[str, Any
     lines.append("## Details")
     for r in results:
         lines.append("")
-        lines.append(f"<details><summary>{r.emoji} {r.name} — {r.savings_percent:.1f}% saved</summary>")
+        lines.append(
+            f"<details><summary>{r.emoji} {r.name} — {r.savings_percent:.1f}% saved</summary>"
+        )
         lines.append("")
         lines.append(r.description)
         lines.append("")
@@ -109,10 +117,10 @@ def generate_markdown_report(results: List[DatasetResult], totals: Dict[str, Any
     return "\n".join(lines)
 
 
-def run_token_efficiency_benchmark(output_dir: Path | None = None) -> Dict[str, Any]:
+def run_token_efficiency_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
     datasets = get_all_datasets()
-    results: List[DatasetResult] = []
-    examples: Dict[str, Dict[str, Any]] = {}
+    results: list[DatasetResult] = []
+    examples: dict[str, dict[str, Any]] = {}
     total_json = 0
     total_toon = 0
 
@@ -142,7 +150,9 @@ def run_token_efficiency_benchmark(output_dir: Path | None = None) -> Dict[str, 
         "json_tokens": total_json,
         "toon_tokens": total_toon,
         "savings": max(0, total_json - total_toon),
-        "savings_percent": ((total_json - total_toon) / total_json * 100.0) if total_json > 0 else 0.0,
+        "savings_percent": (
+            ((total_json - total_toon) / total_json * 100.0) if total_json > 0 else 0.0
+        ),
     }
 
     report = generate_markdown_report(results, totals, examples)

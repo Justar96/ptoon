@@ -21,6 +21,10 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Text Processing",
 ]
+dependencies = [
+    "black>=25.9.0",
+    "ruff>=0.14.2",
+]
 
 [project.optional-dependencies]
 dev = [

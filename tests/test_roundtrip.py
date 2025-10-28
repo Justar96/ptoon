@@ -1,6 +1,5 @@
 import pytest
 
-from toon import encode, decode
 from tests.conftest import assert_roundtrip as _assert_rt
 
 
@@ -38,14 +37,16 @@ def test_roundtrip_root_arrays():
 
 
 def test_roundtrip_complex_structures():
-    _assert_rt({
-        "user": {
-            "id": 1,
-            "name": "Ada",
-            "items": [{"sku": "A", "qty": 1}, {"sku": "B", "qty": 2}],
-            "tags": ["a", "b"],
+    _assert_rt(
+        {
+            "user": {
+                "id": 1,
+                "name": "Ada",
+                "items": [{"sku": "A", "qty": 1}, {"sku": "B", "qty": 2}],
+                "tags": ["a", "b"],
+            }
         }
-    })
+    )
 
 
 @pytest.mark.parametrize("delim", ["\t", "|"])

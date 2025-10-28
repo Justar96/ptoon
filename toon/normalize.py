@@ -1,36 +1,43 @@
 import datetime
 import math
 from collections.abc import Mapping
-from typing import Any, Dict, List, Union
+from typing import Any
 
-from .types import JsonArray, JsonObject, JsonPrimitive, JsonValue
+from .types import JsonArray, JsonValue
 
 
 _MAX_SAFE_INTEGER = 2**53 - 1
 
+
 def is_json_primitive(value: Any) -> bool:
     return value is None or isinstance(value, (str, int, float, bool))
+
 
 def is_json_array(value: Any) -> bool:
     return isinstance(value, list)
 
+
 def is_json_object(value: Any) -> bool:
     return isinstance(value, dict)
+
 
 def is_array_of_primitives(value: JsonArray) -> bool:
     if not value:
         return True
     return all(is_json_primitive(item) for item in value)
 
+
 def is_array_of_arrays(value: JsonArray) -> bool:
     if not value:
         return True
     return all(is_json_array(item) for item in value)
 
+
 def is_array_of_objects(value: JsonArray) -> bool:
     if not value:
         return True
     return all(is_json_object(item) for item in value)
+
 
 def normalize_value(value: Any) -> JsonValue:
     if value is None:
@@ -64,7 +71,7 @@ def normalize_value(value: Any) -> JsonValue:
         return [normalize_value(item) for item in value]
 
     if isinstance(value, set):
-        return [normalize_value(item) for item in sorted(list(value))]
+        return [normalize_value(item) for item in sorted(value)]
 
     # Handle generic mapping types (Map-like) and dicts
     if isinstance(value, Mapping):
@@ -72,5 +79,6 @@ def normalize_value(value: Any) -> JsonValue:
 
     # Fallback for other types
     return None
+
 
 # is_plain_object removed as unused after normalize refactor

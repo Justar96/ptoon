@@ -26,6 +26,7 @@ _NUMERIC_PATTERN = re.compile(NUMERIC_REGEX, re.IGNORECASE)
 _OCTAL_PATTERN = re.compile(OCTAL_REGEX)
 _VALID_KEY_PATTERN = re.compile(VALID_KEY_REGEX, re.IGNORECASE)
 
+
 def encode_primitive(value: JsonPrimitive, delimiter: str = COMMA) -> str:
     if value is None:
         return NULL_LITERAL
@@ -35,29 +36,34 @@ def encode_primitive(value: JsonPrimitive, delimiter: str = COMMA) -> str:
         return str(value)
     return encode_string_literal(str(value), delimiter)
 
+
 def encode_string_literal(value: str, delimiter: str = COMMA) -> str:
     if is_safe_unquoted(value, delimiter):
         return value
-    return f'{DOUBLE_QUOTE}{escape_string(value, delimiter, for_key=False)}{DOUBLE_QUOTE}'
+    return (
+        f"{DOUBLE_QUOTE}{escape_string(value, delimiter, for_key=False)}{DOUBLE_QUOTE}"
+    )
+
 
 def escape_string(value: str, delimiter: str = COMMA, for_key: bool = False) -> str:
     # Single-pass escaping to reduce allocations
     out: list[str] = []
-    escape_tab = for_key or (delimiter != '\t')
+    escape_tab = for_key or (delimiter != "\t")
     for ch in value:
         if ch == BACKSLASH:
             out.append(ESCAPE_SEQUENCES[BACKSLASH])
         elif ch == '"':
             out.append(ESCAPE_SEQUENCES[DOUBLE_QUOTE])
-        elif ch == '\n':
-            out.append(ESCAPE_SEQUENCES['\n'])
-        elif ch == '\r':
-            out.append(ESCAPE_SEQUENCES['\r'])
-        elif ch == '\t' and escape_tab:
-            out.append(ESCAPE_SEQUENCES['\t'])
+        elif ch == "\n":
+            out.append(ESCAPE_SEQUENCES["\n"])
+        elif ch == "\r":
+            out.append(ESCAPE_SEQUENCES["\r"])
+        elif ch == "\t" and escape_tab:
+            out.append(ESCAPE_SEQUENCES["\t"])
         else:
             out.append(ch)
-    return ''.join(out)
+    return "".join(out)
+
 
 def is_safe_unquoted(value: str, delimiter: str = COMMA) -> bool:
     if not value:
@@ -66,9 +72,9 @@ def is_safe_unquoted(value: str, delimiter: str = COMMA) -> bool:
         return False
     if value in (TRUE_LITERAL, FALSE_LITERAL, NULL_LITERAL):
         return False
-    if ':' in value:
+    if ":" in value:
         return False
-    if '"' in value or '\\' in value:
+    if '"' in value or "\\" in value:
         return False
     if delimiter in value:
         return False
@@ -78,43 +84,48 @@ def is_safe_unquoted(value: str, delimiter: str = COMMA) -> bool:
         return False
     if _CONTROL_CHARS_PATTERN.search(value):
         return False
-    if is_numeric_like(value):
-        return False
-    return True
+    return not is_numeric_like(value)
+
 
 def is_numeric_like(value: str) -> bool:
     # Octal-like strings such as 05 should be quoted
-    return bool(_OCTAL_PATTERN.fullmatch(value)) or bool(_NUMERIC_PATTERN.fullmatch(value))
+    return bool(_OCTAL_PATTERN.fullmatch(value)) or bool(
+        _NUMERIC_PATTERN.fullmatch(value)
+    )
+
 
 def encode_key(key: str) -> str:
     if is_valid_unquoted_key(key):
         return key
-    return f'{DOUBLE_QUOTE}{escape_string(key, for_key=True)}{DOUBLE_QUOTE}'
+    return f"{DOUBLE_QUOTE}{escape_string(key, for_key=True)}{DOUBLE_QUOTE}"
+
 
 def is_valid_unquoted_key(key: str) -> bool:
     return bool(_VALID_KEY_PATTERN.fullmatch(key))
 
+
 def join_encoded_values(values: list[JsonPrimitive], delimiter: str = COMMA) -> str:
     return delimiter.join(encode_primitive(v, delimiter) for v in values)
+
 
 def format_header(
     length: int,
     key: str | None = None,
     fields: list[str] | None = None,
     delimiter: str = COMMA,
-    length_marker: bool = False
+    length_marker: bool = False,
 ) -> str:
-    header = ''
+    header = ""
     if key:
         header += encode_key(key)
 
-    length_marker_str = '#' if length_marker else ''
-    delimiter_str = delimiter if delimiter != DEFAULT_DELIMITER else ''
-    header += f'[{length_marker_str}{length}{delimiter_str}]'
+    length_marker_str = "#" if length_marker else ""
+    delimiter_str = delimiter if delimiter != DEFAULT_DELIMITER else ""
+    header += f"[{length_marker_str}{length}{delimiter_str}]"
 
     if fields:
         quoted_fields = [encode_key(f) for f in fields]
-        header += f'{{{delimiter.join(quoted_fields)}}}'
+        header += f"{{{delimiter.join(quoted_fields)}}}"
 
-    header += ':'
+    header += ":"
     return header

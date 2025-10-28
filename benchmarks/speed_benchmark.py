@@ -5,7 +5,7 @@ import json
 import statistics
 import timeit
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import toon
 
@@ -19,7 +19,7 @@ def format_time(seconds: float) -> str:
     return f"{ms:.2f} ms"
 
 
-def calculate_speedup(baseline: float, comparison: float) -> Tuple[float, str]:
+def calculate_speedup(baseline: float, comparison: float) -> tuple[float, str]:
     if comparison == 0:
         return float("inf"), "∞x faster"
     ratio = baseline / comparison
@@ -36,7 +36,7 @@ def adjust_iterations(data_size_bytes: int) -> int:
 
 
 def _median_timer(fn, number: int, repeat: int = 5) -> float:
-    times: List[float] = []
+    times: list[float] = []
     for _ in range(repeat):
         gc.collect()
         gc.disable()
@@ -48,18 +48,20 @@ def _median_timer(fn, number: int, repeat: int = 5) -> float:
     return statistics.median(times)
 
 
-def run_speed_benchmark(output_dir: Path | None = None) -> Dict[str, Any]:
+def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
     datasets = get_all_datasets()
-    results: Dict[str, Any] = {"encoding": [], "decoding": [], "roundtrip": []}
+    results: dict[str, Any] = {"encoding": [], "decoding": [], "roundtrip": []}
 
-    for name, emoji, description, data in datasets:
+    for name, _emoji, _description, data in datasets:
         json_str = json.dumps(data, ensure_ascii=False)
         toon_str = toon.encode(data)
         size_bytes = len(json_str.encode("utf-8")) + len(toon_str.encode("utf-8"))
         iters = adjust_iterations(size_bytes)
 
         # encoding
-        enc_json = _median_timer(lambda: json.dumps(data, ensure_ascii=False), number=iters)
+        enc_json = _median_timer(
+            lambda: json.dumps(data, ensure_ascii=False), number=iters
+        )
         enc_toon = _median_timer(lambda: toon.encode(data), number=iters)
         enc_ratio, enc_desc = calculate_speedup(enc_json, enc_toon)
         results["encoding"].append(
@@ -87,7 +89,9 @@ def run_speed_benchmark(output_dir: Path | None = None) -> Dict[str, Any]:
         )
 
         # roundtrip
-        rt_json = _median_timer(lambda: json.loads(json.dumps(data, ensure_ascii=False)), number=iters)
+        rt_json = _median_timer(
+            lambda: json.loads(json.dumps(data, ensure_ascii=False)), number=iters
+        )
         rt_toon = _median_timer(lambda: toon.decode(toon.encode(data)), number=iters)
         rt_ratio, rt_desc = calculate_speedup(rt_json, rt_toon)
         results["roundtrip"].append(
@@ -101,7 +105,7 @@ def run_speed_benchmark(output_dir: Path | None = None) -> Dict[str, Any]:
         )
 
     # aggregates
-    def _agg(kind: str) -> Dict[str, float]:
+    def _agg(kind: str) -> dict[str, float]:
         arr = results[kind]
         sp = [x["speedup"] for x in arr]
         return {
@@ -139,7 +143,9 @@ def run_speed_benchmark(output_dir: Path | None = None) -> Dict[str, Any]:
         md.append("")
 
     (out_dir / "speed-benchmark.md").write_text("\n".join(md), encoding="utf-8")
-    (out_dir / "speed-benchmark.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
+    (out_dir / "speed-benchmark.json").write_text(
+        json.dumps(results, indent=2), encoding="utf-8"
+    )
     return results
 
 

@@ -1,4 +1,4 @@
-from toon import encode, decode
+from toon import decode, encode
 
 
 def test_preserves_key_order_in_objects():
@@ -66,7 +66,7 @@ def test_escapes_control_characters_in_keys():
 
 
 def test_escapes_quotes_in_keys():
-    assert encode({'he said "hi"': 1}) == '"he said \\\"hi\\\"": 1'
+    assert encode({'he said "hi"': 1}) == '"he said \\"hi\\"": 1'
 
 
 def test_encodes_deeply_nested_objects():

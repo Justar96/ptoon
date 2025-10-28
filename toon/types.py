@@ -1,9 +1,9 @@
-from typing import Any, Dict, List, Union
+from typing import Union
 
 
 JsonPrimitive = Union[str, int, float, bool, None]
-JsonArray = List['JsonValue']
-JsonObject = Dict[str, 'JsonValue']
+JsonArray = list["JsonValue"]
+JsonObject = dict[str, "JsonValue"]
 JsonValue = Union[JsonPrimitive, JsonArray, JsonObject]
 
 Depth = int

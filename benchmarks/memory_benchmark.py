@@ -5,7 +5,7 @@ import json
 import sys
 import tracemalloc
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import toon
 
@@ -26,7 +26,7 @@ def format_bytes(n: int) -> str:
     return f"{mb:.2f} MB"
 
 
-def measure_memory(func, *args, **kwargs) -> Tuple[Any, int, int]:
+def measure_memory(func, *args, **kwargs) -> tuple[Any, int, int]:
     gc.collect()
     tracemalloc.start()
     try:
@@ -37,9 +37,9 @@ def measure_memory(func, *args, **kwargs) -> Tuple[Any, int, int]:
     return result, current, peak
 
 
-def measure_memory_repeated(func, *args, **kwargs) -> Tuple[Any, int, int]:
+def measure_memory_repeated(func, *args, **kwargs) -> tuple[Any, int, int]:
     """Measure memory multiple times and return minimum peak (conservative estimate)."""
-    peaks: List[int] = []
+    peaks: list[int] = []
     result = None
     for _ in range(MEMORY_REPEATS):
         result, current, peak = measure_memory(func, *args, **kwargs)
@@ -47,11 +47,11 @@ def measure_memory_repeated(func, *args, **kwargs) -> Tuple[Any, int, int]:
     return result, current, min(peaks)
 
 
-def run_memory_benchmark(output_dir: Path | None = None) -> Dict[str, Any]:
+def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
     datasets = get_all_datasets()
-    results: Dict[str, Any] = {"string_size": [], "encoding": [], "decoding": []}
+    results: dict[str, Any] = {"string_size": [], "encoding": [], "decoding": []}
 
-    for name, emoji, description, data in datasets:
+    for name, _emoji, _description, data in datasets:
         json_str = json.dumps(data, ensure_ascii=False)
         toon_str = toon.encode(data)
 
@@ -71,7 +71,9 @@ def run_memory_benchmark(output_dir: Path | None = None) -> Dict[str, Any]:
         )
 
         # encoding memory (repeated measurements, use min peak)
-        _, cur_json, peak_json = measure_memory_repeated(lambda: json.dumps(data, ensure_ascii=False))
+        _, cur_json, peak_json = measure_memory_repeated(
+            lambda: json.dumps(data, ensure_ascii=False)
+        )
         _, cur_toon, peak_toon = measure_memory_repeated(lambda: toon.encode(data))
         results["encoding"].append(
             {
@@ -83,8 +85,12 @@ def run_memory_benchmark(output_dir: Path | None = None) -> Dict[str, Any]:
         )
 
         # decoding memory (repeated measurements, use min peak)
-        _, cur_json_d, peak_json_d = measure_memory_repeated(lambda: json.loads(json_str))
-        _, cur_toon_d, peak_toon_d = measure_memory_repeated(lambda: toon.decode(toon_str))
+        _, cur_json_d, peak_json_d = measure_memory_repeated(
+            lambda: json.loads(json_str)
+        )
+        _, cur_toon_d, peak_toon_d = measure_memory_repeated(
+            lambda: toon.decode(toon_str)
+        )
         results["decoding"].append(
             {
                 "dataset": name,
@@ -98,7 +104,7 @@ def run_memory_benchmark(output_dir: Path | None = None) -> Dict[str, Any]:
     out_dir = output_dir or (Path(__file__).resolve().parent / "results")
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    md: List[str] = ["# Memory Benchmark", ""]
+    md: list[str] = ["# Memory Benchmark", ""]
     md.append("## Output Size (sys.getsizeof on Python str)")
     md.append("")
     md.append("| Dataset | JSON | TOON | Diff | % |")
@@ -126,10 +132,14 @@ def run_memory_benchmark(output_dir: Path | None = None) -> Dict[str, Any]:
     md.append("")
 
     (out_dir / "memory-benchmark.md").write_text("\n".join(md), encoding="utf-8")
-    (out_dir / "memory-benchmark.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
+    (out_dir / "memory-benchmark.json").write_text(
+        json.dumps(results, indent=2), encoding="utf-8"
+    )
     return results
 
 
 if __name__ == "__main__":
     res = run_memory_benchmark()
-    print(json.dumps({k: len(v) for k, v in res.items() if isinstance(v, list)}, indent=2))
+    print(
+        json.dumps({k: len(v) for k, v in res.items() if isinstance(v, list)}, indent=2)
+    )

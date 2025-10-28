@@ -12,7 +12,7 @@ def test_converts_large_integers_to_string():
 
 
 def test_converts_datetime_to_iso_string():
-    dt = datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)
+    dt = datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=datetime.UTC)
     assert encode(dt) == '"2025-01-01T00:00:00+00:00"'
 
 

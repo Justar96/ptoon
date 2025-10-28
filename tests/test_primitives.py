@@ -1,6 +1,6 @@
 import sys
 
-from toon import encode, decode
+from toon import encode
 
 
 def test_encodes_safe_strings_without_quotes():

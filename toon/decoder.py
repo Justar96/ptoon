@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 # Precompiled regex patterns
 from .constants import (
@@ -9,7 +9,6 @@ from .constants import (
     CLOSE_BRACE,
     CLOSE_BRACKET,
     COLON,
-    COMMA,
     DEFAULT_DELIMITER,
     DOUBLE_QUOTE,
     FALSE_LITERAL,
@@ -22,12 +21,14 @@ from .constants import (
     OPEN_BRACE,
     OPEN_BRACKET,
     PIPE,
-    SPACE,
     TAB,
     TRUE_LITERAL,
     UNESCAPE_SEQUENCES,
 )
-from .types import JsonArray, JsonObject, JsonValue
+
+
+if TYPE_CHECKING:
+    from .types import JsonArray, JsonObject, JsonValue
 
 
 _HEADER_LENGTH_PATTERN = re.compile(HEADER_LENGTH_REGEX)
@@ -40,10 +41,10 @@ class _Ctx:
         self.kind = kind  # 'object' | 'array_list' | 'array_tabular'
         self.depth = depth  # header depth for this context
         self.content_depth = depth + 1  # where child lines are expected
-        self.obj: Optional[JsonObject] = None
-        self.arr: Optional[JsonArray] = None
-        self.expected: Optional[int] = None
-        self.fields: Optional[list[str]] = None
+        self.obj: JsonObject | None = None
+        self.arr: JsonArray | None = None
+        self.expected: int | None = None
+        self.fields: list[str] | None = None
         self.delimiter: str = DEFAULT_DELIMITER
         self.from_list_item: bool = False
 
@@ -61,7 +62,7 @@ class Decoder:
         indent_size = self._detect_indent_size(lines)
 
         stack: list[_Ctx] = []
-        root: Optional[JsonValue] = None
+        root: JsonValue | None = None
 
         for raw in lines:
             if not raw.strip():
@@ -75,22 +76,36 @@ class Decoder:
             # Unwind contexts on dedent
             while stack and depth < stack[-1].content_depth:
                 ctx = stack[-1]
-                if ctx.kind == 'array_list' and ctx.arr is not None and ctx.expected is not None:
+                if (
+                    ctx.kind == "array_list"
+                    and ctx.arr is not None
+                    and ctx.expected is not None
+                ):
                     if len(ctx.arr) != ctx.expected:
-                        raise ValueError(f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}")
+                        raise ValueError(
+                            f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}"
+                        )
                 stack.pop()
                 self._pop_completed_tabular(stack)
 
             # Close completed list arrays when next token is not a list item
-            while stack and stack[-1].kind == 'array_list':
+            while stack and stack[-1].kind == "array_list":
                 top = stack[-1]
                 if top.arr is not None and top.expected is not None:
                     if len(top.arr) < top.expected:
                         # Array not complete yet, but next token is not a list item
-                        if not (content.startswith(LIST_ITEM_PREFIX) or content.startswith(LIST_ITEM_MARKER)):
-                            raise ValueError(f"Array length mismatch: expected {top.expected}, got {len(top.arr)}")
+                        if not (
+                            content.startswith(LIST_ITEM_PREFIX)
+                            or content.startswith(LIST_ITEM_MARKER)
+                        ):
+                            raise ValueError(
+                                f"Array length mismatch: expected {top.expected}, got {len(top.arr)}"
+                            )
                     if len(top.arr) == top.expected:
-                        if not (content.startswith(LIST_ITEM_PREFIX) or content.startswith(LIST_ITEM_MARKER)):
+                        if not (
+                            content.startswith(LIST_ITEM_PREFIX)
+                            or content.startswith(LIST_ITEM_MARKER)
+                        ):
                             stack.pop()
                             continue
                 break
@@ -101,13 +116,13 @@ class Decoder:
                     # Root array header or inline
                     header, after = self._split_first_colon(content)
                     h = self._parse_header(header)
-                    if h['fields'] is not None:
+                    if h["fields"] is not None:
                         # tabular root
-                        ctx = _Ctx('array_tabular', depth)
+                        ctx = _Ctx("array_tabular", depth)
                         ctx.arr = []
-                        ctx.expected = h['length']
-                        ctx.fields = h['fields']
-                        ctx.delimiter = h['delimiter']
+                        ctx.expected = h["length"]
+                        ctx.fields = h["fields"]
+                        ctx.delimiter = h["delimiter"]
                         root = ctx.arr
                         stack.append(ctx)
                         continue
@@ -115,17 +130,17 @@ class Decoder:
                         arr = self._parse_inline_array(h, after)
                         root = arr
                     else:
-                        ctx = _Ctx('array_list', depth)
+                        ctx = _Ctx("array_list", depth)
                         ctx.arr = []
-                        ctx.expected = h['length']
-                        ctx.delimiter = h['delimiter']
+                        ctx.expected = h["length"]
+                        ctx.delimiter = h["delimiter"]
                         root = ctx.arr
                         stack.append(ctx)
                     continue
 
                 if self._looks_object_line(content):
                     root = {}
-                    ctx = _Ctx('object', depth)
+                    ctx = _Ctx("object", depth)
                     ctx.obj = root  # type: ignore
                     ctx.content_depth = depth  # root object keys are at the same depth
                     stack.append(ctx)
@@ -138,16 +153,16 @@ class Decoder:
 
             # Non-root line, route by current context
             top = stack[-1]
-            if top.kind == 'object' and depth == top.content_depth:
+            if top.kind == "object" and depth == top.content_depth:
                 self._parse_object_line_into(top, content, depth, stack)
                 continue
 
-            if top.kind == 'array_list' and depth == top.content_depth:
+            if top.kind == "array_list" and depth == top.content_depth:
                 self._parse_list_item_into(top, content, depth, stack)
                 # If list reached expected and next constructs are not items, we'll close on dedent later
                 continue
 
-            if top.kind == 'array_tabular' and depth == top.content_depth:
+            if top.kind == "array_tabular" and depth == top.content_depth:
                 self._parse_tabular_row_into(top, content)
                 self._pop_completed_tabular(stack)
                 continue
@@ -155,19 +170,25 @@ class Decoder:
             # If line depth equals a parent after popping completed tabular, try again
             while stack and depth < stack[-1].content_depth:
                 ctx = stack[-1]
-                if ctx.kind == 'array_list' and ctx.arr is not None and ctx.expected is not None:
+                if (
+                    ctx.kind == "array_list"
+                    and ctx.arr is not None
+                    and ctx.expected is not None
+                ):
                     if len(ctx.arr) != ctx.expected:
-                        raise ValueError(f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}")
+                        raise ValueError(
+                            f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}"
+                        )
                 stack.pop()
             if stack:
                 top = stack[-1]
-                if top.kind == 'object' and depth == top.content_depth:
+                if top.kind == "object" and depth == top.content_depth:
                     self._parse_object_line_into(top, content, depth, stack)
                     continue
-                if top.kind == 'array_list' and depth == top.content_depth:
+                if top.kind == "array_list" and depth == top.content_depth:
                     self._parse_list_item_into(top, content, depth, stack)
                     continue
-                if top.kind == 'array_tabular' and depth == top.content_depth:
+                if top.kind == "array_tabular" and depth == top.content_depth:
                     self._parse_tabular_row_into(top, content)
                     self._pop_completed_tabular(stack)
                     continue
@@ -179,22 +200,28 @@ class Decoder:
 
         # Validate remaining array_list contexts have correct length
         for ctx in stack:
-            if ctx.kind == 'array_list' and ctx.arr is not None and ctx.expected is not None:
+            if (
+                ctx.kind == "array_list"
+                and ctx.arr is not None
+                and ctx.expected is not None
+            ):
                 if len(ctx.arr) != ctx.expected:
-                    raise ValueError(f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}")
+                    raise ValueError(
+                        f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}"
+                    )
 
         return root
 
     # Helpers
     def _detect_indent_size(self, lines: list[str]) -> int:
-        indents = [len(l) - len(l.lstrip(' ')) for l in lines if l and l[0] == ' ']
+        indents = [len(l) - len(l.lstrip(" ")) for l in lines if l and l[0] == " "]
         indents = [i for i in indents if i > 0]
         if not indents:
             return 2
         return min(indents)
 
     def _calc_depth_and_content(self, line: str, indent_size: int) -> tuple[int, str]:
-        leading = len(line) - len(line.lstrip(' '))
+        leading = len(line) - len(line.lstrip(" "))
         if leading % max(indent_size, 1) != 0:
             raise ValueError("Invalid indentation")
         depth = leading // max(indent_size, 1)
@@ -203,7 +230,7 @@ class Decoder:
     def _split_first_colon(self, s: str) -> tuple[str, str]:
         i = self._find_colon_index(s)
         if i == -1:
-            return s, ''
+            return s, ""
         return s[:i].rstrip(), s[i + 1 :].lstrip()
 
     def _find_colon_index(self, s: str) -> int:
@@ -280,7 +307,7 @@ class Decoder:
     def _parse_header(self, header: str) -> dict:
         # header like: key?[#]N[delimiter]?][{fields}] (no colon)
         s = header.strip()
-        key: Optional[str] = None
+        key: str | None = None
         idx_open = s.find(OPEN_BRACKET)
         if idx_open == -1:
             raise ValueError("Invalid array header: missing [")
@@ -301,13 +328,13 @@ class Decoder:
         m = _HEADER_LENGTH_PATTERN.fullmatch(inside)
         if not m:
             raise ValueError("Invalid array header length block")
-        if inside.startswith('#'):
+        if inside.startswith("#"):
             has_len_marker = True
         length = int(m.group(1))
         if m.group(2):
-            delim = TAB if m.group(2) == '\t' else PIPE
+            delim = TAB if m.group(2) == "\t" else PIPE
 
-        fields: Optional[list[str]] = None
+        fields: list[str] | None = None
         after_bracket = after_bracket.strip()
         if after_bracket:
             if not after_bracket.startswith(OPEN_BRACE):
@@ -316,45 +343,50 @@ class Decoder:
             if not after_bracket.endswith(CLOSE_BRACE):
                 raise ValueError("Invalid array header: missing }")
             brace_content = after_bracket[1:-1]
-            fields = [self._parse_key_token(tok.strip()) for tok in self._split_values(brace_content, delim)]
+            fields = [
+                self._parse_key_token(tok.strip())
+                for tok in self._split_values(brace_content, delim)
+            ]
 
         return {
-            'key': key,
-            'length': length,
-            'fields': fields,
-            'delimiter': delim,
-            'has_length_marker': has_len_marker,
+            "key": key,
+            "length": length,
+            "fields": fields,
+            "delimiter": delim,
+            "has_length_marker": has_len_marker,
         }
 
     def _parse_inline_array(self, header: dict, values_str: str) -> JsonArray:
         if not values_str.strip():
-            if header['length'] == 0:
+            if header["length"] == 0:
                 return []
             else:
                 raise ValueError("Array length mismatch")
-        parts = self._split_values(values_str, header['delimiter'])
+        parts = self._split_values(values_str, header["delimiter"])
         arr = [self._parse_primitive(p) for p in parts]
-        if header['length'] != len(arr):
+        if header["length"] != len(arr):
             raise ValueError("Array length mismatch")
         return arr
 
-    def _parse_object_line_into(self, ctx: _Ctx, content: str, depth: int, stack: list[_Ctx]):
-        assert ctx.kind == 'object' and ctx.obj is not None
+    def _parse_object_line_into(
+        self, ctx: _Ctx, content: str, depth: int, stack: list[_Ctx]
+    ):
+        assert ctx.kind == "object" and ctx.obj is not None
         left, right = self._split_first_colon(content)
         if self._looks_header_token(left):
             h = self._parse_header(left)
-            if not h['key']:
+            if not h["key"]:
                 raise ValueError("Array header in object must include a key")
-            key = h['key']
-            if h['fields'] is not None:
+            key = h["key"]
+            if h["fields"] is not None:
                 if right:
                     raise ValueError("Tabular header should not have inline values")
                 ctx.obj[key] = []
-                arr_ctx = _Ctx('array_tabular', depth)
+                arr_ctx = _Ctx("array_tabular", depth)
                 arr_ctx.arr = ctx.obj[key]  # type: ignore
-                arr_ctx.expected = h['length']
-                arr_ctx.fields = h['fields']
-                arr_ctx.delimiter = h['delimiter']
+                arr_ctx.expected = h["length"]
+                arr_ctx.fields = h["fields"]
+                arr_ctx.delimiter = h["delimiter"]
                 arr_ctx.content_depth = depth + 1
                 stack.append(arr_ctx)
                 return
@@ -363,19 +395,19 @@ class Decoder:
                 ctx.obj[key] = self._parse_inline_array(h, right)
                 return
             ctx.obj[key] = []
-            arr_ctx = _Ctx('array_list', depth)
+            arr_ctx = _Ctx("array_list", depth)
             arr_ctx.arr = ctx.obj[key]  # type: ignore
-            arr_ctx.expected = h['length']
-            arr_ctx.delimiter = h['delimiter']
+            arr_ctx.expected = h["length"]
+            arr_ctx.delimiter = h["delimiter"]
             arr_ctx.content_depth = depth + 1
             stack.append(arr_ctx)
             return
 
         key = self._parse_key_token(left)
-        if right == '':
+        if right == "":
             obj: JsonObject = {}
             ctx.obj[key] = obj
-            child = _Ctx('object', depth)
+            child = _Ctx("object", depth)
             child.obj = obj
             child.content_depth = (depth + 2) if ctx.from_list_item else (depth + 1)
             child.from_list_item = ctx.from_list_item
@@ -383,15 +415,23 @@ class Decoder:
             return
         ctx.obj[key] = self._parse_primitive(right)
 
-    def _parse_list_item_into(self, ctx: _Ctx, content: str, depth: int, stack: list[_Ctx]):
-        assert ctx.kind == 'array_list' and ctx.arr is not None
-        if not content.startswith(LIST_ITEM_PREFIX) and not content.startswith(LIST_ITEM_MARKER):
+    def _parse_list_item_into(
+        self, ctx: _Ctx, content: str, depth: int, stack: list[_Ctx]
+    ):
+        assert ctx.kind == "array_list" and ctx.arr is not None
+        if not content.startswith(LIST_ITEM_PREFIX) and not content.startswith(
+            LIST_ITEM_MARKER
+        ):
             raise ValueError("Expected list item")
-        rest = content[1:].lstrip() if content.startswith(LIST_ITEM_MARKER) else content[len(LIST_ITEM_PREFIX):]
+        rest = (
+            content[1:].lstrip()
+            if content.startswith(LIST_ITEM_MARKER)
+            else content[len(LIST_ITEM_PREFIX) :]
+        )
         rest = rest.strip()
 
         # Empty object item
-        if rest == '':
+        if rest == "":
             ctx.arr.append({})
             return
 
@@ -407,7 +447,7 @@ class Decoder:
         if self._find_colon_index(rest) != -1:
             obj: JsonObject = {}
             ctx.arr.append(obj)
-            obj_ctx = _Ctx('object', depth)
+            obj_ctx = _Ctx("object", depth)
             obj_ctx.obj = obj
             obj_ctx.content_depth = depth + 1
             obj_ctx.from_list_item = True
@@ -419,17 +459,21 @@ class Decoder:
         ctx.arr.append(self._parse_primitive(rest))
 
     def _parse_tabular_row_into(self, ctx: _Ctx, content: str):
-        assert ctx.kind == 'array_tabular' and ctx.arr is not None and ctx.fields is not None
+        assert (
+            ctx.kind == "array_tabular"
+            and ctx.arr is not None
+            and ctx.fields is not None
+        )
         parts = self._split_values(content, ctx.delimiter)
         if len(parts) != len(ctx.fields):
             raise ValueError("Tabular row field count mismatch")
-        row: Dict[str, JsonValue] = {}
-        for k, v in zip(ctx.fields, parts):
+        row: dict[str, JsonValue] = {}
+        for k, v in zip(ctx.fields, parts, strict=False):
             row[k] = self._parse_primitive(v)
         ctx.arr.append(row)
 
     def _pop_completed_tabular(self, stack: list[_Ctx]):
-        while stack and stack[-1].kind == 'array_tabular':
+        while stack and stack[-1].kind == "array_tabular":
             top = stack[-1]
             if top.arr is None or top.expected is None:
                 break
@@ -482,7 +526,7 @@ class Decoder:
             out.append(ch)
         if esc:
             raise ValueError("Unclosed escape sequence")
-        return ''.join(out)
+        return "".join(out)
 
     def _is_number_like(self, s: str) -> bool:
         return bool(_NUMBER_PATTERN.fullmatch(s))
@@ -494,10 +538,10 @@ class Decoder:
         return t
 
     def _split_values(self, s: str, delimiter: str) -> list[str]:
-        if s == '':
+        if s == "":
             return []
         # Fast path when there are no quotes or escapes
-        if '"' not in s and '\\' not in s:
+        if '"' not in s and "\\" not in s:
             return [part.strip() for part in s.split(delimiter)]
         parts: list[str] = []
         buf: list[str] = []
@@ -523,17 +567,16 @@ class Decoder:
                 i += 1
                 continue
             if not in_quotes and self._at_delimiter(s, i, delimiter):
-                parts.append(''.join(buf).strip())
+                parts.append("".join(buf).strip())
                 buf = []
                 i += delim_len
                 continue
             buf.append(ch)
             i += 1
-        parts.append(''.join(buf).strip())
+        parts.append("".join(buf).strip())
         return parts
 
     def _at_delimiter(self, s: str, i: int, delimiter: str) -> bool:
         if len(delimiter) == 1:
             return i < len(s) and s[i] == delimiter
         return s[i : i + len(delimiter)] == delimiter
-

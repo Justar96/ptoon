@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any
 
 
 # Import faker lazily inside functions when possible to avoid hard dependency at import time.
@@ -10,7 +10,7 @@ from typing import Any, Callable, Dict, List, Tuple
 DATA_DIR = Path(__file__).resolve().parent / "data"
 
 
-def _get_faker() -> "Any":
+def _get_faker() -> Any:
     """Return a seeded Faker instance (seed=12345). Import only when needed."""
     try:
         from faker import Faker  # type: ignore
@@ -22,7 +22,9 @@ def _get_faker() -> "Any":
     return Faker()
 
 
-def generate_analytics_data(days: int, start_date: str = "2025-01-01") -> Dict[str, Any]:
+def generate_analytics_data(
+    days: int, start_date: str = "2025-01-01"
+) -> dict[str, Any]:
     """Generate reproducible daily analytics metrics.
 
     Fields per metric:
@@ -36,7 +38,7 @@ def generate_analytics_data(days: int, start_date: str = "2025-01-01") -> Dict[s
     fk = _get_faker()
     base_views = 5000
     start = datetime.fromisoformat(start_date)
-    metrics: List[Dict[str, Any]] = []
+    metrics: list[dict[str, Any]] = []
     for i in range(days):
         d = start + timedelta(days=i)
         # Weekend multiplier
@@ -70,11 +72,11 @@ def generate_analytics_data(days: int, start_date: str = "2025-01-01") -> Dict[s
     return {"metrics": metrics}
 
 
-def generate_tabular_dataset() -> Dict[str, Any]:
+def generate_tabular_dataset() -> dict[str, Any]:
     """Generate 100 uniform employee records."""
     fk = _get_faker()
     departments = ["Engineering", "Sales", "Marketing", "HR", "Operations", "Finance"]
-    employees: List[Dict[str, Any]] = []
+    employees: list[dict[str, Any]] = []
     for i in range(100):
         name = fk.name()
         email = fk.unique.email()
@@ -96,7 +98,7 @@ def generate_tabular_dataset() -> Dict[str, Any]:
     return {"employees": employees}
 
 
-def generate_nested_dataset() -> Dict[str, Any]:
+def generate_nested_dataset() -> dict[str, Any]:
     """Generate 50 nested e-commerce orders with items and customers."""
     fk = _get_faker()
     products = [
@@ -111,10 +113,10 @@ def generate_nested_dataset() -> Dict[str, Any]:
     ]
     statuses = ["pending", "processing", "shipped", "delivered", "cancelled"]
 
-    orders: List[Dict[str, Any]] = []
+    orders: list[dict[str, Any]] = []
     for _ in range(50):
         cust_id = fk.random_int(min=1000, max=9999)
-        order_items: List[Dict[str, Any]] = []
+        order_items: list[dict[str, Any]] = []
         for _j in range(fk.random_int(min=1, max=4)):
             pname = fk.random_element(elements=products)
             quantity = fk.random_int(min=1, max=5)
@@ -147,7 +149,7 @@ def generate_nested_dataset() -> Dict[str, Any]:
     return {"orders": orders}
 
 
-def load_github_dataset() -> Dict[str, Any]:
+def load_github_dataset() -> dict[str, Any]:
     """Load GitHub repositories data from benchmarks/data/github-repos.json.
 
     Returns a dict with key "repositories" (list). If file is not found, returns an empty list.
@@ -157,6 +159,7 @@ def load_github_dataset() -> Dict[str, Any]:
         # Graceful fallback
         return {"repositories": []}
     import json
+
     with path.open("r", encoding="utf-8") as f:
         data = json.load(f)
     # Expect a JSON array at root
@@ -165,9 +168,9 @@ def load_github_dataset() -> Dict[str, Any]:
     return {"repositories": []}
 
 
-def get_all_datasets() -> List[Tuple[str, str, str, Dict[str, Any]]]:
+def get_all_datasets() -> list[tuple[str, str, str, dict[str, Any]]]:
     """Return list of (name, emoji, description, data) for all datasets."""
-    datasets: List[Tuple[str, str, str, Dict[str, Any]]] = []
+    datasets: list[tuple[str, str, str, dict[str, Any]]] = []
 
     # GitHub Repositories (reference data)
     gh = load_github_dataset()

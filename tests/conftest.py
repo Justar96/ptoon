@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-import datetime as _dt
 import typing as _t
 
 import pytest
 
-from toon import encode, decode
+from toon import decode, encode
 
 
 @pytest.fixture
@@ -29,7 +28,7 @@ def sample_objects() -> list:
     return [
         {"id": 1, "name": "Ada", "active": True},
         {"a": {"b": {"c": "deep"}}},
-        {"text": " padded ", "note": "he said \"hi\""},
+        {"text": " padded ", "note": 'he said "hi"'},
         {"order:id": 7, "full name": "Alan"},
     ]
 
