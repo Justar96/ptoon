@@ -30,10 +30,22 @@ def format_number(n: int) -> str:
 
 
 def generate_bar_chart(percentage: float, max_width: int = 25) -> str:
+    """Generate a bar chart showing token savings percentage.
+
+    Args:
+        percentage: Savings percentage (e.g., 63.9 means 63.9% savings)
+        max_width: Maximum width of the bar in characters
+
+    Returns:
+        Bar chart string showing savings visually and numerically
+    """
     pct = max(0.0, min(100.0, percentage))
+    # Filled portion represents TOON's size (100 - savings)
+    # So if savings is 63.9%, TOON is 36.1% of JSON's size
     filled = int(round((100 - pct) / 100 * max_width))
     empty = max_width - filled
-    return f"{'█' * filled}{'░' * empty} {100 - pct:.1f}% TOON"
+    # Label shows the savings percentage to match table headers
+    return f"{'█' * filled}{'░' * empty} {pct:.1f}% saved"
 
 
 def truncate_dataset_for_display(name: str, data: dict[str, Any]) -> dict[str, Any]:
@@ -82,7 +94,7 @@ def generate_markdown_report(
     for r in results:
         bar = generate_bar_chart(r.savings_percent)
         lines.append(
-            f"- {r.emoji} {r.name}: {bar} — TOON {format_number(r.toon_tokens)} vs JSON {format_number(r.json_tokens)} | 💰 {r.savings_percent:.1f}% saved"
+            f"- {r.emoji} {r.name}: {bar} — TOON {format_number(r.toon_tokens)} vs JSON {format_number(r.json_tokens)}"
         )
     lines.append("")
     lines.append("---")

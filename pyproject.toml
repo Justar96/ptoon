@@ -51,9 +51,10 @@ all = [
 
 [project.scripts]
 toon-benchmark = "benchmarks.run_benchmarks:main"
+toon-llm-benchmark = "benchmarks.llm_accuracy.__main__:main"
 
 [tool.hatchling.build.targets.wheel]
-packages = ["pytoon"]
+packages = ["pytoon", "benchmarks"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

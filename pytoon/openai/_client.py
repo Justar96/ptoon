@@ -64,9 +64,12 @@ class Pytoon:
     class _ChatNamespace:
         """Namespace for chat-related operations."""
 
-        def __init__(self, client: OpenAI):
+        def __init__(self, client: OpenAI, parent_class=None):
             self._client = client
-            self.completions = Pytoon._CompletionsNamespace(client)
+            # Defer lookup to avoid circular reference during class definition
+            if parent_class is None:
+                parent_class = Pytoon
+            self.completions = parent_class._CompletionsNamespace(client)
 
     class _CompletionsNamespace:
         """Namespace for chat completions operations."""
@@ -97,7 +100,7 @@ class Pytoon:
             processed_messages = process_messages(messages)
             return self._client.chat.completions.create(
                 model=model,
-                messages=processed_messages,
+                messages=processed_messages,  # type: ignore[arg-type]
                 **kwargs,
             )
 
@@ -157,9 +160,12 @@ class AsyncPytoon:
     class _ChatNamespace:
         """Namespace for chat-related operations."""
 
-        def __init__(self, client: AsyncOpenAI):
+        def __init__(self, client: AsyncOpenAI, parent_class=None):
             self._client = client
-            self.completions = AsyncPytoon._CompletionsNamespace(client)
+            # Defer lookup to avoid circular reference during class definition
+            if parent_class is None:
+                parent_class = AsyncPytoon
+            self.completions = parent_class._CompletionsNamespace(client)
 
     class _CompletionsNamespace:
         """Namespace for chat completions operations."""
@@ -190,6 +196,6 @@ class AsyncPytoon:
             processed_messages = process_messages(messages)
             return await self._client.chat.completions.create(
                 model=model,
-                messages=processed_messages,
+                messages=processed_messages,  # type: ignore[arg-type]
                 **kwargs,
             )

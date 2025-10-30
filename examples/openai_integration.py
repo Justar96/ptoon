@@ -163,7 +163,8 @@ def example_token_comparison() -> None:
     json_tokens = int(comparison["json_tokens"])  # input-side only for cost calc
     toon_tokens = int(comparison["toon_tokens"])  # input-side only for cost calc
 
-    # Pricing (as of Oct 2025) for input tokens
+    # Pricing for gpt-4o-mini (as of October 2025): $0.60 input / $2.40 output per 1M tokens
+    # Verify current pricing at: https://openai.com/api/pricing/
     price_per_million_input = 0.60
     json_cost = (json_tokens / 1_000_000) * price_per_million_input
     toon_cost = (toon_tokens / 1_000_000) * price_per_million_input
@@ -272,8 +273,10 @@ def example_rag_retrieval() -> None:
     print("\nResults Comparison:")
     print("\u2500" * 42)
     print(f"{'Format':<10}{'Total Tokens':>18}{'Cost':>10}")
-    # Cost estimate (input+output combined, rough): use same rate for simplicity
-    price_per_million = 0.150
+    # Cost estimate (blended rate for gpt-4o-mini): ~$1.00 per 1M tokens
+    # This approximates typical input/output ratio; actual costs depend on usage pattern
+    # Verify current pricing at: https://openai.com/api/pricing/
+    price_per_million = 1.00
     json_cost = (total_json_tokens / 1_000_000) * price_per_million
     toon_cost = (total_toon_tokens / 1_000_000) * price_per_million
     print(f"{'JSON':<10}{total_json_tokens:>18,}${json_cost:>9.5f}")

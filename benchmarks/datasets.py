@@ -153,6 +153,7 @@ def load_github_dataset() -> dict[str, Any]:
     """Load GitHub repositories data from benchmarks/data/github-repos.json.
 
     Returns a dict with key "repositories" (list). If file is not found, returns an empty list.
+    Parses the "repo" field to extract "owner" and "name" for each repository.
     """
     path = DATA_DIR / "github-repos.json"
     if not path.exists():
@@ -164,6 +165,13 @@ def load_github_dataset() -> dict[str, Any]:
         data = json.load(f)
     # Expect a JSON array at root
     if isinstance(data, list):
+        # Parse repo field to extract owner and name
+        for repo in data:
+            if "repo" in repo:
+                parts = repo["repo"].split("/")
+                if len(parts) == 2:
+                    repo["owner"] = parts[0]
+                    repo["name"] = parts[1]
         return {"repositories": data}
     return {"repositories": []}
 
