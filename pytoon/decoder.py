@@ -66,6 +66,7 @@ class Decoder:
 
         for raw in lines:
             if not raw.strip():
+                self._handle_blank_line(stack)
                 continue
 
             depth, content = self._calc_depth_and_content(raw, indent_size)
@@ -218,18 +219,35 @@ class Decoder:
 
     # Helpers
     def _detect_indent_size(self, lines: list[str]) -> int:
-        indents = [len(line) - len(line.lstrip(" ")) for line in lines if line and line[0] == " "]
-        indents = [i for i in indents if i > 0]
+        indents: list[int] = []
+        for line in lines:
+            stripped = line.strip()
+            if not stripped:
+                continue
+            leading = self._count_leading_spaces(line)
+            if leading > 0:
+                indents.append(leading)
         if not indents:
             return 2
         return min(indents)
 
     def _calc_depth_and_content(self, line: str, indent_size: int) -> tuple[int, str]:
-        leading = len(line) - len(line.lstrip(" "))
+        leading = self._count_leading_spaces(line)
         if leading % max(indent_size, 1) != 0:
             raise ValueError("Invalid indentation")
         depth = leading // max(indent_size, 1)
         return depth, line[leading:]
+
+    def _count_leading_spaces(self, line: str) -> int:
+        count = 0
+        for ch in line:
+            if ch == " ":
+                count += 1
+                continue
+            if ch == "\t":
+                raise ValueError("Tabs are not allowed for indentation")
+            break
+        return count
 
     def _split_first_colon(self, s: str) -> tuple[str, str]:
         i = self._find_colon_index(s)
@@ -429,16 +447,9 @@ class Decoder:
         self, ctx: _Ctx, content: str, depth: int, stack: list[_Ctx]
     ):
         assert ctx.kind == "array_list" and ctx.arr is not None
-        if not content.startswith(LIST_ITEM_PREFIX) and not content.startswith(
-            LIST_ITEM_MARKER
-        ):
+        if not content.startswith(LIST_ITEM_PREFIX):
             raise ValueError("Expected list item")
-        rest = (
-            content[1:].lstrip()
-            if content.startswith(LIST_ITEM_MARKER)
-            else content[len(LIST_ITEM_PREFIX) :]
-        )
-        rest = rest.strip()
+        rest = content[len(LIST_ITEM_PREFIX) :].strip()
 
         # Empty object item
         if rest == "":
@@ -504,6 +515,8 @@ class Decoder:
         if self._is_quoted(t):
             return self._unquote_string(t)
         if self._is_number_like(t):
+            if self._has_forbidden_leading_zeros(t):
+                return t
             # try int first, then float
             if _INTEGER_PATTERN.fullmatch(t):
                 try:
@@ -527,7 +540,9 @@ class Decoder:
         for ch in inner:
             if esc:
                 mapped = UNESCAPE_SEQUENCES.get(ch)
-                out.append(mapped if mapped is not None else ch)
+                if mapped is None:
+                    raise ValueError("Invalid escape sequence")
+                out.append(mapped)
                 esc = False
                 continue
             if ch == BACKSLASH:
@@ -540,6 +555,17 @@ class Decoder:
 
     def _is_number_like(self, s: str) -> bool:
         return bool(_NUMBER_PATTERN.fullmatch(s))
+
+    def _has_forbidden_leading_zeros(self, s: str) -> bool:
+        if not s:
+            return False
+        negative = s[0] == "-"
+        body = s[1:] if negative else s
+        if not body or not body[0].isdigit():
+            return False
+        if "." in body or "e" in body or "E" in body:
+            return False
+        return len(body) > 1 and body[0] == "0"
 
     def _parse_key_token(self, token: str) -> str:
         t = token.strip()
@@ -590,3 +616,14 @@ class Decoder:
         if len(delimiter) == 1:
             return i < len(s) and s[i] == delimiter
         return s[i : i + len(delimiter)] == delimiter
+
+    def _handle_blank_line(self, stack: list[_Ctx]):
+        for ctx in reversed(stack):
+            if ctx.kind in ("array_list", "array_tabular"):
+                if (
+                    ctx.arr is not None
+                    and ctx.expected is not None
+                    and 0 < len(ctx.arr) < ctx.expected
+                ):
+                    raise ValueError("Blank line encountered within array contents")
+                break

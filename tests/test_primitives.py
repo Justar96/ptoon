@@ -44,7 +44,8 @@ def test_encodes_numbers():
 def test_handles_special_numeric_values():
     assert encode(-0.0) == "0"
     assert encode(1_000_000) == "1000000"
-    assert encode(0.000001) in ("1e-06", "0.000001")
+    assert encode(0.000001) == "0.000001"
+    assert encode(0.00000001) == "0.00000001"
     assert encode(10**20) == f'"{10**20}"'
     assert encode(sys.maxsize) == f'"{sys.maxsize}"'
 

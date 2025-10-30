@@ -1,4 +1,5 @@
 import re
+from decimal import Decimal
 
 from .constants import (
     BACKSLASH,
@@ -32,8 +33,10 @@ def encode_primitive(value: JsonPrimitive, delimiter: str = COMMA) -> str:
         return NULL_LITERAL
     if isinstance(value, bool):
         return str(value).lower()
-    if isinstance(value, (int, float)):
+    if isinstance(value, int):
         return str(value)
+    if isinstance(value, float):
+        return _format_float(value)
     return encode_string_literal(str(value), delimiter)
 
 
@@ -92,6 +95,16 @@ def is_numeric_like(value: str) -> bool:
     return bool(_OCTAL_PATTERN.fullmatch(value)) or bool(
         _NUMERIC_PATTERN.fullmatch(value)
     )
+
+
+def _format_float(value: float) -> str:
+    decimal_value = Decimal(str(value))
+    formatted = format(decimal_value, "f")
+    if "." in formatted:
+        formatted = formatted.rstrip("0").rstrip(".")
+    if not formatted:
+        return "0"
+    return formatted
 
 
 def encode_key(key: str) -> str:
