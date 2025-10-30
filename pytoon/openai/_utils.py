@@ -1,6 +1,7 @@
 """Utility functions for processing OpenAI messages with TOON encoding."""
 
-from typing import Any, Mapping, Optional, Sequence
+from collections.abc import Mapping, Sequence
+from typing import Any
 
 import pytoon
 
@@ -29,16 +30,13 @@ def should_encode_to_toon(content: Any) -> bool:
 
         # If every element is a dict with a "type" key, it's a content-part list
         # (e.g., [{"type": "text", "text": "..."}, {"type": "image_url", "image_url": {...}}])
-        if all(isinstance(item, dict) and "type" in item for item in content):
-            return False
-
         # Otherwise, it's a regular list that should be encoded
-        return True
+        return not all(isinstance(item, dict) and "type" in item for item in content)
 
     return False
 
 
-def encode_content(content: Any) -> Optional[str]:
+def encode_content(content: Any) -> str | None:
     """
     Encode message content to TOON format if applicable.
 
@@ -78,4 +76,3 @@ def process_messages(messages: Sequence[Mapping[str, Any]]) -> list[dict[str, An
             new_message["content"] = encode_content(new_message["content"])
         processed.append(new_message)
     return processed
-

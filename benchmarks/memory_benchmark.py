@@ -72,9 +72,9 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
 
         # encoding memory (repeated measurements, use min peak)
         _, cur_json, peak_json = measure_memory_repeated(
-            lambda: json.dumps(data, ensure_ascii=False)
+            lambda data=data: json.dumps(data, ensure_ascii=False)
         )
-        _, cur_toon, peak_toon = measure_memory_repeated(lambda: pytoon.encode(data))
+        _, cur_toon, peak_toon = measure_memory_repeated(lambda data=data: pytoon.encode(data))
         results["encoding"].append(
             {
                 "dataset": name,
@@ -86,10 +86,10 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
 
         # decoding memory (repeated measurements, use min peak)
         _, cur_json_d, peak_json_d = measure_memory_repeated(
-            lambda: json.loads(json_str)
+            lambda json_str=json_str: json.loads(json_str)
         )
         _, cur_toon_d, peak_toon_d = measure_memory_repeated(
-            lambda: pytoon.decode(toon_str)
+            lambda toon_str=toon_str: pytoon.decode(toon_str)
         )
         results["decoding"].append(
             {

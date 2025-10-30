@@ -153,11 +153,13 @@ def test_roundtrip_nested_object_as_second_field_in_list_item():
 def test_roundtrip_ecommerce_structure():
     """Test decoding E-Commerce-like structures with nested customer objects."""
     obj = {
-        "orders": [{
-            "orderId": "abc123",
-            "customer": {"id": 7825, "name": "Alice", "email": "alice@example.com"},
-            "total": 99.99
-        }]
+        "orders": [
+            {
+                "orderId": "abc123",
+                "customer": {"id": 7825, "name": "Alice", "email": "alice@example.com"},
+                "total": 99.99,
+            }
+        ]
     }
     toon_str = encode(obj)
     assert decode(toon_str) == obj

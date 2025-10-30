@@ -31,11 +31,15 @@ import os
 import sys
 from typing import Any
 
+
 try:
     import openai
     import tiktoken
-except ImportError as e:  # pragma: no cover - example dependency check
-    print("Error: Missing dependencies. Install with: pip install openai tiktoken", file=sys.stderr)
+except ImportError:  # pragma: no cover - example dependency check
+    print(
+        "Error: Missing dependencies. Install with: pip install openai tiktoken",
+        file=sys.stderr,
+    )
     sys.exit(1)
 
 import pytoon
@@ -131,7 +135,9 @@ def example_basic_pattern() -> None:
     answer = (response.choices[0].message.content or "").strip()
     print(f"\nLLM Answer: {answer}")
 
-    print("\nNote: If the LLM returns structured data in TOON format, use toon.decode() to parse it.")
+    print(
+        "\nNote: If the LLM returns structured data in TOON format, use toon.decode() to parse it."
+    )
 
     usage = getattr(response, "usage", None)
     if usage:
@@ -166,7 +172,9 @@ def example_token_comparison() -> None:
     print("\nCost Comparison (input tokens only):")
     print(f"JSON:   ${json_cost:0.6f}")
     print(f"TOON:   ${toon_cost:0.6f}")
-    print(f"Savings: ${cost_savings:0.6f} per request ({comparison['savings_percent']:.1f}%)")
+    print(
+        f"Savings: ${cost_savings:0.6f} per request ({comparison['savings_percent']:.1f}%)"
+    )
 
     daily = cost_savings * 1_000
     monthly = daily * 30
@@ -180,7 +188,9 @@ def example_token_comparison() -> None:
     print(format_data_json(data)[:500])
     print("\nTOON format (first 500 chars):")
     print(format_data_toon(data)[:500])
-    print("\nNotice: TOON uses tabular format for uniform arrays, eliminating repeated keys.")
+    print(
+        "\nNotice: TOON uses tabular format for uniform arrays, eliminating repeated keys."
+    )
 
 
 def example_rag_retrieval() -> None:
@@ -335,7 +345,7 @@ def example_error_handling() -> None:
     max_retries = 3
     for attempt in range(max_retries):
         # Placeholder for real LLM call
-        response_text = malformed_toon if attempt < max_retries - 1 else 'name: Ada'
+        response_text = malformed_toon if attempt < max_retries - 1 else "name: Ada"
         try:
             _ = pytoon.decode(response_text)
             print(f"Attempt {attempt + 1}: success")
@@ -353,7 +363,7 @@ def main() -> None:
         "\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n"
         "\u2551  TOON + OpenAI Integration Examples           \u2551\n"
         "\u2551  Demonstrating token-efficient LLM apps       \u2551\n"
-        "\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D\n"
+        "\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n"
     )
     print(banner)
 

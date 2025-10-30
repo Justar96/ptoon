@@ -79,11 +79,12 @@ class Encoder:
             self._encode_inline_primitive_array(key, value, writer, depth)
             return
 
-        if is_array_of_arrays(value):
+        if is_array_of_arrays(value) and all(
+            is_array_of_primitives(arr) for arr in value
+        ):
             # The TS implementation has a special case for array of primitive arrays.
-            if all(is_array_of_primitives(arr) for arr in value):
-                self._encode_array_of_arrays_as_list_items(key, value, writer, depth)
-                return
+            self._encode_array_of_arrays_as_list_items(key, value, writer, depth)
+            return
 
         if is_array_of_objects(value):
             header_fields = self._detect_tabular_header(value)

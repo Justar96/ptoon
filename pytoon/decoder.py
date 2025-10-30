@@ -80,11 +80,11 @@ class Decoder:
                     ctx.kind == "array_list"
                     and ctx.arr is not None
                     and ctx.expected is not None
+                    and len(ctx.arr) != ctx.expected
                 ):
-                    if len(ctx.arr) != ctx.expected:
-                        raise ValueError(
-                            f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}"
-                        )
+                    raise ValueError(
+                        f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}"
+                    )
                 stack.pop()
                 self._pop_completed_tabular(stack)
 
@@ -92,22 +92,26 @@ class Decoder:
             while stack and stack[-1].kind == "array_list":
                 top = stack[-1]
                 if top.arr is not None and top.expected is not None:
-                    if len(top.arr) < top.expected:
+                    if (
+                        len(top.arr) < top.expected
+                        and not (
+                            content.startswith(LIST_ITEM_PREFIX)
+                            or content.startswith(LIST_ITEM_MARKER)
+                        )
+                    ):
                         # Array not complete yet, but next token is not a list item
-                        if not (
+                        raise ValueError(
+                            f"Array length mismatch: expected {top.expected}, got {len(top.arr)}"
+                        )
+                    if (
+                        len(top.arr) == top.expected
+                        and not (
                             content.startswith(LIST_ITEM_PREFIX)
                             or content.startswith(LIST_ITEM_MARKER)
-                        ):
-                            raise ValueError(
-                                f"Array length mismatch: expected {top.expected}, got {len(top.arr)}"
-                            )
-                    if len(top.arr) == top.expected:
-                        if not (
-                            content.startswith(LIST_ITEM_PREFIX)
-                            or content.startswith(LIST_ITEM_MARKER)
-                        ):
-                            stack.pop()
-                            continue
+                        )
+                    ):
+                        stack.pop()
+                        continue
                 break
 
             if not stack:
@@ -174,11 +178,11 @@ class Decoder:
                     ctx.kind == "array_list"
                     and ctx.arr is not None
                     and ctx.expected is not None
+                    and len(ctx.arr) != ctx.expected
                 ):
-                    if len(ctx.arr) != ctx.expected:
-                        raise ValueError(
-                            f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}"
-                        )
+                    raise ValueError(
+                        f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}"
+                    )
                 stack.pop()
             if stack:
                 top = stack[-1]
@@ -204,17 +208,17 @@ class Decoder:
                 ctx.kind == "array_list"
                 and ctx.arr is not None
                 and ctx.expected is not None
+                and len(ctx.arr) != ctx.expected
             ):
-                if len(ctx.arr) != ctx.expected:
-                    raise ValueError(
-                        f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}"
-                    )
+                raise ValueError(
+                    f"Array length mismatch: expected {ctx.expected}, got {len(ctx.arr)}"
+                )
 
         return root
 
     # Helpers
     def _detect_indent_size(self, lines: list[str]) -> int:
-        indents = [len(l) - len(l.lstrip(" ")) for l in lines if l and l[0] == " "]
+        indents = [len(line) - len(line.lstrip(" ")) for line in lines if line and line[0] == " "]
         indents = [i for i in indents if i > 0]
         if not indents:
             return 2
@@ -411,7 +415,11 @@ class Decoder:
             child.obj = obj
             # Nested objects on hyphen line (first field of list item) indent by two levels
             # All other nested objects indent by one level
-            child.content_depth = (depth + 2) if (ctx.from_list_item and depth == ctx.depth) else (depth + 1)
+            child.content_depth = (
+                (depth + 2)
+                if (ctx.from_list_item and depth == ctx.depth)
+                else (depth + 1)
+            )
             child.from_list_item = False  # Don't propagate flag to child contexts
             stack.append(child)
             return

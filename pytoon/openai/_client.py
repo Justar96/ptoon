@@ -1,6 +1,7 @@
 """OpenAI client wrappers with automatic TOON encoding for structured data."""
 
-from typing import Any, Mapping, Optional, Sequence, Union
+from collections.abc import Mapping, Sequence
+from typing import Any
 
 from openai import AsyncOpenAI, OpenAI
 from openai.types.chat import ChatCompletion
@@ -26,13 +27,13 @@ class Pytoon:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        organization: Optional[str] = None,
-        base_url: Optional[str] = None,
-        timeout: Union[float, None] = None,
+        api_key: str | None = None,
+        organization: str | None = None,
+        base_url: str | None = None,
+        timeout: float | None = None,
         max_retries: int = 2,
-        default_headers: Optional[dict] = None,
-        default_query: Optional[dict] = None,
+        default_headers: dict | None = None,
+        default_query: dict | None = None,
         **kwargs,
     ):
         """
@@ -119,13 +120,13 @@ class AsyncPytoon:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
-        organization: Optional[str] = None,
-        base_url: Optional[str] = None,
-        timeout: Union[float, None] = None,
+        api_key: str | None = None,
+        organization: str | None = None,
+        base_url: str | None = None,
+        timeout: float | None = None,
         max_retries: int = 2,
-        default_headers: Optional[dict] = None,
-        default_query: Optional[dict] = None,
+        default_headers: dict | None = None,
+        default_query: dict | None = None,
         **kwargs,
     ):
         """
@@ -192,4 +193,3 @@ class AsyncPytoon:
                 messages=processed_messages,
                 **kwargs,
             )
-

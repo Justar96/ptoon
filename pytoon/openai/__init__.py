@@ -50,5 +50,5 @@ Key Features:
 
 from ._client import AsyncPytoon, Pytoon
 
-__all__ = ["Pytoon", "AsyncPytoon"]
 
+__all__ = ["Pytoon", "AsyncPytoon"]
