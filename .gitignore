@@ -263,3 +263,9 @@ examples/__pycache__/
 examples/**/__pycache__/
 
 .ruff_cache/
+
+# Internal development files (not for public repo)
+.claude/
+.augment/
+docs/plan/
+toon-ts/
