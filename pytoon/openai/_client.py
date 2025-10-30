@@ -20,7 +20,7 @@ class Pytoon:
     Example:
         >>> client = Pytoon(api_key="your-api-key")
         >>> response = client.chat.completions.create(
-        ...     "gpt-4",
+        ...     "gpt-5",
         ...     [{"role": "user", "content": {"data": [1, 2, 3]}}]
         ... )
     """

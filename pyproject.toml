@@ -23,6 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "black>=25.9.0",
+    "openai>=1.109.1",
     "ruff>=0.14.2",
 ]
 

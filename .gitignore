@@ -261,3 +261,5 @@ examples/*.json
 examples/*.txt
 examples/__pycache__/
 examples/**/__pycache__/
+
+.ruff_cache/
