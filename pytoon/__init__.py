@@ -132,21 +132,30 @@ def encode(input: Any, options: EncodeOptions | dict | None = None) -> str:
         invalid = set(options.keys()) - valid_keys
         if invalid:
             raise ValueError(
-                f"Invalid option keys: {invalid}. Valid keys are: {valid_keys}"
+                "options contains unsupported keys; allowed: "
+                f"{sorted(valid_keys)}; got: {sorted(invalid)}"
             )
-        if "delimiter" in options and options["delimiter"] not in DELIMITERS.values():
-            raise ValueError(
-                f"Invalid delimiter: {repr(options['delimiter'])}. Must be ',', '|', or '\\t'"
-            )
+        if "delimiter" in options:
+            delimiter_option = options["delimiter"]
+            accepted = [DEFAULT_DELIMITER, "|", "\t"]
+            if delimiter_option not in accepted:
+                raise ValueError(
+                    "delimiter must be one of ',', '|' or '\\t'; "
+                    f"got: {repr(delimiter_option)}"
+                )
 
     opts = options or {}
 
     # Validate and extract indent
     indent_val = opts.get("indent", 2)
-    if not isinstance(indent_val, int):
-        raise ValueError("indent must be a non-negative int")
-    if indent_val < 0:
-        raise ValueError("indent must be a non-negative int")
+    if (
+        isinstance(indent_val, bool)
+        or not isinstance(indent_val, int)
+        or indent_val < 0
+    ):
+        raise ValueError(
+            f"indent must be a non-negative int; got: {indent_val!r}"
+        )
     indent = indent_val
 
     delimiter = opts.get("delimiter", DEFAULT_DELIMITER)
@@ -154,8 +163,8 @@ def encode(input: Any, options: EncodeOptions | dict | None = None) -> str:
     # Validate and extract length_marker
     length_marker_val = opts.get("length_marker", False)
     if not isinstance(length_marker_val, bool):
-        raise TypeError(
-            f"length_marker must be a bool, got {type(length_marker_val).__name__}"
+        raise ValueError(
+            f"length_marker must be a bool; got: {length_marker_val!r}"
         )
     length_marker = length_marker_val
     if options is None or (
@@ -186,6 +195,7 @@ def decode(input: str, options: dict | None = None) -> JsonValue:
             - Primitives: None, bool, int, float, str
             - Collections: dict, list
             - Nested structures of the above
+        For empty or whitespace-only input strings, an empty dict ({}) is returned.
 
     Raises:
         TypeError: If input is not a string or if options is not a dict.

@@ -19,13 +19,20 @@ def test_preserves_leading_zero_tokens(source, expected):
     assert decode(source) == expected
 
 
+def test_decode_empty_or_whitespace_returns_empty_dict():
+    assert decode("") == {}
+    assert decode("   \n\n") == {}
+
+
 def test_rejects_invalid_escape_sequence():
     with pytest.raises(ValueError):
         decode(_FIXTURES["invalidEscape"])
 
 
 def test_rejects_blank_line_inside_array():
-    with pytest.raises(ValueError):
+    with pytest.raises(
+        ValueError, match="Blank line encountered within array contents at depth 1"
+    ):
         decode(_FIXTURES["blankLineInArray"])
 
 

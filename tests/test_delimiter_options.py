@@ -112,6 +112,21 @@ def test_does_not_quote_commas_in_object_values_with_non_comma_delimiter():
     assert encode(obj, {"delimiter": "\t"}) == "a: x,y"
 
 
+def test_quotes_values_with_multiple_commas_using_default_delimiter():
+    obj = {"tags": ["a,b,c", "d,e", "f,g,h"]}
+    out = encode(obj)
+    assert out == 'tags[3]: "a,b,c","d,e","f,g,h"'
+
+
+def test_switching_delimiter_handles_comma_heavy_values_without_quotes():
+    obj = {"tags": ["a,b,c", "d,e", "f,g,h"]}
+    out_pipe = encode(obj, {"delimiter": "|"})
+    out_tab = encode(obj, {"delimiter": "\t"})
+    assert '"a,b,c"' not in out_pipe
+    assert '"d,e"' not in out_pipe
+    assert '"f,g,h"' not in out_tab
+
+
 def test_quotes_nested_array_values_containing_the_delimiter():
     obj = {"pairs": [["a|b", "c"], ["d", "e"]]}
     expected = "pairs[2|]:\n" '  - [2|]: "a|b"|c\n' "  - [2|]: d|e"

@@ -2,7 +2,7 @@ import types
 from typing import Any, cast
 
 from .constants import DEFAULT_DELIMITER, LIST_ITEM_PREFIX
-from .logging_config import get_logger
+from pytoon.logging_config import get_logger
 from .normalize import (
     is_array_of_arrays,
     is_array_of_objects,
@@ -325,6 +325,15 @@ class Encoder:
                 if is_array_of_primitives(item):
                     inline = self._format_inline_array(item, None)
                     writer.push(depth + 1, f"{LIST_ITEM_PREFIX}{inline}")
+                else:
+                    # Complex nested array (e.g., array of arrays of arrays)
+                    nesting_depth = self._calculate_nesting_depth(item)
+                    if nesting_depth >= 2:
+                        logger.warning(
+                            f"Skipping deeply nested array (depth {nesting_depth + 1}). "
+                            f"TOON format supports up to 2 levels of array nesting. "
+                            f"Consider flattening this data structure."
+                        )
             elif is_json_object(item):
                 self._encode_object_as_list_item(item, writer, depth + 1)
             # Other complex nested arrays are intentionally not handled here per TS behavior.
@@ -468,3 +477,30 @@ class Encoder:
         if is_array_of_arrays(value):
             return "arrays"
         return "mixed"
+
+    def _calculate_nesting_depth(self, arr: JsonArray) -> int:
+        """Calculate maximum array nesting depth.
+
+        Args:
+            arr: Array to analyze.
+
+        Returns:
+            int: Maximum nesting depth (1 for flat array, 2 for array of arrays, etc.).
+
+        Examples:
+            [1, 2, 3] → 1
+            [[1, 2], [3, 4]] → 2
+            [[[1]]] → 3
+            [[1], [[[2]]]] → 4 (mixed depth, returns max)
+        """
+        if not is_json_array(arr):
+            return 0
+        if not arr:
+            return 1
+
+        max_depth = 1
+        for item in arr:
+            if is_json_array(item):
+                max_depth = max(max_depth, 1 + self._calculate_nesting_depth(item))
+
+        return max_depth

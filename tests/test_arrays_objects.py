@@ -135,6 +135,13 @@ def test_uses_field_order_from_first_object_for_tabular_headers():
     assert decode(expected) == obj
 
 
+def test_tabular_header_order_deterministic_for_mixed_insertion():
+    obj = {"items": [{"b": 2, "a": 1}, {"a": 4, "b": 3}, {"b": 5, "a": 6}]}
+    toon = encode(obj)
+    assert toon.startswith("items[3]{b,a}:")
+    assert decode(toon) == obj
+
+
 def test_uses_list_format_for_one_object_with_nested_column():
     obj = {"items": [{"a": 1, "b": {"x": 1}}, {"a": 2, "b": 2}]}
     expected = (

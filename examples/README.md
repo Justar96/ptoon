@@ -4,24 +4,56 @@ This directory contains practical examples demonstrating how to use TOON with va
 
 ## Prerequisites
 
-Install TOON with example dependencies:
+**IMPORTANT: Running examples will incur OpenAI API costs.**
+
+Install TOON with example dependencies using the `[examples]` extra:
 
 ```bash
-pip install -e ".[benchmark]"  # Includes tiktoken and faker
-pip install openai  # For OpenAI examples
+pip install -e ".[examples]"
 ```
 
-Set your API keys:
+This installs:
+- `openai` - OpenAI SDK for API access
+- `tiktoken` - Token counting utilities
+
+See the [Installation guide](https://pytoon.readthedocs.io/en/latest/installation.html) for details on optional extras.
+
+For additional features:
+```bash
+pip install -e ".[benchmark]"  # Adds faker for dataset generation
+```
+
+## Configuration
+
+Copy the example environment file and configure it:
 
 ```bash
-export OPENAI_API_KEY="your-openai-api-key"
+cp examples/.env.example examples/.env
 ```
+
+Edit `examples/.env` and set your OpenAI API key:
+
+```bash
+OPENAI_API_KEY=your-openai-api-key
+```
+
+**Cost Guardrails** (recommended for first run):
+
+```bash
+# Use small dataset (10 records instead of 100)
+SMALL_DATA=1
+
+# Dry run mode (preview token counts without API calls)
+DRY_RUN=true
+```
+
+See `examples/.env.example` for full configuration options, including LLM benchmark settings.
 
 ## Available Examples
 
 ### OpenAI Integration (`openai_integration.py`)
 
-Comprehensive example demonstrating TOON usage with OpenAI SDK.
+Comprehensive example demonstrating TOON usage with the raw OpenAI SDK using the direct-encode pattern.
 
 What it covers:
 - Basic encode → send → decode pattern
@@ -89,8 +121,9 @@ See `openai_integration.py` as a template.
 
 Import errors:
 ```bash
-# Install missing dependencies
-pip install openai tiktoken faker
+# Ensure project extras are installed
+pip install -e ".[examples]"
+pip install -e ".[benchmark]"  # needed for dataset generation (faker)
 ```
 
 API key errors:

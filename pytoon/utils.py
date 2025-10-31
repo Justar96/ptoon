@@ -34,6 +34,20 @@ from . import encode
 __all__ = ["count_tokens", "estimate_savings", "compare_formats"]
 
 
+_TIKTOKEN_MISSING_MSG = (
+    "tiktoken is required for token counting. Install with: pip install tiktoken or "
+    "pip install pytoon[benchmark]"
+)
+
+
+def _require_tiktoken():
+    try:
+        import tiktoken  # type: ignore
+    except ImportError as exc:  # pragma: no cover - exercised via count_tokens
+        raise RuntimeError(_TIKTOKEN_MISSING_MSG) from exc
+    return tiktoken
+
+
 @functools.lru_cache(maxsize=1)
 def _get_tokenizer():
     """Get cached tiktoken tokenizer for o200k_base encoding.
@@ -44,13 +58,7 @@ def _get_tokenizer():
     Raises:
         RuntimeError: If tiktoken is not installed.
     """
-    try:
-        import tiktoken
-    except ImportError:
-        raise RuntimeError(
-            "tiktoken is required for token counting. "
-            "Install with: pip install tiktoken"
-        )
+    tiktoken = _require_tiktoken()
     return tiktoken.get_encoding("o200k_base")
 
 
@@ -77,13 +85,7 @@ def count_tokens(text: str, encoding: str = "o200k_base") -> int:
     if encoding == "o200k_base":
         enc = _get_tokenizer()
     else:
-        try:
-            import tiktoken
-        except ImportError:
-            raise RuntimeError(
-                "tiktoken is required for token counting. "
-                "Install with: pip install tiktoken"
-            )
+        tiktoken = _require_tiktoken()
         enc = tiktoken.get_encoding(encoding)
 
     return len(enc.encode(text))

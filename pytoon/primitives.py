@@ -40,6 +40,7 @@ from .constants import (
     TRUE_LITERAL,
     VALID_KEY_REGEX,
 )
+from pytoon.logging_config import get_logger
 from .types import Delimiter, JsonPrimitive
 
 
@@ -49,6 +50,9 @@ _CONTROL_CHARS_PATTERN = re.compile(CONTROL_CHARS_REGEX)
 _NUMERIC_PATTERN = re.compile(NUMERIC_REGEX, re.IGNORECASE)
 _OCTAL_PATTERN = re.compile(OCTAL_REGEX)
 _VALID_KEY_PATTERN = re.compile(VALID_KEY_REGEX, re.IGNORECASE)
+
+
+logger = get_logger(__name__)
 
 
 def encode_primitive(value: JsonPrimitive, delimiter: Delimiter = COMMA) -> str:
@@ -112,6 +116,7 @@ def encode_string_literal(value: str, delimiter: Delimiter = COMMA) -> str:
     """
     if is_safe_unquoted(value, delimiter):
         return value
+    logger.debug("Quoting string literal for delimiter %r: %r", delimiter, value)
     return (
         f"{DOUBLE_QUOTE}{escape_string(value, delimiter, for_key=False)}{DOUBLE_QUOTE}"
     )

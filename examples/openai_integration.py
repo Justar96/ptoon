@@ -1,6 +1,13 @@
 """
 Demonstrates using TOON format with OpenAI SDK for token-efficient LLM applications.
 
+CAUTION: Running this example will incur OpenAI API costs.
+
+Cost Guardrails:
+- Set SMALL_DATA=1 to use a smaller dataset (10 records instead of 100)
+- Set DRY_RUN=true to preview token counts without making API calls
+- Copy examples/.env.example to examples/.env and configure
+
 Key benefits of TOON vs JSON:
 - 30-60% token reduction in typical structured datasets
 - Lower API costs (tokens are the primary cost driver)
@@ -18,10 +25,18 @@ When NOT to use TOON:
 - Real-time streaming where encoding overhead matters
 
 Installation:
-    pip install pytoon openai tiktoken
+    pip install -e ".[examples]"
 
 Usage:
+    # Copy and configure .env
+    cp examples/.env.example examples/.env
+    # Edit examples/.env to set your OPENAI_API_KEY
+    
+    # Run with guardrails (dry run, small data)
     python examples/openai_integration.py
+    
+    # Run with full data (incurs higher API costs)
+    SMALL_DATA=0 DRY_RUN=false python examples/openai_integration.py
 """
 
 from __future__ import annotations
@@ -37,7 +52,7 @@ try:
     import tiktoken
 except ImportError:  # pragma: no cover - example dependency check
     print(
-        "Error: Missing dependencies. Install with: pip install openai tiktoken",
+        'Error: Missing dependencies. Install with: pip install -e ".[examples]"',
         file=sys.stderr,
     )
     sys.exit(1)
@@ -51,8 +66,14 @@ OPENAI_API_KEY: str | None = os.getenv("OPENAI_API_KEY")
 MODEL: str = "gpt-4o-mini"
 TOKENIZER_ENCODING: str = "o200k_base"  # GPT-4o tokenizer
 
+# Cost guardrail settings
+SMALL_DATA: bool = os.getenv("SMALL_DATA", "1") == "1"  # Default: use small dataset
+DRY_RUN: bool = os.getenv("DRY_RUN", "true").lower() == "true"  # Default: dry run mode
+DATASET_LIMIT = 10 if SMALL_DATA else 100
+
 if not OPENAI_API_KEY:  # Basic validation before making API calls
     print("Error: OPENAI_API_KEY environment variable is not set.", file=sys.stderr)
+    print("Copy examples/.env.example to examples/.env and set your API key.", file=sys.stderr)
     # Do not exit immediately so that the module can still be imported for reading.
 
 
@@ -116,6 +137,10 @@ def example_basic_pattern() -> None:
     print("\nEncoded as TOON:")
     print("\n" + toon_str)
 
+    if DRY_RUN:
+        print("\nSkipping OpenAI call: DRY_RUN=true (no API calls).")
+        return
+
     if not OPENAI_API_KEY:
         print("\nSkipping OpenAI call: OPENAI_API_KEY not set.")
         return
@@ -156,7 +181,12 @@ def example_token_comparison() -> None:
     except RuntimeError as exc:
         print(f"Dataset generation failed: {exc}")
         return
-    print("Generated dataset: 100 employee records")
+    if SMALL_DATA:
+        data["employees"] = data["employees"][:DATASET_LIMIT]
+    print(
+        f"Generated dataset: {len(data['employees'])} employee records "
+        f"({'SMALL_DATA=1' if SMALL_DATA else 'full'})"
+    )
 
     comparison = compare_token_counts(data)
 
@@ -203,7 +233,12 @@ def example_rag_retrieval() -> None:
     except RuntimeError as exc:
         print(f"Dataset generation failed: {exc}")
         return
-    print("Dataset: 100 employee records")
+    if SMALL_DATA:
+        data["employees"] = data["employees"][:DATASET_LIMIT]
+    print(
+        f"Dataset: {len(data['employees'])} employee records "
+        f"({'SMALL_DATA=1' if SMALL_DATA else 'full'})"
+    )
 
     questions = [
         "How many employees have a salary greater than 100000?",
@@ -211,6 +246,10 @@ def example_rag_retrieval() -> None:
         "List all employees in the Engineering department",
         "What is the average salary across all employees?",
     ]
+
+    if DRY_RUN:
+        print("\nSkipping OpenAI calls: DRY_RUN=true (no API calls).")
+        return
 
     if not OPENAI_API_KEY:
         print("\nSkipping OpenAI calls: OPENAI_API_KEY not set.")
@@ -369,10 +408,29 @@ def main() -> None:
         "\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n"
     )
     print(banner)
+    
+    # Display cost guardrail status
+    print(f"\nCost Guardrails:")
+    print(
+        f"  Dataset Size: {DATASET_LIMIT} records "
+        f"({'SMALL' if SMALL_DATA else 'FULL'})"
+    )
+    print(f"  Mode: {'DRY RUN (no API calls)' if DRY_RUN else 'LIVE (API calls enabled)'}")
+    if DRY_RUN:
+        print("  \u26a0\ufe0f  DRY RUN mode: Token counts shown, no API calls made")
+    else:
+        print("  \u26a0\ufe0f  LIVE mode: API calls will incur costs")
+    print()
 
     if not OPENAI_API_KEY:
-        print("Error: OPENAI_API_KEY not set")
-        print("Set it with: export OPENAI_API_KEY='your-key'")
+        if DRY_RUN:
+            print(
+                "Info: OPENAI_API_KEY not set (OK for DRY_RUN=true). "
+                "Set it before running live API calls."
+            )
+        else:
+            print("Error: OPENAI_API_KEY not set")
+            print("Copy examples/.env.example to examples/.env and set your API key")
         # Continue running examples that don't require API access
 
     try:

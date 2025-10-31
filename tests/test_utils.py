@@ -7,6 +7,7 @@ including edge cases, error handling, and integration scenarios.
 
 import importlib.util
 import json
+import time
 from unittest.mock import patch
 
 import pytest
@@ -132,17 +133,19 @@ class TestCountTokens:
             pytest.skip("cl100k_base encoding not available")
 
     def test_count_tokens_without_tiktoken(self):
-        """Test that missing tiktoken raises helpful error."""
-        # Mock tiktoken import to fail and verify error is raised
-        with (
-            patch.dict("sys.modules", {"tiktoken": None}),
-            pytest.raises(RuntimeError, match="tiktoken"),
-        ):
-            # This should raise RuntimeError mentioning tiktoken
-            from pytoon.utils import _get_tokenizer
+        """Test count_tokens raises helpful error when tokenizer unavailable."""
+        from pytoon import utils as utils_mod
 
-            _get_tokenizer.cache_clear()
-            _get_tokenizer()
+        utils_mod._get_tokenizer.cache_clear()
+
+        with (
+            patch.object(utils_mod, "tiktoken", None, create=True),
+            patch.dict("sys.modules", {"tiktoken": None}),
+            pytest.raises(RuntimeError, match="tiktoken is required"),
+        ):
+            count_tokens("x")
+
+        utils_mod._get_tokenizer.cache_clear()
 
 
 # Savings Estimation Tests
@@ -249,6 +252,25 @@ class TestEstimateSavings:
         # (but we don't strictly enforce a minimum percentage)
         assert result["json_tokens"] > 0
         assert result["toon_tokens"] > 0
+
+    def test_estimate_savings_large_array_performance(self):
+        """Ensure large lightweight arrays remain performant."""
+        large_array = list(range(50_000))
+
+        start = time.perf_counter()
+        toon_str = encode(large_array)
+        json_str = json.dumps(large_array)
+        estimate_start = time.perf_counter()
+        result = estimate_savings(large_array)
+        estimate_duration = time.perf_counter() - estimate_start
+        total_duration = time.perf_counter() - start
+
+        assert toon_str  # sanity check encoding produced content
+        assert json_str
+        assert estimate_duration < 5.0, f"estimate_savings took {estimate_duration:.2f}s"
+        assert total_duration < 8.0, f"Overall workflow exceeded 8s ({total_duration:.2f}s)"
+        assert result["savings"] >= 0
+        assert result["savings_percent"] >= 0.0
 
 
 # Format Comparison Tests

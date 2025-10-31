@@ -1,0 +1,2 @@
+# This file ensures the _templates directory is tracked by git
+# Add custom Sphinx templates here to override theme templates
