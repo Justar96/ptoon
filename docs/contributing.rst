@@ -11,8 +11,8 @@ Development Setup
 
 .. code-block:: bash
 
-    git clone https://github.com/Justar96/pytoon.git
-    cd pytoon
+    git clone https://github.com/Justar96/ptoon.git
+    cd ptoon
 
 2. Install Development Dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -223,6 +223,6 @@ Getting Help
 See Also
 --------
 
-* `GitHub Repository <https://github.com/Justar96/pytoon>`_
-* `Issue Tracker <https://github.com/Justar96/pytoon/issues>`_
-* `Discussions <https://github.com/Justar96/pytoon/discussions>`_
+* `GitHub Repository <https://github.com/Justar96/ptoon>`_
+* `Issue Tracker <https://github.com/Justar96/ptoon/issues>`_
+* `Discussions <https://github.com/Justar96/ptoon/discussions>`_

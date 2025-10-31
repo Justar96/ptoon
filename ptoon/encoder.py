@@ -26,11 +26,13 @@ class Encoder:
 
     Converts normalized JSON values to TOON string representation.
     Supports multiple output formats:
+
     - Inline arrays for primitives: [N]: val1, val2, val3
     - Tabular format for uniform objects: [N]{field1, field2}
-    - List format for mixed content: - item1\n- item2
+    - List format for mixed content: hyphen-prefixed items
 
     Attributes:
+
         indent: Spaces per indentation level (default: 2).
         delimiter: Value separator - ',', '|', or '\t' (default: ',').
         length_marker: Include #N in array headers (default: False).

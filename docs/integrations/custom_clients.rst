@@ -350,4 +350,4 @@ See Also
 
 * :doc:`overview` - General integration patterns
 * :doc:`/guides/error_handling` - Error handling
-* :doc:`/guides/performance_tips` - Performance optimization
+* :doc:`../user_guide/performance_tips` - Performance optimization

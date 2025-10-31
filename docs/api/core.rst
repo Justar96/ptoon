@@ -14,15 +14,19 @@ Main Functions
 .. automodule:: ptoon
    :members: encode, decode
    :undoc-members:
+   :noindex:
 
 Utility Functions
 -----------------
 
 .. autofunction:: ptoon.count_tokens
+   :noindex:
 
 .. autofunction:: ptoon.estimate_savings
+   :noindex:
 
 .. autofunction:: ptoon.compare_formats
+   :noindex:
 
 Examples
 --------

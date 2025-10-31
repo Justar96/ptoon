@@ -107,6 +107,7 @@ Installation
    benchmarks
    contributing
    changelog
+   vertex-ai-setup
 
 Indices and Tables
 ------------------
@@ -118,6 +119,6 @@ Indices and Tables
 Links
 -----
 
-* `GitHub Repository <https://github.com/Justar96/toon-py>`_
+* `GitHub Repository <https://github.com/Justar96/ptoon>`_
 * `PyPI Package <https://pypi.org/project/ptoon/>`_
-* `Issue Tracker <https://github.com/Justar96/toon-py/issues>`_
+* `Issue Tracker <https://github.com/Justar96/ptoon/issues>`_

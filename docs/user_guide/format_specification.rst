@@ -1,7 +1,7 @@
 Format Specification
 ====================
 
-This guide explains the TOON format structure and rules. For the normative specification, see `SPEC.md <https://github.com/Justar96/pytoon/blob/main/SPEC.md>`_.
+This guide explains the TOON format structure and rules. For the normative specification, see `SPEC.md on GitHub <https://github.com/Justar96/ptoon/blob/main/SPEC.md>`_.
 
 Introduction
 ------------
@@ -420,7 +420,7 @@ Common parsing errors:
 See Also
 --------
 
-* `SPEC.md <https://github.com/Justar96/toon-py/blob/master/SPEC.md>`_ - Normative specification
+* `SPEC.md <https://github.com/Justar96/ptoon/blob/main/SPEC.md>`_ - Normative specification
 * :doc:`core_api` - Encoding/decoding API
 * :doc:`/guides/encoding_options` - Encoding options guide
 * :doc:`/troubleshooting` - Common issues and solutions

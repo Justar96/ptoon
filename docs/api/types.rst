@@ -9,6 +9,7 @@ Type Definitions
 .. automodule:: ptoon.types
    :members:
    :undoc-members:
+   :noindex:
 
 Core Types
 ----------

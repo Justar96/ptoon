@@ -9,6 +9,7 @@ Utility Functions
 .. automodule:: ptoon.utils
    :members:
    :undoc-members:
+   :noindex:
 
 Requirements
 ------------

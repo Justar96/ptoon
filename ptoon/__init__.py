@@ -192,9 +192,11 @@ def decode(input: str, options: dict | None = None) -> JsonValue:
 
     Returns:
         JsonValue: Decoded Python value. Can be:
+
             - Primitives: None, bool, int, float, str
             - Collections: dict, list
             - Nested structures of the above
+
         For empty or whitespace-only input strings, an empty dict ({}) is returned.
 
     Raises:

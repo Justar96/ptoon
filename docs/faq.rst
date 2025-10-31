@@ -162,7 +162,7 @@ How much faster/cheaper is TOON vs JSON?
 
 **Example:**
 
-.. code-block:: python
+.. code-block:: text
 
    # 100 employee records
    json_tokens = 4500

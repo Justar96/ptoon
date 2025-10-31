@@ -60,19 +60,22 @@ class Decoder:
     stack-based parser with context tracking.
 
     Parsing Strategy:
+
     - Line-by-line processing with depth tracking
     - Context stack maintains parsing state (object, array_list, array_tabular)
     - Automatic context unwinding on dedent
     - Length validation for arrays with markers
 
     Supported Formats:
+
     - Objects: key: value pairs
     - Inline arrays: [N]: val1, val2, val3
     - Tabular arrays: [N]{field1, field2} with aligned rows
-    - List arrays: - item1\n- item2
+    - List arrays: ``- item1\n- item2``
     - Nested structures with proper indentation
 
     Examples:
+
         >>> decoder = Decoder()
         >>> decoder.decode('name: Alice\\nage: 30')
         {'name': 'Alice', 'age': 30}

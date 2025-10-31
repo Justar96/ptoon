@@ -69,7 +69,7 @@ Example: Employee Records
 
 **JSON format:**
 
-.. code-block:: json
+.. code-block:: text
 
     {
       "employees": [
@@ -273,7 +273,7 @@ Reproducibility
 
 .. code-block:: bash
 
-    git clone https://github.com/Justar96/toon-py.git
+    git clone https://github.com/Justar96/ptoon.git
     cd ptoon
     pip install -e ".[benchmark]"
     toon-benchmark
@@ -283,13 +283,13 @@ Results Location
 
 Detailed benchmark results are in the repository:
 
-* `benchmarks/results/token-efficiency.md <https://github.com/Justar96/pytoon/blob/main/benchmarks/results/token-efficiency.md>`_
-* `benchmarks/results/speed-benchmark.md <https://github.com/Justar96/pytoon/blob/main/benchmarks/results/speed-benchmark.md>`_
-* `benchmarks/results/memory-benchmark.md <https://github.com/Justar96/pytoon/blob/main/benchmarks/results/memory-benchmark.md>`_
+* `benchmarks/results/token-efficiency.md <https://github.com/Justar96/ptoon/blob/main/benchmarks/results/token-efficiency.md>`_
+* `benchmarks/results/speed-benchmark.md <https://github.com/Justar96/ptoon/blob/main/benchmarks/results/speed-benchmark.md>`_
+* `benchmarks/results/memory-benchmark.md <https://github.com/Justar96/ptoon/blob/main/benchmarks/results/memory-benchmark.md>`_
 
 See Also
 --------
 
 * :doc:`user_guide/performance_tips` - Performance optimization
 * :doc:`guides/token_optimization` - Token optimization strategies
-* `Benchmark Results <https://github.com/Justar96/toon-py/tree/master/benchmarks/results>`_
+* `Benchmark Results <https://github.com/Justar96/ptoon/tree/main/benchmarks/results>`_

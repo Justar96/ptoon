@@ -99,7 +99,7 @@ For contributors and developers:
 
 .. code-block:: bash
 
-    git clone https://github.com/Justar96/toon-py.git
+    git clone https://github.com/Justar96/ptoon.git
     cd ptoon
 
 2. Install in editable mode with development dependencies:

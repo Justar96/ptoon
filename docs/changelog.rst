@@ -77,10 +77,10 @@ Planned for 1.0.0
 Version History
 ---------------
 
-See `GitHub Releases <https://github.com/Justar96/pytoon/releases>`_ for detailed release notes.
+See `GitHub Releases <https://github.com/Justar96/ptoon/releases>`_ for detailed release notes.
 
 See Also
 --------
 
-* `SPEC.md <https://github.com/Justar96/toon-py/blob/master/SPEC.md>`_ - Format specification changes
-* `GitHub Releases <https://github.com/Justar96/toon-py/releases>`_
+* `SPEC.md <https://github.com/Justar96/ptoon/blob/main/SPEC.md>`_ - Format specification changes
+* `Release Notes <https://github.com/Justar96/ptoon/releases>`_
