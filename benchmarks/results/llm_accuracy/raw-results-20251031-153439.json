@@ -8,9 +8,8 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 5,
-    "latency_ms": 7180.531118996441,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 2240.05446996307,
+    "provider": "vertex"
   },
   {
     "question_id": "q1",
@@ -21,9 +20,8 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 5,
-    "latency_ms": 4079.195267986506,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 6020.745972986333,
+    "provider": "vertex"
   },
   {
     "question_id": "q2",
@@ -34,9 +32,8 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 1,
-    "latency_ms": 3814.8289669770747,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3121.6385059524328,
+    "provider": "vertex"
   },
   {
     "question_id": "q2",
@@ -47,9 +44,8 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 1,
-    "latency_ms": 4275.635025987867,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 4566.5544149815105,
+    "provider": "vertex"
   },
   {
     "question_id": "q3",
@@ -60,9 +56,8 @@
     "is_correct": true,
     "input_tokens": 7452,
     "output_tokens": 8,
-    "latency_ms": 6000.223367998842,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3247.872603009455,
+    "provider": "vertex"
   },
   {
     "question_id": "q3",
@@ -73,9 +68,8 @@
     "is_correct": true,
     "input_tokens": 2862,
     "output_tokens": 8,
-    "latency_ms": 4606.891628005542,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 4229.472411971074,
+    "provider": "vertex"
   },
   {
     "question_id": "q4",
@@ -86,9 +80,8 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 6,
-    "latency_ms": 4395.198011014145,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3239.878092019353,
+    "provider": "vertex"
   },
   {
     "question_id": "q4",
@@ -99,9 +92,8 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 6,
-    "latency_ms": 5814.632947964128,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3751.002852979582,
+    "provider": "vertex"
   },
   {
     "question_id": "q5",
@@ -112,9 +104,8 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 1,
-    "latency_ms": 12573.15168500645,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3315.328100055922,
+    "provider": "vertex"
   },
   {
     "question_id": "q5",
@@ -125,9 +116,8 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 1,
-    "latency_ms": 3920.4575680196285,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 2941.8542200000957,
+    "provider": "vertex"
   },
   {
     "question_id": "q6",
@@ -138,9 +128,8 @@
     "is_correct": true,
     "input_tokens": 7452,
     "output_tokens": 7,
-    "latency_ms": 4644.102560007013,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3238.847215019632,
+    "provider": "vertex"
   },
   {
     "question_id": "q6",
@@ -151,9 +140,8 @@
     "is_correct": true,
     "input_tokens": 2862,
     "output_tokens": 7,
-    "latency_ms": 4015.4596920474432,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3940.38016803097,
+    "provider": "vertex"
   },
   {
     "question_id": "q7",
@@ -164,9 +152,8 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 5,
-    "latency_ms": 2691.311802016571,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3195.245514041744,
+    "provider": "vertex"
   },
   {
     "question_id": "q7",
@@ -177,9 +164,8 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 5,
-    "latency_ms": 2894.8703149799258,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3123.8881590543315,
+    "provider": "vertex"
   },
   {
     "question_id": "q8",
@@ -190,9 +176,8 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 1,
-    "latency_ms": 3163.970365014393,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3916.898212977685,
+    "provider": "vertex"
   },
   {
     "question_id": "q8",
@@ -203,9 +188,8 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 1,
-    "latency_ms": 2768.2946390123107,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3130.056014051661,
+    "provider": "vertex"
   },
   {
     "question_id": "q9",
@@ -216,9 +200,8 @@
     "is_correct": true,
     "input_tokens": 7452,
     "output_tokens": 7,
-    "latency_ms": 2721.990105987061,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3352.58247400634,
+    "provider": "vertex"
   },
   {
     "question_id": "q9",
@@ -229,9 +212,8 @@
     "is_correct": true,
     "input_tokens": 2862,
     "output_tokens": 7,
-    "latency_ms": 2811.27673399169,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 2170.991198043339,
+    "provider": "vertex"
   },
   {
     "question_id": "q10",
@@ -242,9 +224,8 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 6,
-    "latency_ms": 3523.3106780215167,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 3218.8026970252395,
+    "provider": "vertex"
   },
   {
     "question_id": "q10",
@@ -255,8 +236,7 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 6,
-    "latency_ms": 3793.771973985713,
-    "provider": "vertex",
-    "actual_model": "gemini-2.5-flash"
+    "latency_ms": 2890.3089219820686,
+    "provider": "vertex"
   }
 ]

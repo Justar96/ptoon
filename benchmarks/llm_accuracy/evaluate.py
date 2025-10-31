@@ -146,6 +146,7 @@ async def evaluate_single_question(
     formatted_data: str,
     provider: LLMProvider,
     semaphore: asyncio.Semaphore,
+    provider_type: str = "openai",
 ) -> EvaluationResult:
     """Evaluate a single question for a given data format using an LLM provider."""
 
@@ -193,6 +194,7 @@ async def evaluate_single_question(
                     "input_tokens": result.input_tokens,
                     "output_tokens": result.output_tokens,
                     "latency_ms": result.latency_ms,
+                    "provider": provider_type,
                 }
 
             except RateLimitError as err:  # type: ignore[misc]
@@ -263,6 +265,7 @@ async def evaluate_single_question(
         "input_tokens": 0,
         "output_tokens": 0,
         "latency_ms": fallback_latency_ms,
+        "provider": provider_type,
     }
 
 
@@ -272,6 +275,7 @@ async def evaluate_all_questions(
     json_provider: LLMProvider,
     toon_provider: LLMProvider,
     concurrency: int = DEFAULT_CONCURRENCY,
+    provider_type: str = "openai",
 ) -> list[EvaluationResult]:
     """Evaluate all questions across both JSON and TOON formats."""
 
@@ -302,12 +306,12 @@ async def evaluate_all_questions(
 
         tasks.append(
             lambda q=question, data=json_payload: evaluate_single_question(
-                q, "JSON", data, json_provider, semaphore
+                q, "JSON", data, json_provider, semaphore, provider_type
             )
         )
         tasks.append(
             lambda q=question, data=toon_payload: evaluate_single_question(
-                q, "TOON", data, toon_provider, semaphore
+                q, "TOON", data, toon_provider, semaphore, provider_type
             )
         )
 
@@ -434,10 +438,25 @@ def run_evaluation(
             json_provider=json_provider,
             toon_provider=toon_provider,
             concurrency=concurrency,
+            provider_type=provider_type,
         )
     )
 
     _log_summary(results)
+
+    # Store the actual model identifier in results metadata
+    # This is used by report generation for accurate pricing
+    if provider_type == "vertex":
+        # Map the generic model name to Vertex AI model name
+        from .providers.vertex_provider import VertexAIProvider
+        temp_provider = VertexAIProvider(project_id="temp", location="us-central1")
+        actual_model = temp_provider._map_model_name(MODEL)
+    else:
+        actual_model = MODEL
+
+    for result in results:
+        result['actual_model'] = actual_model  # type: ignore[typeddict-unknown-key]
+
     return results
 
 

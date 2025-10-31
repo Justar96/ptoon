@@ -350,7 +350,7 @@ def main(argv: list[str] | None = None) -> int:
 
         try:
             summary = generate_report(
-                results, questions, formatted, model=MODEL, output_dir=output_dir
+                results, questions, formatted, model=MODEL, output_dir=output_dir, provider=args.provider
             )
         except Exception as exc:  # noqa: BLE001
             logger.exception("Failed to regenerate report: %s", exc)
@@ -421,7 +421,7 @@ def main(argv: list[str] | None = None) -> int:
 
     try:
         summary = generate_report(
-            results, questions, formatted, model=MODEL, output_dir=output_dir
+            results, questions, formatted, model=MODEL, output_dir=output_dir, provider=args.provider
         )
     except Exception as exc:  # noqa: BLE001
         logger.exception("Failed to generate report: %s", exc)

@@ -8,7 +8,7 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 5,
-    "latency_ms": 7180.531118996441,
+    "latency_ms": 3274.093801039271,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -21,7 +21,7 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 5,
-    "latency_ms": 4079.195267986506,
+    "latency_ms": 4040.25595105486,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -34,7 +34,7 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 1,
-    "latency_ms": 3814.8289669770747,
+    "latency_ms": 3826.230000995565,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -47,7 +47,7 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 1,
-    "latency_ms": 4275.635025987867,
+    "latency_ms": 3547.3686199984513,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -60,7 +60,7 @@
     "is_correct": true,
     "input_tokens": 7452,
     "output_tokens": 8,
-    "latency_ms": 6000.223367998842,
+    "latency_ms": 3023.838716035243,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -73,7 +73,7 @@
     "is_correct": true,
     "input_tokens": 2862,
     "output_tokens": 8,
-    "latency_ms": 4606.891628005542,
+    "latency_ms": 2677.515893999953,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -86,7 +86,7 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 6,
-    "latency_ms": 4395.198011014145,
+    "latency_ms": 3134.515621990431,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -99,7 +99,7 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 6,
-    "latency_ms": 5814.632947964128,
+    "latency_ms": 3740.225709974766,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -112,7 +112,7 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 1,
-    "latency_ms": 12573.15168500645,
+    "latency_ms": 2903.239333012607,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -125,7 +125,7 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 1,
-    "latency_ms": 3920.4575680196285,
+    "latency_ms": 3362.469807965681,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -138,7 +138,7 @@
     "is_correct": true,
     "input_tokens": 7452,
     "output_tokens": 7,
-    "latency_ms": 4644.102560007013,
+    "latency_ms": 3196.6440979740582,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -151,7 +151,7 @@
     "is_correct": true,
     "input_tokens": 2862,
     "output_tokens": 7,
-    "latency_ms": 4015.4596920474432,
+    "latency_ms": 3521.395249001216,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -164,7 +164,7 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 5,
-    "latency_ms": 2691.311802016571,
+    "latency_ms": 2914.9695010273717,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -177,7 +177,7 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 5,
-    "latency_ms": 2894.8703149799258,
+    "latency_ms": 3403.853074007202,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -190,7 +190,7 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 1,
-    "latency_ms": 3163.970365014393,
+    "latency_ms": 3326.776742003858,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -203,7 +203,7 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 1,
-    "latency_ms": 2768.2946390123107,
+    "latency_ms": 3491.995497024618,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -216,7 +216,7 @@
     "is_correct": true,
     "input_tokens": 7452,
     "output_tokens": 7,
-    "latency_ms": 2721.990105987061,
+    "latency_ms": 3512.869706028141,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -229,7 +229,7 @@
     "is_correct": true,
     "input_tokens": 2862,
     "output_tokens": 7,
-    "latency_ms": 2811.27673399169,
+    "latency_ms": 6769.196813984308,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -242,7 +242,7 @@
     "is_correct": true,
     "input_tokens": 7451,
     "output_tokens": 6,
-    "latency_ms": 3523.3106780215167,
+    "latency_ms": 2849.434449977707,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   },
@@ -255,7 +255,7 @@
     "is_correct": true,
     "input_tokens": 2861,
     "output_tokens": 6,
-    "latency_ms": 3793.771973985713,
+    "latency_ms": 3821.690116019454,
     "provider": "vertex",
     "actual_model": "gemini-2.5-flash"
   }
