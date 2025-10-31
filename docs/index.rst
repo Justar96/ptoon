@@ -118,6 +118,6 @@ Indices and Tables
 Links
 -----
 
-* `GitHub Repository <https://github.com/Justar96/toon-py>`_
+* `GitHub Repository <https://github.com/Justar96/pytoon>`_
 * `PyPI Package <https://pypi.org/project/pytoon/>`_
-* `Issue Tracker <https://github.com/Justar96/toon-py/issues>`_
+* `Issue Tracker <https://github.com/Justar96/pytoon/issues>`_

@@ -283,9 +283,9 @@ Results Location
 
 Detailed benchmark results are in the repository:
 
-* `benchmarks/results/token-efficiency.md <https://github.com/Justar96/toon-py/blob/master/benchmarks/results/token-efficiency.md>`_
-* `benchmarks/results/speed-benchmark.md <https://github.com/Justar96/toon-py/blob/master/benchmarks/results/speed-benchmark.md>`_
-* `benchmarks/results/memory-benchmark.md <https://github.com/Justar96/toon-py/blob/master/benchmarks/results/memory-benchmark.md>`_
+* `benchmarks/results/token-efficiency.md <https://github.com/Justar96/pytoon/blob/main/benchmarks/results/token-efficiency.md>`_
+* `benchmarks/results/speed-benchmark.md <https://github.com/Justar96/pytoon/blob/main/benchmarks/results/speed-benchmark.md>`_
+* `benchmarks/results/memory-benchmark.md <https://github.com/Justar96/pytoon/blob/main/benchmarks/results/memory-benchmark.md>`_
 
 See Also
 --------

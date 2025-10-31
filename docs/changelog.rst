@@ -77,7 +77,7 @@ Planned for 1.0.0
 Version History
 ---------------
 
-See `GitHub Releases <https://github.com/Justar96/toon-py/releases>`_ for detailed release notes.
+See `GitHub Releases <https://github.com/Justar96/pytoon/releases>`_ for detailed release notes.
 
 See Also
 --------

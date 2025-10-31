@@ -11,8 +11,8 @@ Development Setup
 
 .. code-block:: bash
 
-    git clone https://github.com/Justar96/toon-py.git
-    cd toon-py
+    git clone https://github.com/Justar96/pytoon.git
+    cd pytoon
 
 2. Install Development Dependencies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -223,6 +223,6 @@ Getting Help
 See Also
 --------
 
-* `GitHub Repository <https://github.com/Justar96/toon-py>`_
-* `Issue Tracker <https://github.com/Justar96/toon-py/issues>`_
-* `Discussions <https://github.com/Justar96/toon-py/discussions>`_
+* `GitHub Repository <https://github.com/Justar96/pytoon>`_
+* `Issue Tracker <https://github.com/Justar96/pytoon/issues>`_
+* `Discussions <https://github.com/Justar96/pytoon/discussions>`_

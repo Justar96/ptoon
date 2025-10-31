@@ -463,7 +463,7 @@ Before Filing an Issue
 ~~~~~~~~~~~~~~~~~~~~~~
 
 1. Check this troubleshooting guide
-2. Search `existing issues <https://github.com/Justar96/toon-py/issues>`_
+2. Search `existing issues <https://github.com/Justar96/pytoon/issues>`_
 3. Try with latest version:
 
 .. code-block:: bash
@@ -506,8 +506,8 @@ Example:
 Community Resources
 ~~~~~~~~~~~~~~~~~~~
 
-* `GitHub Issues <https://github.com/Justar96/toon-py/issues>`_
-* `GitHub Discussions <https://github.com/Justar96/toon-py/discussions>`_
+* `GitHub Issues <https://github.com/Justar96/pytoon/issues>`_
+* `GitHub Discussions <https://github.com/Justar96/pytoon/discussions>`_
 * Stack Overflow (tag: ``pytoon``)
 
 See Also
@@ -515,4 +515,4 @@ See Also
 
 * :doc:`guides/error_handling` - Error handling patterns
 * :doc:`user_guide/core_api` - Core API documentation
-* `GitHub Issues <https://github.com/Justar96/toon-py/issues>`_
+* `GitHub Issues <https://github.com/Justar96/pytoon/issues>`_

@@ -484,7 +484,7 @@ Full working script:
 See Also
 --------
 
-* `examples/openai_integration.py <https://github.com/Justar96/toon-py/blob/master/examples/openai_integration.py>`_ - Full example script
+* `examples/openai_integration.py <https://github.com/Justar96/pytoon/blob/main/examples/openai_integration.py>`_ - Full example script
 * :doc:`/guides/token_optimization` - Token optimization guide
 * :doc:`/guides/error_handling` - Error handling patterns
 * :doc:`/guides/streaming_responses` - Streaming guide
