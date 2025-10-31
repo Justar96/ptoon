@@ -75,8 +75,12 @@ def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
         )
 
         # decoding
-        dec_json = _median_timer(lambda json_str=json_str: json.loads(json_str), number=iters)
-        dec_toon = _median_timer(lambda toon_str=toon_str: pytoon.decode(toon_str), number=iters)
+        dec_json = _median_timer(
+            lambda json_str=json_str: json.loads(json_str), number=iters
+        )
+        dec_toon = _median_timer(
+            lambda toon_str=toon_str: pytoon.decode(toon_str), number=iters
+        )
         dec_ratio, dec_desc = calculate_speedup(dec_json, dec_toon)
         results["decoding"].append(
             {
@@ -90,7 +94,8 @@ def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
 
         # roundtrip
         rt_json = _median_timer(
-            lambda data=data: json.loads(json.dumps(data, ensure_ascii=False)), number=iters
+            lambda data=data: json.loads(json.dumps(data, ensure_ascii=False)),
+            number=iters,
         )
         rt_toon = _median_timer(
             lambda data=data: pytoon.decode(pytoon.encode(data)), number=iters

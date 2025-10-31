@@ -19,16 +19,18 @@ from typing import Any, TypedDict
 
 # Number of timestamped result sets to keep (can be overridden via env var)
 DEFAULT_KEEP_LAST_N_RUNS = 10
-KEEP_LAST_N_RUNS = int(os.environ.get("KEEP_LAST_N_RUNS", str(DEFAULT_KEEP_LAST_N_RUNS)))
+KEEP_LAST_N_RUNS = int(
+    os.environ.get("KEEP_LAST_N_RUNS", str(DEFAULT_KEEP_LAST_N_RUNS))
+)
 
 try:
     import tiktoken
 except ImportError:
     tiktoken = None
 
-from benchmarks.token_efficiency import generate_bar_chart
+from benchmarks.token_efficiency import generate_bar_chart  # noqa: E402
 
-from .types import EvaluationResult, Question
+from .types import EvaluationResult, Question  # noqa: E402
 
 
 # Configure module logger
@@ -96,7 +98,9 @@ def count_tokens(text: str) -> int:
     return len(encoding.encode(text))
 
 
-def calculate_token_counts(formatted_datasets: dict[str, dict[str, str]]) -> dict[str, int]:
+def calculate_token_counts(
+    formatted_datasets: dict[str, dict[str, str]],
+) -> dict[str, int]:
     """Calculate token counts for all format+dataset combinations.
 
     Args:
@@ -120,8 +124,7 @@ def calculate_token_counts(formatted_datasets: dict[str, dict[str, str]]) -> dic
 
 
 def calculate_format_results(
-    results: list[EvaluationResult],
-    token_counts: dict[str, int]
+    results: list[EvaluationResult], token_counts: dict[str, int]
 ) -> list[FormatResult]:
     """Aggregate per-format statistics from evaluation results.
 
@@ -159,7 +162,8 @@ def calculate_format_results(
 
         # Calculate average dataset token count for this format
         format_token_counts = [
-            count for key, count in token_counts.items()
+            count
+            for key, count in token_counts.items()
             if key.startswith(f"{format_name}-")
         ]
         if format_token_counts:
@@ -173,9 +177,8 @@ def calculate_format_results(
         # actual costs will be lower (cached tokens are 90% cheaper at $0.125/1M).
         # The OpenAI API response doesn't separate cached vs regular input tokens,
         # so we calculate upper-bound estimates here.
-        estimated_cost = (
-            (total_input_tokens / 1_000_000 * GPT5_INPUT_PRICE_PER_1M) +
-            (total_output_tokens / 1_000_000 * GPT5_OUTPUT_PRICE_PER_1M)
+        estimated_cost = (total_input_tokens / 1_000_000 * GPT5_INPUT_PRICE_PER_1M) + (
+            total_output_tokens / 1_000_000 * GPT5_OUTPUT_PRICE_PER_1M
         )
 
         format_result: FormatResult = {
@@ -214,11 +217,11 @@ def create_progress_bar(value: float, max_value: float, width: int = 20) -> str:
         ASCII bar string like "████████████████░░░░"
     """
     if max_value == 0:
-        return '░' * width
+        return "░" * width
 
     filled = round((value / max_value) * width)
     empty = width - filled
-    return '█' * filled + '░' * empty
+    return "█" * filled + "░" * empty
 
 
 def generate_markdown_report(
@@ -226,7 +229,7 @@ def generate_markdown_report(
     results: list[EvaluationResult],
     questions: list[Question],
     token_counts: dict[str, int],
-    model: str
+    model: str,
 ) -> str:
     """Generate comprehensive markdown report.
 
@@ -257,7 +260,9 @@ def generate_markdown_report(
 
         bar = create_progress_bar(accuracy, 1.0, 20)
         accuracy_pct = accuracy * 100
-        sections.append(f"{format_name.ljust(12)} {bar} {accuracy_pct:>6.1f}% ({correct}/{total})")
+        sections.append(
+            f"{format_name.ljust(12)} {bar} {accuracy_pct:>6.1f}% ({correct}/{total})"
+        )
     sections.append("```")
     sections.append("")
 
@@ -271,7 +276,9 @@ def generate_markdown_report(
 
         # Guard against division by zero
         if json_result["total_tokens"] > 0:
-            token_savings = (1 - toon_result["total_tokens"] / json_result["total_tokens"]) * 100
+            token_savings = (
+                1 - toon_result["total_tokens"] / json_result["total_tokens"]
+            ) * 100
             sections.append(
                 f"**Advantage:** TOON achieves **{toon_accuracy:.1f}% accuracy** "
                 f"(vs JSON's {json_accuracy:.1f}%) while using **{token_savings:.1f}% fewer tokens**."
@@ -279,8 +286,12 @@ def generate_markdown_report(
             sections.append("")
 
     # Section 4: Cost Analysis
-    sections.append("| Format | Accuracy | Avg Tokens | Avg Latency (ms) | Input Tokens | Output Tokens | Est. Cost |")
-    sections.append("|--------|----------|------------|------------------|--------------|---------------|-----------|")
+    sections.append(
+        "| Format | Accuracy | Avg Tokens | Avg Latency (ms) | Input Tokens | Output Tokens | Est. Cost |"
+    )
+    sections.append(
+        "|--------|----------|------------|------------------|--------------|---------------|-----------|"
+    )
 
     for format_result in format_results:
         format_name = format_result["format"]
@@ -333,7 +344,9 @@ def generate_markdown_report(
 
     # Section 6: Collapsible Details Section
     sections.append("<details>")
-    sections.append("<summary><strong>View detailed breakdown by dataset</strong></summary>")
+    sections.append(
+        "<summary><strong>View detailed breakdown by dataset</strong></summary>"
+    )
     sections.append("")
 
     # Section 6a: Performance by Dataset
@@ -351,7 +364,8 @@ def generate_markdown_report(
 
         # Filter results for this dataset
         dataset_results = [
-            r for r in results
+            r
+            for r in results
             if question_dataset_map.get(r["question_id"]) == dataset_name
         ]
 
@@ -368,13 +382,15 @@ def generate_markdown_report(
                 accuracy = (correct / total * 100) if total > 0 else 0.0
                 tokens = token_counts.get(f"{format_name}-{dataset_name}", 0)
 
-                dataset_format_stats.append({
-                    "format": format_name,
-                    "accuracy": accuracy,
-                    "tokens": tokens,
-                    "correct": correct,
-                    "total": total,
-                })
+                dataset_format_stats.append(
+                    {
+                        "format": format_name,
+                        "accuracy": accuracy,
+                        "tokens": tokens,
+                        "correct": correct,
+                        "total": total,
+                    }
+                )
 
         # Sort by accuracy descending
         dataset_format_stats.sort(key=lambda x: x["accuracy"], reverse=True)
@@ -390,12 +406,22 @@ def generate_markdown_report(
     # Section 6b: Methodology
     sections.append("#### Methodology")
     sections.append("")
-    sections.append("- **Semantic validation**: LLM-as-judge validates responses semantically (not exact string matching).")
-    sections.append("- **Token counting**: Using `tiktoken` with `o200k_base` encoding (equivalent to gpt-tokenizer).")
-    sections.append(f"- **Question types**: {len(questions)} questions across field retrieval, aggregation, and filtering tasks.")
-    sections.append("- **Datasets**: Faker-generated datasets (seeded for reproducibility) + GitHub repositories.")
+    sections.append(
+        "- **Semantic validation**: LLM-as-judge validates responses semantically (not exact string matching)."
+    )
+    sections.append(
+        "- **Token counting**: Using `tiktoken` with `o200k_base` encoding (equivalent to gpt-tokenizer)."
+    )
+    sections.append(
+        f"- **Question types**: {len(questions)} questions across field retrieval, aggregation, and filtering tasks."
+    )
+    sections.append(
+        "- **Datasets**: Faker-generated datasets (seeded for reproducibility) + GitHub repositories."
+    )
     sections.append(f"- **Model**: {model}")
-    sections.append("- **Dual API keys**: Separate OpenAI API keys used for JSON and TOON evaluations to enable independent tracking.")
+    sections.append(
+        "- **Dual API keys**: Separate OpenAI API keys used for JSON and TOON evaluations to enable independent tracking."
+    )
     sections.append("")
 
     # Section 7: Close details tag
@@ -455,7 +481,7 @@ def save_results(
     token_counts: dict[str, int],
     formatted_datasets: dict[str, dict[str, str]],
     model: str,
-    output_dir: Path | None = None
+    output_dir: Path | None = None,
 ) -> Path:
     """Save all results to disk in timestamped and latest files.
 
@@ -553,7 +579,7 @@ def generate_report(
     questions: list[Question],
     formatted_datasets: dict[str, dict[str, str]],
     model: str = "gpt-5",
-    output_dir: Path | None = None
+    output_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Main entry point for report generation.
 
@@ -599,8 +625,13 @@ def generate_report(
 
     # Step 3: Save all results
     output_path = save_results(
-        results, format_results, questions, token_counts,
-        formatted_datasets, model, output_dir
+        results,
+        format_results,
+        questions,
+        token_counts,
+        formatted_datasets,
+        model,
+        output_dir,
     )
 
     # Step 4: Log summary statistics
@@ -610,8 +641,7 @@ def generate_report(
         accuracy = format_result["accuracy"] * 100
         cost = format_result["estimated_cost"]
         logger.info(
-            f"{format_name}: {accuracy:.1f}% accuracy, "
-            f"${cost:.4f} estimated cost"
+            f"{format_name}: {accuracy:.1f}% accuracy, " f"${cost:.4f} estimated cost"
         )
 
     # Calculate token savings if both formats exist
@@ -620,8 +650,8 @@ def generate_report(
         toon_result = next((r for r in format_results if r["format"] == "TOON"), None)
         if json_result and toon_result and json_result["total_tokens"] > 0:
             savings_pct = (
-                (1 - toon_result["total_tokens"] / json_result["total_tokens"]) * 100
-            )
+                1 - toon_result["total_tokens"] / json_result["total_tokens"]
+            ) * 100
             logger.info(f"TOON token savings: {savings_pct:.1f}%")
 
     # Step 5: Return summary

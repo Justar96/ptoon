@@ -140,7 +140,9 @@ def calculate_comparison_metrics(
 
     # Token deltas (absolute change)
     input_token_delta = current["total_input_tokens"] - previous["total_input_tokens"]
-    output_token_delta = current["total_output_tokens"] - previous["total_output_tokens"]
+    output_token_delta = (
+        current["total_output_tokens"] - previous["total_output_tokens"]
+    )
 
     return ComparisonMetrics(
         accuracy_delta=accuracy_delta,
@@ -152,7 +154,9 @@ def calculate_comparison_metrics(
     )
 
 
-def format_delta(value: float, is_percentage: bool = True, inverse: bool = False) -> str:
+def format_delta(
+    value: float, is_percentage: bool = True, inverse: bool = False
+) -> str:
     """Format a delta value with appropriate sign and color indicator.
 
     Args:
@@ -225,13 +229,14 @@ def generate_comparison_report(
     # Overall comparison table
     sections.append("### Overall Metrics Comparison")
     sections.append("")
-    sections.append(
-        "| Format | Accuracy | Avg Tokens | Avg Latency | Cost | Status |"
-    )
+    sections.append("| Format | Accuracy | Avg Tokens | Avg Latency | Cost | Status |")
     sections.append("|--------|----------|------------|-------------|------|--------|")
 
     for format_name in ["JSON", "TOON"]:
-        if format_name not in current_by_format or format_name not in previous_by_format:
+        if (
+            format_name not in current_by_format
+            or format_name not in previous_by_format
+        ):
             continue
 
         current = current_by_format[format_name]
@@ -268,9 +273,7 @@ def generate_comparison_report(
         )
 
     sections.append("")
-    sections.append(
-        "*Legend: ✓ = improvement, ✗ = regression, → = negligible change*"
-    )
+    sections.append("*Legend: ✓ = improvement, ✗ = regression, → = negligible change*")
     sections.append("")
 
     # Token efficiency by dataset
@@ -312,7 +315,10 @@ def generate_comparison_report(
     sections.append("")
 
     for format_name in ["JSON", "TOON"]:
-        if format_name not in current_by_format or format_name not in previous_by_format:
+        if (
+            format_name not in current_by_format
+            or format_name not in previous_by_format
+        ):
             continue
 
         current = current_by_format[format_name]

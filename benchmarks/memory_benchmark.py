@@ -74,7 +74,9 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
         _, cur_json, peak_json = measure_memory_repeated(
             lambda data=data: json.dumps(data, ensure_ascii=False)
         )
-        _, cur_toon, peak_toon = measure_memory_repeated(lambda data=data: pytoon.encode(data))
+        _, cur_toon, peak_toon = measure_memory_repeated(
+            lambda data=data: pytoon.encode(data)
+        )
         results["encoding"].append(
             {
                 "dataset": name,

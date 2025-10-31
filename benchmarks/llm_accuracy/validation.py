@@ -66,7 +66,9 @@ def validate_answer(
 
     # Determine API key - prefer OPENAI_API_KEY_VALIDATION for separate quota tracking
     if api_key is None:
-        api_key = os.getenv("OPENAI_API_KEY_VALIDATION") or os.getenv("OPENAI_API_KEY_JSON")
+        api_key = os.getenv("OPENAI_API_KEY_VALIDATION") or os.getenv(
+            "OPENAI_API_KEY_JSON"
+        )
 
     # Determine validation model
     if model is None:
@@ -161,13 +163,15 @@ Respond with only "YES" or "NO"."""
             if attempt < max_retries - 1:
                 logger.warning(f"Rate limit hit, retrying... (attempt {attempt + 1})")
                 import time
-                time.sleep(2 ** attempt)  # Exponential backoff
+
+                time.sleep(2**attempt)  # Exponential backoff
             else:
                 raise
         except (openai.APIError, openai.APIConnectionError) as e:
             if attempt < max_retries - 1:
                 logger.warning(f"API error, retrying... (attempt {attempt + 1}): {e}")
                 import time
+
                 time.sleep(1)
             else:
                 raise
@@ -241,15 +245,15 @@ def _parse_numeric(value: str) -> float | None:
     normalized = value.strip()
 
     # Remove common currency symbols
-    currency_symbols = ['$', '€', '£', '¥', '¢', '₹', '₽', '₩', '₪']
+    currency_symbols = ["$", "€", "£", "¥", "¢", "₹", "₽", "₩", "₪"]
     for symbol in currency_symbols:
-        normalized = normalized.replace(symbol, '')
+        normalized = normalized.replace(symbol, "")
 
     # Remove commas (thousands separators)
-    normalized = normalized.replace(',', '')
+    normalized = normalized.replace(",", "")
 
     # Remove any remaining whitespace
-    normalized = normalized.replace(' ', '')
+    normalized = normalized.replace(" ", "")
 
     # Try to parse as float
     try:

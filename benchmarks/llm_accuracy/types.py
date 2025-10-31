@@ -33,6 +33,7 @@ class Question(TypedDict):
             "dataset": "tabular"
         }
     """
+
     id: str
     prompt: str
     ground_truth: str
@@ -54,6 +55,7 @@ class EvaluationResult(TypedDict):
         output_tokens: Number of tokens in the response
         latency_ms: Response time in milliseconds
     """
+
     question_id: str
     format: Literal["JSON", "TOON"]
     model: str
@@ -73,6 +75,7 @@ class Dataset(TypedDict):
         description: Human-readable description
         data: The actual dataset (structure varies by dataset type)
     """
+
     name: str
     description: str
     data: dict[str, Any]

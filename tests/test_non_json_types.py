@@ -12,7 +12,7 @@ def test_converts_large_integers_to_string():
 
 
 def test_converts_datetime_to_iso_string():
-    dt = datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=datetime.UTC)
+    dt = datetime.datetime(2025, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)
     assert encode(dt) == '"2025-01-01T00:00:00+00:00"'
 
 
@@ -23,7 +23,11 @@ def test_converts_non_finite_numbers_to_null():
 
 
 def test_converts_functions_to_null():
-    assert encode(lambda x: x) == "null"
+    # Functions should now raise TypeError (per Comment 1)
+    import pytest
+
+    with pytest.raises(TypeError, match="Cannot encode function"):
+        encode(lambda x: x)
 
 
 class _C:  # custom class

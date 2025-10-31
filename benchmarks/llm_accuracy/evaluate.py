@@ -300,7 +300,9 @@ async def evaluate_all_questions(
     completed_counts = defaultdict(int)
     completed_total = 0
 
-    async def _tracked(coro_factory: Callable[[], Awaitable[EvaluationResult]]) -> EvaluationResult:
+    async def _tracked(
+        coro_factory: Callable[[], Awaitable[EvaluationResult]],
+    ) -> EvaluationResult:
         nonlocal completed_total
         result = await coro_factory()
         completed_counts[result["format"]] += 1
@@ -382,7 +384,9 @@ def _log_summary(results: list[EvaluationResult]) -> None:
         logger.info("No results to summarize.")
         return
 
-    by_format: dict[str, dict[str, float]] = defaultdict(lambda: {"correct": 0, "total": 0})
+    by_format: dict[str, dict[str, float]] = defaultdict(
+        lambda: {"correct": 0, "total": 0}
+    )
     latencies: list[float] = []
 
     for result in results:
@@ -395,7 +399,9 @@ def _log_summary(results: list[EvaluationResult]) -> None:
     summaries = []
     for fmt, stats in by_format.items():
         accuracy = (stats["correct"] / stats["total"] * 100) if stats["total"] else 0.0
-        summaries.append(f"{fmt}: {accuracy:.1f}% ({int(stats['correct'])}/{int(stats['total'])})")
+        summaries.append(
+            f"{fmt}: {accuracy:.1f}% ({int(stats['correct'])}/{int(stats['total'])})"
+        )
 
     avg_latency = sum(latencies) / len(latencies) if latencies else 0.0
     logger.info(

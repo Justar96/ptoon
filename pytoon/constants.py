@@ -1,13 +1,19 @@
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from .types import Delimiter
+
 # region List markers
 LIST_ITEM_MARKER = "-"
 LIST_ITEM_PREFIX = "- "
 # endregion
 
 # region Structural characters
-COMMA = ","
+COMMA: "Delimiter" = ","
 COLON = ":"
 SPACE = " "
-PIPE = "|"
+PIPE: "Delimiter" = "|"
 # endregion
 
 # region Brackets and braces
@@ -28,17 +34,17 @@ BACKSLASH = "\\"
 DOUBLE_QUOTE = '"'
 NEWLINE = "\n"
 CARRIAGE_RETURN = "\r"
-TAB = "\t"
+TAB: "Delimiter" = "\t"
 # endregion
 
 # region Delimiters
-DELIMITERS = {
+DELIMITERS: dict[str, "Delimiter"] = {
     "comma": COMMA,
     "tab": TAB,
     "pipe": PIPE,
 }
 
-DEFAULT_DELIMITER = DELIMITERS["comma"]
+DEFAULT_DELIMITER: "Delimiter" = DELIMITERS["comma"]
 # endregion
 
 # region Regex patterns

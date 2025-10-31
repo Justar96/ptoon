@@ -19,7 +19,14 @@ from benchmarks.datasets import (
 )
 
 from .compare import compare_and_save
-from .evaluate import DEFAULT_CONCURRENCY, DRY_RUN_MAX_QUESTIONS, MODEL, format_datasets, is_dry_run, run_evaluation
+from .evaluate import (
+    DEFAULT_CONCURRENCY,
+    DRY_RUN_MAX_QUESTIONS,
+    MODEL,
+    format_datasets,
+    is_dry_run,
+    run_evaluation,
+)
 from .questions import generate_questions
 from .report import generate_report
 
@@ -31,6 +38,7 @@ def load_env_file() -> None:
     """Load environment variables from .env file if it exists."""
     try:
         from dotenv import load_dotenv
+
         load_dotenv()
         logger.debug("Loaded .env file using python-dotenv")
         return
@@ -122,7 +130,9 @@ def _default_output_dir() -> Path:
     return Path(__file__).parent.parent / "results" / "llm_accuracy"
 
 
-def _load_existing_results(output_dir: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def _load_existing_results(
+    output_dir: Path,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     raw_path = output_dir / "raw-results.json"
     summary_path = output_dir / "summary.json"
 
@@ -146,11 +156,15 @@ def _load_existing_results(output_dir: Path) -> tuple[list[dict[str, Any]], list
     return raw_results, format_results
 
 
-def _resolve_questions_from_results(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _resolve_questions_from_results(
+    results: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
     questions = generate_questions()
     question_map = {q["id"]: q for q in questions}
     seen_ids = {entry.get("question_id") for entry in results if "question_id" in entry}
-    ordered: list[dict[str, Any]] = [question_map[q["id"]] for q in questions if q["id"] in seen_ids]
+    ordered: list[dict[str, Any]] = [
+        question_map[q["id"]] for q in questions if q["id"] in seen_ids
+    ]
     return ordered
 
 
@@ -260,7 +274,11 @@ def main(argv: list[str] | None = None) -> int:
     output_dir = args.output_dir or _default_output_dir()
 
     # Determine concurrency setting
-    concurrency = args.concurrency if args.concurrency is not None else int(env_config["CONCURRENCY"])
+    concurrency = (
+        args.concurrency
+        if args.concurrency is not None
+        else int(env_config["CONCURRENCY"])
+    )
     os.environ["CONCURRENCY"] = str(concurrency)
 
     # Determine effective dry-run mode
@@ -290,7 +308,9 @@ def main(argv: list[str] | None = None) -> int:
         formatted = format_datasets(datasets)
 
         try:
-            summary = generate_report(results, questions, formatted, model=MODEL, output_dir=output_dir)
+            summary = generate_report(
+                results, questions, formatted, model=MODEL, output_dir=output_dir
+            )
         except Exception as exc:  # noqa: BLE001
             logger.exception("Failed to regenerate report: %s", exc)
             return 1
@@ -304,7 +324,9 @@ def main(argv: list[str] | None = None) -> int:
         print_section("Comparison")
         try:
             current_summary_path = Path(summary["summary_path"])
-            comparison_path = compare_and_save(current_summary_path, output_dir=output_dir)
+            comparison_path = compare_and_save(
+                current_summary_path, output_dir=output_dir
+            )
             if comparison_path:
                 print(f"Comparison report generated: {comparison_path.name}")
             else:
@@ -323,15 +345,21 @@ def main(argv: list[str] | None = None) -> int:
     # CLI --dry-run flag: slice here to take precedence over .env or evaluate_all_questions() behavior
     # .env DRY_RUN: handled by evaluate_all_questions() for both CLI and library usage
     if args.dry_run:
-        logger.warning("DRY RUN MODE (--dry-run flag): Limited to %d questions for cost control", DRY_RUN_MAX_QUESTIONS)
+        logger.warning(
+            "DRY RUN MODE (--dry-run flag): Limited to %d questions for cost control",
+            DRY_RUN_MAX_QUESTIONS,
+        )
         questions = questions[:DRY_RUN_MAX_QUESTIONS]
     elif effective_dry_run:
         # Log that .env DRY_RUN is active; evaluate_all_questions() will apply the limit
-        logger.warning("DRY RUN MODE (.env config): Will limit to %d questions during evaluation", DRY_RUN_MAX_QUESTIONS)
+        logger.warning(
+            "DRY RUN MODE (.env config): Will limit to %d questions during evaluation",
+            DRY_RUN_MAX_QUESTIONS,
+        )
 
     # Apply max_questions limit if specified and not already limited by dry-run
     if args.max_questions is not None and len(questions) > args.max_questions:
-        questions = questions[:args.max_questions]
+        questions = questions[: args.max_questions]
         logger.info("Limited questions to %d", len(questions))
 
     print_section("Running Evaluation")
@@ -351,7 +379,9 @@ def main(argv: list[str] | None = None) -> int:
     formatted = format_datasets(datasets)
 
     try:
-        summary = generate_report(results, questions, formatted, model=MODEL, output_dir=output_dir)
+        summary = generate_report(
+            results, questions, formatted, model=MODEL, output_dir=output_dir
+        )
     except Exception as exc:  # noqa: BLE001
         logger.exception("Failed to generate report: %s", exc)
         return 1
@@ -368,7 +398,9 @@ def main(argv: list[str] | None = None) -> int:
         comparison_path = compare_and_save(current_summary_path, output_dir=output_dir)
         if comparison_path:
             print(f"Comparison report generated: {comparison_path.name}")
-            print("  View the comparison to see improvements/regressions from the previous run.")
+            print(
+                "  View the comparison to see improvements/regressions from the previous run."
+            )
         else:
             print("No previous results found for comparison.")
             print("  Run the benchmark again to see improvements over time.")

@@ -1,6 +1,8 @@
-from typing import Any
+import types
+from typing import Any, cast
 
 from .constants import DEFAULT_DELIMITER, LIST_ITEM_PREFIX
+from .logging_config import get_logger
 from .normalize import (
     is_array_of_arrays,
     is_array_of_objects,
@@ -11,39 +13,121 @@ from .normalize import (
     normalize_value,
 )
 from .primitives import encode_key, encode_primitive, format_header, join_encoded_values
-from .types import Depth, JsonArray, JsonObject, JsonValue
+from .types import Delimiter, Depth, JsonArray, JsonObject, JsonPrimitive, JsonValue
 from .writer import LineWriter
 
 
+# Module logger
+logger = get_logger(__name__)
+
+
 class Encoder:
+    """TOON format encoder.
+
+    Converts normalized JSON values to TOON string representation.
+    Supports multiple output formats:
+    - Inline arrays for primitives: [N]: val1, val2, val3
+    - Tabular format for uniform objects: [N]{field1, field2}
+    - List format for mixed content: - item1\n- item2
+
+    Attributes:
+        indent: Spaces per indentation level (default: 2).
+        delimiter: Value separator - ',', '|', or '\t' (default: ',').
+        length_marker: Include #N in array headers (default: False).
+
+    Examples:
+        >>> encoder = Encoder(indent=2, delimiter=",")
+        >>> encoder.encode({"name": "Alice", "age": 30})
+        'name: Alice\\nage: 30'
+
+        >>> encoder = Encoder(delimiter="|", length_marker=True)
+        >>> encoder.encode([1, 2, 3])
+        '[#3|]: 1| 2| 3'
+    """
+
     def __init__(
         self,
         indent: int = 2,
-        delimiter: str = DEFAULT_DELIMITER,
+        delimiter: Delimiter = DEFAULT_DELIMITER,
         length_marker: bool = False,
     ):
         self.indent = indent
-        self.delimiter = delimiter
+        self.delimiter: Delimiter = delimiter
         self.length_marker = length_marker
 
     def encode(self, value: Any) -> str:
-        normalized_value = normalize_value(value)
-        return self._encode_value(normalized_value)
+        """Encode a value to TOON format.
+
+        Args:
+            value: Python value to encode (will be normalized).
+
+        Returns:
+            str: TOON-formatted string.
+
+        Raises:
+            TypeError: If value contains non-serializable types.
+            ValueError: If value contains circular references.
+        """
+        # Input validation
+        if isinstance(value, types.ModuleType):
+            raise TypeError(
+                f"Cannot encode {type(value).__name__}: TOON supports dicts, lists, and primitives."
+            )
+        if isinstance(value, type):
+            raise TypeError(
+                f"Cannot encode {type(value).__name__}: TOON supports dicts, lists, and primitives."
+            )
+        if isinstance(
+            value, (types.FunctionType, types.MethodType, types.BuiltinFunctionType)
+        ):
+            raise TypeError(
+                f"Cannot encode {type(value).__name__}: TOON supports dicts, lists, and primitives."
+            )
+
+        try:
+            normalized_value = normalize_value(value)
+        except RecursionError as e:
+            raise ValueError(
+                "Detected circular reference during normalization/encoding. Ensure input structures are acyclic."
+            ) from e
+        except (TypeError, ValueError) as e:
+            raise type(e)(
+                f"Failed to normalize input of type {type(value).__name__}: {str(e)}. Ensure all values are JSON-compatible."
+            ) from e
+
+        logger.debug(
+            f"Normalized input: type={type(normalized_value).__name__}, size={self._estimate_size(normalized_value)}"
+        )
+        result = self._encode_value(normalized_value)
+        logger.debug(f"Encoded to {len(result)} characters")
+        return result
 
     def _encode_value(self, value: JsonValue) -> str:
         if is_json_primitive(value):
+            logger.debug(f"Encoding primitive: {value}")
             return encode_primitive(value, self.delimiter)
 
         writer = LineWriter(self.indent)
 
         if is_json_array(value):
+            logger.debug(
+                f"Encoding root array: length={len(value)}, type={self._detect_array_type(value)}"
+            )
             self._encode_array(None, value, writer, 0)
         elif is_json_object(value):
+            logger.debug(f"Encoding root object: {len(value)} keys")
             self._encode_object(value, writer, 0)
 
         return writer.to_string()
 
     def _encode_object(self, value: JsonObject, writer: LineWriter, depth: Depth):
+        # Validate object keys
+        for key in value:
+            if not isinstance(key, str):
+                raise TypeError(
+                    f"Object keys must be strings, got {type(key).__name__}: {key}. Convert non-string keys to strings before encoding."
+                )
+
         for key, item in value.items():
             self._encode_key_value_pair(key, item, writer, depth)
 
@@ -76,26 +160,37 @@ class Encoder:
             return
 
         if is_array_of_primitives(value):
+            logger.debug(f"Encoding inline primitive array: {len(value)} items")
             self._encode_inline_primitive_array(key, value, writer, depth)
             return
 
-        if is_array_of_arrays(value) and all(
-            is_array_of_primitives(arr) for arr in value
-        ):
-            # The TS implementation has a special case for array of primitive arrays.
-            self._encode_array_of_arrays_as_list_items(key, value, writer, depth)
-            return
+        if is_array_of_arrays(value):
+            # Check if all nested arrays are primitive arrays
+            all_primitive_arrays = all(
+                is_json_array(arr) and is_array_of_primitives(arr) for arr in value
+            )
+            if all_primitive_arrays:
+                # Special case for array of primitive arrays: encode each array as a list item
+                self._encode_array_of_arrays_as_list_items(key, value, writer, depth)
+                return
 
         if is_array_of_objects(value):
             header_fields = self._detect_tabular_header(value)
             if header_fields:
+                logger.debug(
+                    f"Detected tabular array: {len(value)} rows, {len(header_fields)} columns: {header_fields}"
+                )
                 self._encode_array_of_objects_as_tabular(
                     key, value, header_fields, writer, depth
                 )
             else:
+                logger.debug(
+                    "Array not tabular (mixed types or <2 rows), using list format"
+                )
                 self._encode_mixed_array_as_list_items(key, value, writer, depth)
             return
 
+        logger.debug(f"Encoding mixed array as list items: {len(value)} items")
         self._encode_mixed_array_as_list_items(key, value, writer, depth)
 
     def _encode_inline_primitive_array(
@@ -111,7 +206,10 @@ class Encoder:
             delimiter=self.delimiter,
             length_marker=self.length_marker,
         )
-        joined_value = join_encoded_values(values, self.delimiter)
+        # Cast to JsonPrimitive sequence - values are validated as primitives by caller
+        joined_value = join_encoded_values(
+            cast(list[JsonPrimitive], values), self.delimiter
+        )
         return f"{header} {joined_value}" if values else header
 
     def _encode_array_of_arrays_as_list_items(
@@ -125,14 +223,32 @@ class Encoder:
         )
         writer.push(depth, header)
         for arr in values:
-            inline = self._format_inline_array(arr, None)
-            writer.push(depth + 1, f"{LIST_ITEM_PREFIX}{inline}")
+            # Type guard: validated as array of arrays by caller
+            if is_json_array(arr):
+                inline = self._format_inline_array(arr, None)
+                writer.push(depth + 1, f"{LIST_ITEM_PREFIX}{inline}")
 
     def _detect_tabular_header(self, rows: JsonArray) -> list[str] | None:
+        """Detect if array of objects can use tabular format.
+
+        Tabular format requires:
+        - At least 2 rows
+        - All rows are objects with identical keys
+        - All values are primitives
+
+        Args:
+            rows: Array to check.
+
+        Returns:
+            list[str] | None: Field names if tabular, None otherwise.
+        """
         if not rows:
             return None
         # Use tabular format only when there are at least 2 rows
         if len(rows) < 2:
+            logger.debug(
+                f"Checking if array is tabular: {len(rows)} rows (need at least 2)"
+            )
             return None
         first_row = rows[0]
         if not isinstance(first_row, dict) or not first_row:
@@ -145,6 +261,7 @@ class Encoder:
 
         if self._is_tabular_array(rows, first_keys, first_keys_len):
             return first_keys
+        logger.debug("Not tabular: rows have different keys or non-primitive values")
         return None
 
     def _is_tabular_array(
@@ -181,7 +298,9 @@ class Encoder:
         self, rows: JsonArray, header: list[str], writer: LineWriter, depth: Depth
     ):
         for row in rows:
-            values = [row[key] for key in header]
+            # Type guard: rows validated as array of objects with primitive values
+            assert is_json_object(row), "Row must be an object in tabular format"
+            values = [cast(JsonPrimitive, row[key]) for key in header]
             joined_value = join_encoded_values(values, self.delimiter)
             writer.push(depth, joined_value)
 
@@ -202,9 +321,10 @@ class Encoder:
                     depth + 1,
                     f"{LIST_ITEM_PREFIX}{encode_primitive(item, self.delimiter)}",
                 )
-            elif is_json_array(item) and is_array_of_primitives(item):
-                inline = self._format_inline_array(item, None)
-                writer.push(depth + 1, f"{LIST_ITEM_PREFIX}{inline}")
+            elif is_json_array(item):
+                if is_array_of_primitives(item):
+                    inline = self._format_inline_array(item, None)
+                    writer.push(depth + 1, f"{LIST_ITEM_PREFIX}{inline}")
             elif is_json_object(item):
                 self._encode_object_as_list_item(item, writer, depth + 1)
             # Other complex nested arrays are intentionally not handled here per TS behavior.
@@ -212,6 +332,16 @@ class Encoder:
     def _encode_object_as_list_item(
         self, obj: JsonObject, writer: LineWriter, depth: Depth
     ):
+        """Encode object as list item with first field on hyphen line.
+
+        TOON format places first key-value pair on same line as '- ' prefix,
+        with remaining fields indented below.
+
+        Args:
+            obj: Object to encode.
+            writer: Line writer for output.
+            depth: Current indentation depth.
+        """
         if not obj:
             writer.push(depth, LIST_ITEM_PREFIX)
             return
@@ -259,9 +389,10 @@ class Encoder:
                     for it in first_value:
                         if is_json_object(it):
                             self._encode_object_as_list_item(it, writer, depth + 2)
-                        elif is_json_array(it) and is_array_of_primitives(it):
-                            inline = self._format_inline_array(it, None)
-                            writer.push(depth + 2, f"{LIST_ITEM_PREFIX}{inline}")
+                        elif is_json_array(it):
+                            if is_array_of_primitives(it):
+                                inline = self._format_inline_array(it, None)
+                                writer.push(depth + 2, f"{LIST_ITEM_PREFIX}{inline}")
                         elif is_json_primitive(it):
                             writer.push(
                                 depth + 2,
@@ -282,9 +413,10 @@ class Encoder:
                             depth + 2,
                             f"{LIST_ITEM_PREFIX}{encode_primitive(it, self.delimiter)}",
                         )
-                    elif is_json_array(it) and is_array_of_primitives(it):
-                        inline = self._format_inline_array(it, None)
-                        writer.push(depth + 2, f"{LIST_ITEM_PREFIX}{inline}")
+                    elif is_json_array(it):
+                        if is_array_of_primitives(it):
+                            inline = self._format_inline_array(it, None)
+                            writer.push(depth + 2, f"{LIST_ITEM_PREFIX}{inline}")
                     elif is_json_object(it):
                         self._encode_object_as_list_item(it, writer, depth + 2)
 
@@ -299,3 +431,40 @@ class Encoder:
         # Remaining keys on indented lines
         for key in keys[1:]:
             self._encode_key_value_pair(key, obj[key], writer, depth + 1)
+
+    def _estimate_size(self, value: JsonValue) -> str:
+        """Return human-readable size estimate for logging.
+
+        Args:
+            value: Value to estimate size of.
+
+        Returns:
+            str: Size description like "5 keys" or "10 items" or "primitive".
+        """
+        if is_json_object(value):
+            return f"{len(value)} keys"
+        elif is_json_array(value):
+            return f"{len(value)} items"
+        else:
+            return "primitive"
+
+    def _detect_array_type(self, value: JsonArray) -> str:
+        """Return array type description for logging.
+
+        Args:
+            value: Array to analyze.
+
+        Returns:
+            str: Type description like "empty", "primitives", "objects (tabular)", etc.
+        """
+        if not value:
+            return "empty"
+        if is_array_of_primitives(value):
+            return "primitives"
+        if is_array_of_objects(value):
+            if self._detect_tabular_header(value):
+                return "objects (tabular)"
+            return "objects (mixed)"
+        if is_array_of_arrays(value):
+            return "arrays"
+        return "mixed"
