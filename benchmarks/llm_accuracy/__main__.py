@@ -17,6 +17,13 @@ from benchmarks.datasets import (
     generate_tabular_dataset,
     load_github_dataset,
 )
+from benchmarks.llm_accuracy.realworld_datasets import (
+    generate_code_generation_dataset,
+    generate_customer_support_dataset,
+    generate_data_analysis_dataset,
+    generate_multidoc_reasoning_dataset,
+    generate_rag_documentation_dataset,
+)
 
 from .compare import compare_and_save
 from .evaluate import (
@@ -28,6 +35,7 @@ from .evaluate import (
     run_evaluation,
 )
 from .questions import generate_questions
+from .realworld_questions import generate_realworld_questions
 from .report import generate_report
 
 
@@ -190,9 +198,9 @@ def _load_existing_results(
 
 
 def _resolve_questions_from_results(
-    results: list[dict[str, Any]],
+    results: list[dict[str, Any]], use_realworld: bool = False
 ) -> list[dict[str, Any]]:
-    questions = generate_questions()
+    questions = generate_realworld_questions() if use_realworld else generate_questions()
     question_map = {q["id"]: q for q in questions}
     seen_ids = {entry.get("question_id") for entry in results if "question_id" in entry}
     ordered: list[dict[str, Any]] = [
@@ -201,13 +209,22 @@ def _resolve_questions_from_results(
     return ordered
 
 
-def _build_datasets() -> dict[str, dict[str, Any]]:
-    return {
-        "tabular": generate_tabular_dataset(),
-        "nested": generate_nested_dataset(),
-        "analytics": generate_analytics_data(180),
-        "github": load_github_dataset(),
-    }
+def _build_datasets(use_realworld: bool = False) -> dict[str, dict[str, Any]]:
+    if use_realworld:
+        return {
+            "rag-documentation": generate_rag_documentation_dataset(),
+            "code-generation": generate_code_generation_dataset(),
+            "customer-support": generate_customer_support_dataset(),
+            "data-analysis": generate_data_analysis_dataset(),
+            "multi-document": generate_multidoc_reasoning_dataset(),
+        }
+    else:
+        return {
+            "tabular": generate_tabular_dataset(),
+            "nested": generate_nested_dataset(),
+            "analytics": generate_analytics_data(180),
+            "github": load_github_dataset(),
+        }
 
 
 def _display_summary(summary: dict[str, Any]) -> None:
@@ -288,6 +305,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Regenerate report from existing results without re-running evaluation",
     )
+    parser.add_argument(
+        "--realworld",
+        action="store_true",
+        help="Use real-world scenario questions (RAG, code generation, customer support, etc.)",
+    )
 
     args = parser.parse_args(argv)
 
@@ -344,8 +366,8 @@ def main(argv: list[str] | None = None) -> int:
             return 1
 
         print_section("Generating Report")
-        questions = _resolve_questions_from_results(results)
-        datasets = _build_datasets()
+        questions = _resolve_questions_from_results(results, use_realworld=args.realworld)
+        datasets = _build_datasets(use_realworld=args.realworld)
         formatted = format_datasets(datasets)
 
         try:
@@ -380,8 +402,12 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     print_section("Generating Questions")
-    questions = generate_questions()
-    logger.info("Generated %d questions across datasets", len(questions))
+    if args.realworld:
+        questions = generate_realworld_questions()
+        logger.info("Generated %d real-world scenario questions", len(questions))
+    else:
+        questions = generate_questions()
+        logger.info("Generated %d questions across datasets", len(questions))
 
     # CLI --dry-run flag: slice here to take precedence over .env or evaluate_all_questions() behavior
     # .env DRY_RUN: handled by evaluate_all_questions() for both CLI and library usage
@@ -406,8 +432,13 @@ def main(argv: list[str] | None = None) -> int:
     print_section("Running Evaluation")
     start_time = time.time()
 
+    # Build datasets before evaluation
+    datasets = _build_datasets(use_realworld=args.realworld)
+
     try:
-        results = run_evaluation(questions, provider_type=args.provider)
+        results = run_evaluation(
+            questions, provider_type=args.provider, datasets=datasets
+        )
     except Exception as exc:  # noqa: BLE001
         logger.exception("Evaluation failed: %s", exc)
         return 1
@@ -416,7 +447,6 @@ def main(argv: list[str] | None = None) -> int:
     logger.info("Evaluation completed in %.1fs", elapsed)
 
     print_section("Generating Report")
-    datasets = _build_datasets()
     formatted = format_datasets(datasets)
 
     try:

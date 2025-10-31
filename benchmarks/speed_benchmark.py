@@ -10,13 +10,7 @@ from typing import Any
 import ptoon
 
 from .datasets import get_all_datasets
-
-
-def format_time(seconds: float) -> str:
-    ms = seconds * 1000.0
-    if ms < 1.0:
-        return f"{ms * 1000.0:.2f} µs"
-    return f"{ms:.2f} ms"
+from .utils import format_time
 
 
 def calculate_speedup(baseline: float, comparison: float) -> tuple[float, str]:

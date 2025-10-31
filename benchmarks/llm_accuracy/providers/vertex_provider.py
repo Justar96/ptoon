@@ -89,27 +89,62 @@ class VertexAIProvider(LLMProvider):
 
         # Initialize model with generation config for consistency
         model_instance = GenerativeModel(vertex_model)
-        
+
         # Configure generation parameters
         generation_config = GenerationConfig(
             temperature=0.0,  # Deterministic for benchmarking
-            max_output_tokens=2048,
+            max_output_tokens=8192,  # Increased to avoid MAX_TOKENS errors
             top_p=1.0,
         )
 
-        # Generate content
-        response = model_instance.generate_content(
-            prompt,
-            generation_config=generation_config,
-        )
+        # Generate content with retry logic for rate limits
+        max_retries = 3
+        retry_delay = 2.0
+
+        for attempt in range(max_retries):
+            try:
+                response = model_instance.generate_content(
+                    prompt,
+                    generation_config=generation_config,
+                )
+                break  # Success, exit retry loop
+            except Exception as e:
+                error_msg = str(e)
+                # Check if it's a rate limit error
+                if "429" in error_msg or "Resource exhausted" in error_msg:
+                    if attempt < max_retries - 1:
+                        # Exponential backoff
+                        wait_time = retry_delay * (2 ** attempt)
+                        time.sleep(wait_time)
+                        continue
+                # Re-raise if not rate limit or max retries exceeded
+                raise
 
         # Extract usage metadata (available in latest API)
         usage_metadata = response.usage_metadata if hasattr(response, 'usage_metadata') else None
         input_tokens = getattr(usage_metadata, 'prompt_token_count', 0) if usage_metadata else 0
         output_tokens = getattr(usage_metadata, 'candidates_token_count', 0) if usage_metadata else 0
 
-        # Extract text content
-        content = response.text if hasattr(response, 'text') else ""
+        # Extract text content safely
+        content = ""
+        try:
+            if hasattr(response, 'text'):
+                content = response.text
+        except (ValueError, AttributeError) as e:
+            # Handle cases where response.text raises an error (e.g., safety filters, MAX_TOKENS)
+            # Try to extract from candidates directly
+            if hasattr(response, 'candidates') and response.candidates:
+                candidate = response.candidates[0]
+                if hasattr(candidate, 'content') and hasattr(candidate.content, 'parts'):
+                    parts = candidate.content.parts
+                    if parts:
+                        content = "".join(part.text for part in parts if hasattr(part, 'text'))
+
+            # If still empty, log the error
+            if not content:
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.warning(f"Could not extract text from response: {e}")
 
         return {
             "content": content.strip(),

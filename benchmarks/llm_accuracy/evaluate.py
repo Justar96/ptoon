@@ -180,7 +180,7 @@ async def evaluate_single_question(
                     question["ground_truth"],
                     question["prompt"],
                     None,  # api_key
-                    False,  # use_fallback
+                    True,  # use_fallback - use string comparison for now
                     VALIDATION_MODEL,  # model
                 )
 
@@ -368,13 +368,16 @@ async def evaluate_all_questions(
 
 
 def run_evaluation(
-    questions: list[Question] | None = None, provider_type: str = "openai"
+    questions: list[Question] | None = None,
+    provider_type: str = "openai",
+    datasets: dict[str, dict[str, Any]] | None = None,
 ) -> list[EvaluationResult]:
     """Synchronously execute the full evaluation workflow.
 
     Args:
         questions: Optional list of questions to evaluate. If None, generates all questions.
         provider_type: LLM provider to use ('openai' or 'vertex')
+        datasets: Optional dict of datasets. If None, generates default datasets.
 
     Returns:
         List of evaluation results
@@ -383,12 +386,13 @@ def run_evaluation(
     if questions is None:
         questions = generate_questions()
 
-    datasets = {
-        "tabular": generate_tabular_dataset(),
-        "nested": generate_nested_dataset(),
-        "analytics": generate_analytics_data(180),
-        "github": load_github_dataset(),
-    }
+    if datasets is None:
+        datasets = {
+            "tabular": generate_tabular_dataset(),
+            "nested": generate_nested_dataset(),
+            "analytics": generate_analytics_data(180),
+            "github": load_github_dataset(),
+        }
 
     formatted = format_datasets(datasets)
 

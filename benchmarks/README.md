@@ -43,6 +43,9 @@ python -m benchmarks --speed
 # Memory benchmark only
 python -m benchmarks --memory
 
+# Real-world API validation
+python -m benchmarks --realworld
+
 # JSON output
 python -m benchmarks --all --json
 
@@ -100,7 +103,40 @@ Measures memory consumption during encoding/decoding and output size.
 
 **Report:** [`results/memory-benchmark.md`](results/memory-benchmark.md)
 
-### 4. LLM Accuracy Benchmark
+### 4. Real-World API Response Validation
+
+Validates TOON format compatibility with diverse real-world API responses and measures token efficiency across different API patterns.
+
+**Metrics:**
+- Format compatibility (roundtrip validation)
+- Token count reduction vs JSON
+- Character size reduction
+- Compatibility rate by API pattern type
+
+**API Patterns Tested:**
+- GitHub API (repositories, users, issues, pull requests)
+- OpenAPI/Swagger specifications
+- GraphQL responses (nested queries, fragments, unions)
+- REST pagination (cursor-based, offset-based, link headers)
+- JSON-LD linked data (Schema.org, Activity Streams)
+
+**Data Source:**
+The benchmark uses **statically curated JSON samples** from `data/realworld/`. Automatic data collectors are **not implemented** to ensure:
+- Reproducible benchmark runs
+- No dependency on external API availability
+- Consistent test data for regression testing
+- No API keys or credentials required
+
+See [`data/realworld/README.md`](data/realworld/README.md) for details on adding new samples.
+
+**Expected Results:**
+- High compatibility rate (>95% of samples should pass roundtrip validation)
+- Token savings vary by pattern: 30-50% for tabular data, 20-40% for nested structures
+- Identifies any edge cases where TOON format may need adjustments
+
+**Report:** [`results/realworld-benchmark.md`](results/realworld-benchmark.md)
+
+### 5. LLM Accuracy Benchmark
 
 Measures how well LLMs can extract information from TOON vs JSON formats using real question-answering tasks.
 
@@ -230,6 +266,7 @@ All benchmark results are stored in the [`results/`](results/) directory:
 - [Token Efficiency Results](results/token-efficiency.md)
 - [Speed Benchmark](results/speed-benchmark.md)
 - [Memory Benchmark](results/memory-benchmark.md)
+- [Real-World API Validation](results/realworld-benchmark.md)
 - [LLM Accuracy Report](results/llm_accuracy/report.md)
 
 ## Contributing
@@ -241,4 +278,5 @@ When adding new benchmarks:
 3. Update `run_benchmarks.py` to include new benchmark
 4. Document expected results and interpretation
 5. Add results to `results/` directory
+6. For real-world benchmarks, add sample API responses to `data/realworld/` with proper documentation
 
