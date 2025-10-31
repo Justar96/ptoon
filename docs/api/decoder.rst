@@ -6,7 +6,7 @@ This page documents the ``Decoder`` class used for parsing TOON format strings.
 Decoder Class
 -------------
 
-.. autoclass:: pytoon.decoder.Decoder
+.. autoclass:: ptoon.decoder.Decoder
    :members:
    :undoc-members:
    :show-inheritance:
@@ -18,7 +18,7 @@ Direct usage (advanced):
 
 .. code-block:: python
 
-    from pytoon.decoder import Decoder
+    from ptoon.decoder import Decoder
 
     # Create decoder
     decoder = Decoder()
@@ -26,7 +26,7 @@ Direct usage (advanced):
     # Decode TOON string
     data = decoder.decode(toon_str)
 
-**Note:** Most users should use ``pytoon.decode()`` instead of using the ``Decoder`` class directly.
+**Note:** Most users should use ``ptoon.decode()`` instead of using the ``Decoder`` class directly.
 
 Parsing Strategy
 ----------------

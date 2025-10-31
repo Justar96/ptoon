@@ -17,7 +17,7 @@ Prerequisites
 
 .. code-block:: bash
 
-    pip install pytoon google-generativeai
+    pip install ptoon google-generativeai
 
 Set your API key:
 
@@ -30,7 +30,7 @@ Basic Example
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import google.generativeai as genai
 
     # Configure API
@@ -38,7 +38,7 @@ Basic Example
 
     # Encode data
     data = {"employees": [...]}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Send to Gemini
     model = genai.GenerativeModel('gemini-pro')
@@ -59,7 +59,7 @@ Use Gemini's token counting method:
     model = genai.GenerativeModel('gemini-pro')
     token_count = model.count_tokens(toon_str).total_tokens
 
-**Note:** ``pytoon.count_tokens()`` uses OpenAI's tokenizer and provides approximations for Gemini.
+**Note:** ``ptoon.count_tokens()`` uses OpenAI's tokenizer and provides approximations for Gemini.
 
 Supported Models
 ----------------
@@ -72,7 +72,7 @@ Best Practices
 
 Follow general integration patterns from :doc:`overview`:
 
-* Encode data with ``pytoon.encode()``
+* Encode data with ``ptoon.encode()``
 * Include in prompt
 * Handle errors gracefully
 * Measure token savings
@@ -85,7 +85,7 @@ Gemini supports multimodal inputs. TOON can be used for structured text data alo
 .. code-block:: python
 
     # Combine TOON data with images
-    data_toon = pytoon.encode({"products": [...]})
+    data_toon = ptoon.encode({"products": [...]})
     
     response = model.generate_content([
         "Analyze this product data and image:",

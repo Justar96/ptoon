@@ -1,4 +1,4 @@
-"""Tests for pytoon.encoder edge cases and error handling.
+"""Tests for ptoon.encoder edge cases and error handling.
 
 Tests circular reference detection, normalization errors,
 tabular detection boundaries, and encoding edge cases.
@@ -6,8 +6,8 @@ tabular detection boundaries, and encoding edge cases.
 
 import pytest
 
-from pytoon import encode
-from pytoon.encoder import Encoder
+from ptoon import encode
+from ptoon.encoder import Encoder
 
 
 class TestCircularReferenceDetection:

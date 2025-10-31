@@ -69,7 +69,7 @@ napoleon_numpy_docstring = True
 napoleon_include_init_with_doc = True
 
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3', {}),
+    'python': ('https://docs.python.org/3', None),
 }
 
 pygments_style = 'sphinx'

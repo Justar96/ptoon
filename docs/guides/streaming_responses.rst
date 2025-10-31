@@ -24,12 +24,12 @@ OpenAI Streaming Example
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import openai
 
     # 1. Encode data upfront
     data = {"employees": [...]}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # 2. Create prompt
     prompt = f"Given this data:\n{toon_str}\n\nWho has the highest salary?"
@@ -55,7 +55,7 @@ OpenAI Streaming Example
     # 5. Parse complete response
     full_response = "".join(chunks)
     try:
-        result = pytoon.decode(full_response)
+        result = ptoon.decode(full_response)
         print(f"\nParsed result: {result}")
     except ValueError:
         print(f"\nText result: {full_response}")
@@ -65,12 +65,12 @@ Anthropic Streaming Example
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import anthropic
 
     # Encode data
     data = {...}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Stream with Claude
     client = anthropic.Anthropic()
@@ -90,7 +90,7 @@ Anthropic Streaming Example
 
     # Parse if needed
     try:
-        result = pytoon.decode(full_response)
+        result = ptoon.decode(full_response)
     except ValueError:
         result = full_response
 
@@ -107,13 +107,13 @@ Don't try to parse incomplete TOON:
     # Bad: parsing during stream
     for chunk in stream:
         try:
-            pytoon.decode(accumulated_text)  # Will fail on partial TOON
+            ptoon.decode(accumulated_text)  # Will fail on partial TOON
         except ValueError:
             pass
 
     # Good: parse after stream completes
     full_response = "".join(chunks)
-    result = pytoon.decode(full_response)
+    result = ptoon.decode(full_response)
 
 Buffering Strategy
 ~~~~~~~~~~~~~~~~~~
@@ -135,7 +135,7 @@ Buffering Strategy
         # Parse complete response
         complete = "".join(buffer)
         try:
-            return pytoon.decode(complete)
+            return ptoon.decode(complete)
         except ValueError:
             return complete
 
@@ -190,7 +190,7 @@ Handle Invalid Response
         complete = "".join(chunks)
         
         # Try multiple parsers
-        for parser in [pytoon.decode, json.loads, lambda x: x]:
+        for parser in [ptoon.decode, json.loads, lambda x: x]:
             try:
                 return parser(complete)
             except Exception:
@@ -207,14 +207,14 @@ Best Practices
 .. code-block:: python
 
     # Good: encode once upfront
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     for query in queries:
         prompt = f"Data:\n{toon_str}\n\n{query}"
         stream_response(prompt)
 
     # Bad: encoding during stream (unnecessary overhead)
     for query in queries:
-        toon_str = pytoon.encode(data)  # Redundant
+        toon_str = ptoon.encode(data)  # Redundant
         stream_response(f"Data:\n{toon_str}\n\n{query}")
 
 2. Buffer Responses
@@ -282,7 +282,7 @@ Full streaming application:
     #!/usr/bin/env python3
     """Complete streaming + TOON example."""
 
-    import pytoon
+    import ptoon
     import openai
     import sys
 
@@ -292,7 +292,7 @@ Full streaming application:
         
         # Encode data upfront
         try:
-            toon_str = pytoon.encode(data)
+            toon_str = ptoon.encode(data)
         except Exception as e:
             print(f"Encoding error: {e}", file=sys.stderr)
             return None
@@ -321,7 +321,7 @@ Full streaming application:
             # Parse complete response
             full_response = "".join(chunks)
             try:
-                return pytoon.decode(full_response)
+                return ptoon.decode(full_response)
             except ValueError:
                 return full_response
         

@@ -1,7 +1,7 @@
 Benchmarks
 ==========
 
-This page summarizes pytoon's performance characteristics based on comprehensive benchmarks.
+This page summarizes ptoon's performance characteristics based on comprehensive benchmarks.
 
 Token Efficiency Results
 ------------------------
@@ -144,7 +144,7 @@ Installation
 
 .. code-block:: bash
 
-    pip install pytoon[benchmark]
+    pip install ptoon[benchmark]
 
 Run All Benchmarks
 ~~~~~~~~~~~~~~~~~~
@@ -180,12 +180,12 @@ Quick Comparison
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     data = {...}  # Your data
     
     # Visual comparison
-    print(pytoon.compare_formats(data))
+    print(ptoon.compare_formats(data))
 
     # Output:
     # Format Comparison
@@ -201,7 +201,7 @@ Programmatic Analysis
 
 .. code-block:: python
 
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     
     print(f"JSON tokens: {result['json_tokens']}")
     print(f"TOON tokens: {result['toon_tokens']}")
@@ -274,7 +274,7 @@ Reproducibility
 .. code-block:: bash
 
     git clone https://github.com/Justar96/toon-py.git
-    cd pytoon
+    cd ptoon
     pip install -e ".[benchmark]"
     toon-benchmark
 

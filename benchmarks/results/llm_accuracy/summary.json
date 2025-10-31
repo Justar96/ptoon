@@ -2,29 +2,29 @@
   "formatResults": [
     {
       "format": "JSON",
-      "accuracy": 0.9506172839506173,
+      "accuracy": 1.0,
       "total_tokens": 11082,
-      "average_latency": 37781.828946777634,
-      "correct_count": 154,
-      "total_count": 162,
-      "total_input_tokens": 1670766,
-      "total_output_tokens": 168320,
-      "estimated_cost": 3.7716575
+      "average_latency": 5070.861866103951,
+      "correct_count": 10,
+      "total_count": 10,
+      "total_input_tokens": 74513,
+      "total_output_tokens": 47,
+      "estimated_cost": 0.0224714
     },
     {
       "format": "TOON",
-      "accuracy": 0.9382716049382716,
-      "total_tokens": 5718,
-      "average_latency": 34411.50658377061,
-      "correct_count": 152,
-      "total_count": 162,
-      "total_input_tokens": 850510,
-      "total_output_tokens": 175105,
-      "estimated_cost": 2.8141875
+      "accuracy": 1.0,
+      "total_tokens": 5716,
+      "average_latency": 3898.0485791980755,
+      "correct_count": 10,
+      "total_count": 10,
+      "total_input_tokens": 28613,
+      "total_output_tokens": 47,
+      "estimated_cost": 0.0087014
     }
   ],
-  "questions": 162,
-  "model": "gpt-5",
+  "questions": 10,
+  "model": "gemini-2.5-flash",
   "datasets": [
     {
       "name": "tabular",
@@ -49,9 +49,9 @@
     "JSON-analytics": 10969,
     "JSON-github": 16688,
     "TOON-tabular": 2162,
-    "TOON-nested": 7103,
+    "TOON-nested": 7099,
     "TOON-analytics": 4499,
     "TOON-github": 9106
   },
-  "timestamp": "2025-10-30T16:08:12.219322+00:00"
+  "timestamp": "2025-10-31T15:40:46.714918+00:00"
 }

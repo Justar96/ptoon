@@ -1,0 +1,240 @@
+{
+  "id": 1,
+  "node_id": "MDExOlB1bGxSZXF1ZXN0MQ==",
+  "url": "https://api.github.com/repos/octocat/Hello-World/pulls/1347",
+  "html_url": "https://github.com/octocat/Hello-World/pull/1347",
+  "diff_url": "https://github.com/octocat/Hello-World/pull/1347.diff",
+  "patch_url": "https://github.com/octocat/Hello-World/pull/1347.patch",
+  "issue_url": "https://api.github.com/repos/octocat/Hello-World/issues/1347",
+  "commits_url": "https://api.github.com/repos/octocat/Hello-World/pulls/1347/commits",
+  "review_comments_url": "https://api.github.com/repos/octocat/Hello-World/pulls/1347/comments",
+  "review_comment_url": "https://api.github.com/repos/octocat/Hello-World/pulls/comments{/number}",
+  "comments_url": "https://api.github.com/repos/octocat/Hello-World/issues/1347/comments",
+  "statuses_url": "https://api.github.com/repos/octocat/Hello-World/statuses/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+  "number": 1347,
+  "state": "open",
+  "locked": false,
+  "title": "Add new authentication method",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "type": "User",
+    "site_admin": false
+  },
+  "body": "This PR implements OAuth2 authentication as requested in #1234.\n\n## Changes\n- Added OAuth2 provider integration\n- Updated authentication middleware\n- Added comprehensive tests\n- Updated documentation\n\n## Testing\n- [x] Unit tests pass\n- [x] Integration tests pass\n- [x] Manual testing completed\n\n## Screenshots\n![login-flow](https://example.com/screenshot.png)",
+  "labels": [
+    {
+      "id": 208045946,
+      "name": "enhancement",
+      "color": "a2eeef",
+      "default": true
+    }
+  ],
+  "milestone": {
+    "id": 1002604,
+    "number": 1,
+    "state": "open",
+    "title": "v1.0",
+    "description": "First major release"
+  },
+  "active_lock_reason": null,
+  "created_at": "2011-01-26T19:01:12Z",
+  "updated_at": "2024-01-15T12:30:45Z",
+  "closed_at": null,
+  "merged_at": null,
+  "merge_commit_sha": "e5bd3914e2e596debea16f433f57875b5b90bcd6",
+  "assignee": {
+    "login": "hubot",
+    "id": 2,
+    "type": "User"
+  },
+  "assignees": [
+    {
+      "login": "hubot",
+      "id": 2,
+      "type": "User"
+    }
+  ],
+  "requested_reviewers": [
+    {
+      "login": "reviewer1",
+      "id": 30,
+      "type": "User"
+    },
+    {
+      "login": "reviewer2",
+      "id": 40,
+      "type": "User"
+    }
+  ],
+  "head": {
+    "label": "octocat:new-feature",
+    "ref": "new-feature",
+    "sha": "6dcb09b5b57875f334f61aebed695e2e4193db5e",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "type": "User"
+    },
+    "repo": {
+      "id": 1296269,
+      "name": "Hello-World",
+      "full_name": "octocat/Hello-World",
+      "owner": {
+        "login": "octocat",
+        "id": 1,
+        "type": "User"
+      },
+      "private": false,
+      "html_url": "https://github.com/octocat/Hello-World",
+      "description": "My first repository on GitHub!",
+      "fork": false
+    }
+  },
+  "base": {
+    "label": "octocat:main",
+    "ref": "main",
+    "sha": "6dcb09b5b57875f334f61aebed695e2e4193db5e",
+    "user": {
+      "login": "octocat",
+      "id": 1,
+      "type": "User"
+    },
+    "repo": {
+      "id": 1296269,
+      "name": "Hello-World",
+      "full_name": "octocat/Hello-World",
+      "owner": {
+        "login": "octocat",
+        "id": 1,
+        "type": "User"
+      },
+      "private": false,
+      "html_url": "https://github.com/octocat/Hello-World"
+    }
+  },
+  "author_association": "OWNER",
+  "draft": false,
+  "merged": false,
+  "mergeable": true,
+  "rebaseable": true,
+  "mergeable_state": "clean",
+  "merged_by": null,
+  "comments": 8,
+  "review_comments": 5,
+  "maintainer_can_modify": false,
+  "commits": 3,
+  "additions": 234,
+  "deletions": 45,
+  "changed_files": 12,
+  "reviews": [
+    {
+      "id": 80,
+      "user": {
+        "login": "reviewer1",
+        "id": 30,
+        "type": "User"
+      },
+      "body": "Looks good overall! Just a few minor comments.",
+      "state": "APPROVED",
+      "html_url": "https://github.com/octocat/Hello-World/pull/1347#pullrequestreview-80",
+      "submitted_at": "2024-01-14T10:15:30Z"
+    },
+    {
+      "id": 81,
+      "user": {
+        "login": "reviewer2",
+        "id": 40,
+        "type": "User"
+      },
+      "body": "Please address the security concern in auth.py line 45.",
+      "state": "CHANGES_REQUESTED",
+      "html_url": "https://github.com/octocat/Hello-World/pull/1347#pullrequestreview-81",
+      "submitted_at": "2024-01-14T14:22:18Z"
+    }
+  ],
+  "commits_list": [
+    {
+      "sha": "6dcb09b5b57875f334f61aebed695e2e4193db5e",
+      "commit": {
+        "author": {
+          "name": "The Octocat",
+          "email": "octocat@github.com",
+          "date": "2024-01-10T14:20:15Z"
+        },
+        "committer": {
+          "name": "The Octocat",
+          "email": "octocat@github.com",
+          "date": "2024-01-10T14:20:15Z"
+        },
+        "message": "Add OAuth2 provider integration",
+        "tree": {
+          "sha": "f9d2a07e9488b91af2641b26b9407fe22a451433",
+          "url": "https://api.github.com/repos/octocat/Hello-World/git/trees/f9d2a07e9488b91af2641b26b9407fe22a451433"
+        },
+        "url": "https://api.github.com/repos/octocat/Hello-World/git/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+        "comment_count": 0
+      },
+      "url": "https://api.github.com/repos/octocat/Hello-World/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+      "html_url": "https://github.com/octocat/Hello-World/commit/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+      "author": {
+        "login": "octocat",
+        "id": 1,
+        "type": "User"
+      },
+      "committer": {
+        "login": "octocat",
+        "id": 1,
+        "type": "User"
+      }
+    },
+    {
+      "sha": "7ecb09b5b57875f334f61aebed695e2e4193db5f",
+      "commit": {
+        "author": {
+          "name": "The Octocat",
+          "email": "octocat@github.com",
+          "date": "2024-01-12T09:15:33Z"
+        },
+        "committer": {
+          "name": "The Octocat",
+          "email": "octocat@github.com",
+          "date": "2024-01-12T09:15:33Z"
+        },
+        "message": "Update authentication middleware",
+        "tree": {
+          "sha": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
+          "url": "https://api.github.com/repos/octocat/Hello-World/git/trees/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0"
+        },
+        "url": "https://api.github.com/repos/octocat/Hello-World/git/commits/7ecb09b5b57875f334f61aebed695e2e4193db5f",
+        "comment_count": 2
+      },
+      "url": "https://api.github.com/repos/octocat/Hello-World/commits/7ecb09b5b57875f334f61aebed695e2e4193db5f",
+      "html_url": "https://github.com/octocat/Hello-World/commit/7ecb09b5b57875f334f61aebed695e2e4193db5f"
+    },
+    {
+      "sha": "8fcb09b5b57875f334f61aebed695e2e4193db60",
+      "commit": {
+        "author": {
+          "name": "The Octocat",
+          "email": "octocat@github.com",
+          "date": "2024-01-15T11:30:00Z"
+        },
+        "committer": {
+          "name": "The Octocat",
+          "email": "octocat@github.com",
+          "date": "2024-01-15T11:30:00Z"
+        },
+        "message": "Add comprehensive tests and update docs",
+        "tree": {
+          "sha": "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+          "url": "https://api.github.com/repos/octocat/Hello-World/git/trees/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1"
+        },
+        "url": "https://api.github.com/repos/octocat/Hello-World/git/commits/8fcb09b5b57875f334f61aebed695e2e4193db60",
+        "comment_count": 0
+      },
+      "url": "https://api.github.com/repos/octocat/Hello-World/commits/8fcb09b5b57875f334f61aebed695e2e4193db60",
+      "html_url": "https://github.com/octocat/Hello-World/commit/8fcb09b5b57875f334f61aebed695e2e4193db60"
+    }
+  ]
+}

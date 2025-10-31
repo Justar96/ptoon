@@ -1,7 +1,7 @@
 Troubleshooting
 ===============
 
-This guide helps you resolve common issues when using pytoon.
+This guide helps you resolve common issues when using ptoon.
 
 Installation Issues
 -------------------
@@ -9,7 +9,7 @@ Installation Issues
 pip install fails
 ~~~~~~~~~~~~~~~~~
 
-**Problem:** ``pip install pytoon`` fails
+**Problem:** ``pip install ptoon`` fails
 
 **Solutions:**
 
@@ -29,12 +29,12 @@ pip install fails
 
 .. code-block:: bash
 
-    pip install --no-cache-dir pytoon
+    pip install --no-cache-dir ptoon
 
 Import error
 ~~~~~~~~~~~~
 
-**Problem:** ``ImportError: No module named 'pytoon'``
+**Problem:** ``ImportError: No module named 'ptoon'``
 
 **Solutions:**
 
@@ -42,7 +42,7 @@ Import error
 
 .. code-block:: bash
 
-    pip show pytoon
+    pip show ptoon
 
 2. Check you're in the correct virtual environment
 
@@ -50,8 +50,8 @@ Import error
 
 .. code-block:: bash
 
-    pip uninstall pytoon
-    pip install pytoon
+    pip uninstall ptoon
+    pip install ptoon
 
 Encoding Issues
 ---------------
@@ -131,7 +131,7 @@ Tabs not allowed
 .. code-block:: python
 
     toon_str = toon_str.replace('\t', '  ')
-    data = pytoon.decode(toon_str)
+    data = ptoon.decode(toon_str)
 
 Array length mismatch
 ~~~~~~~~~~~~~~~~~~~~~
@@ -230,7 +230,7 @@ Token savings lower than expected
 
 .. code-block:: python
 
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     print(f"Savings: {result['savings_percent']:.1f}%")
 
 Decoding LLM response fails
@@ -245,7 +245,7 @@ Decoding LLM response fails
     def safe_parse(response):
         # Try TOON
         try:
-            return pytoon.decode(response)
+            return ptoon.decode(response)
         except ValueError:
             pass
         
@@ -273,7 +273,7 @@ Encoding is slow
     import time
     
     start = time.time()
-    toon_str = pytoon.encode(large_data)
+    toon_str = ptoon.encode(large_data)
     encoding_time = time.time() - start
     
     print(f"Encoding: {encoding_time*1000:.2f}ms")
@@ -287,7 +287,7 @@ Encoding is slow
 .. code-block:: python
 
     # Encode once, reuse many times
-    static_toon = pytoon.encode(static_data)
+    static_toon = ptoon.encode(static_data)
 
 2. **Cache encoded strings:**
 
@@ -296,7 +296,7 @@ Encoding is slow
     cache = {}
     def get_encoded(key, data):
         if key not in cache:
-            cache[key] = pytoon.encode(data)
+            cache[key] = ptoon.encode(data)
         return cache[key]
 
 3. **Consider JSON for tiny payloads**
@@ -317,7 +317,7 @@ High memory usage
     chunk_size = 1000
     for i in range(0, len(items), chunk_size):
         chunk = {"items": items[i:i+chunk_size]}
-        toon_str = pytoon.encode(chunk)
+        toon_str = ptoon.encode(chunk)
         # Process chunk
 
 Token counting is slow
@@ -327,14 +327,14 @@ Token counting is slow
 
 **Cause:** tiktoken initialization overhead
 
-**Solution:** Cache tokenizer (automatic in pytoon)
+**Solution:** Cache tokenizer (automatic in ptoon)
 
 .. code-block:: python
 
     # Tokenizer is cached internally
     # Subsequent calls are fast
-    pytoon.count_tokens(text1)  # First call (slower)
-    pytoon.count_tokens(text2)  # Cached (fast)
+    ptoon.count_tokens(text1)  # First call (slower)
+    ptoon.count_tokens(text2)  # Cached (fast)
 
 Debug Mode Issues
 -----------------
@@ -348,14 +348,14 @@ Debug logging not appearing
 
 .. code-block:: bash
 
-    export PYTOON_DEBUG=1
+    export PTOON_DEBUG=1
 
 Or in Python:
 
 .. code-block:: python
 
     import os
-    os.environ['PYTOON_DEBUG'] = '1'
+    os.environ['PTOON_DEBUG'] = '1'
 
 Too much debug output
 ~~~~~~~~~~~~~~~~~~~~~
@@ -366,13 +366,13 @@ Too much debug output
 
 .. code-block:: bash
 
-    unset PYTOON_DEBUG
+    unset PTOON_DEBUG
 
 Or:
 
 .. code-block:: bash
 
-    export PYTOON_DEBUG=0
+    export PTOON_DEBUG=0
 
 Type Checking Issues
 --------------------
@@ -380,35 +380,35 @@ Type Checking Issues
 mypy errors
 ~~~~~~~~~~~
 
-**Problem:** mypy reports type errors with pytoon
+**Problem:** mypy reports type errors with ptoon
 
 **Solutions:**
 
-1. Update to latest pytoon version
+1. Update to latest ptoon version
 
 2. Use type: ignore comments:
 
 .. code-block:: python
 
-    result = pytoon.decode(text)  # type: ignore
+    result = ptoon.decode(text)  # type: ignore
 
 3. Import types explicitly:
 
 .. code-block:: python
 
-    from pytoon.types import JsonValue
+    from ptoon.types import JsonValue
     
     def process(data: JsonValue) -> str:
-        return pytoon.encode(data)
+        return ptoon.encode(data)
 
 IDE autocomplete not working
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem:** No autocomplete for pytoon functions
+**Problem:** No autocomplete for ptoon functions
 
 **Solutions:**
 
-1. Ensure pytoon is installed in same environment as IDE
+1. Ensure ptoon is installed in same environment as IDE
 
 2. Restart IDE/language server
 
@@ -422,22 +422,22 @@ Diagnostic Steps
 
 .. code-block:: bash
 
-    python -c "import pytoon; print(pytoon.__version__)"
+    python -c "import ptoon; print(ptoon.__version__)"
 
 2. Test Basic Functionality
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     
     # Test encode
     data = {"test": "value"}
-    encoded = pytoon.encode(data)
+    encoded = ptoon.encode(data)
     print(f"Encoded: {encoded}")
     
     # Test decode
-    decoded = pytoon.decode(encoded)
+    decoded = ptoon.decode(encoded)
     assert decoded == data
     print("✓ Basic functionality works")
 
@@ -446,7 +446,7 @@ Diagnostic Steps
 
 .. code-block:: bash
 
-    export PYTOON_DEBUG=1
+    export PTOON_DEBUG=1
     python your_script.py
 
 4. Check Dependencies
@@ -454,7 +454,7 @@ Diagnostic Steps
 
 .. code-block:: bash
 
-    pip list | grep -E "pytoon|tiktoken|openai"
+    pip list | grep -E "ptoon|tiktoken|openai"
 
 Getting Help
 ------------
@@ -463,12 +463,12 @@ Before Filing an Issue
 ~~~~~~~~~~~~~~~~~~~~~~
 
 1. Check this troubleshooting guide
-2. Search `existing issues <https://github.com/Justar96/pytoon/issues>`_
+2. Search `existing issues <https://github.com/Justar96/toon-py/issues>`_
 3. Try with latest version:
 
 .. code-block:: bash
 
-    pip install --upgrade pytoon
+    pip install --upgrade ptoon
 
 4. Create minimal reproducible example
 
@@ -478,23 +478,23 @@ When Filing an Issue
 Include:
 
 * Python version (``python --version``)
-* pytoon version (``pip show pytoon``)
+* ptoon version (``pip show ptoon``)
 * Minimal code to reproduce
 * Full error message with traceback
-* Debug output if relevant (``PYTOON_DEBUG=1``)
+* Debug output if relevant (``PTOON_DEBUG=1``)
 
 Example:
 
 .. code-block:: markdown
 
     **Python version:** 3.11.5
-    **pytoon version:** 0.0.1
+    **ptoon version:** 0.0.1
     
     **Code:**
     ```python
-    import pytoon
+    import ptoon
     data = {...}
-    pytoon.encode(data)
+    ptoon.encode(data)
     ```
     
     **Error:**
@@ -506,13 +506,13 @@ Example:
 Community Resources
 ~~~~~~~~~~~~~~~~~~~
 
-* `GitHub Issues <https://github.com/Justar96/pytoon/issues>`_
-* `GitHub Discussions <https://github.com/Justar96/pytoon/discussions>`_
-* Stack Overflow (tag: ``pytoon``)
+* `GitHub Issues <https://github.com/Justar96/toon-py/issues>`_
+* `GitHub Discussions <https://github.com/Justar96/toon-py/discussions>`_
+* Stack Overflow (tag: ``ptoon``)
 
 See Also
 --------
 
 * :doc:`guides/error_handling` - Error handling patterns
 * :doc:`user_guide/core_api` - Core API documentation
-* `GitHub Issues <https://github.com/Justar96/pytoon/issues>`_
+* `GitHub Issues <https://github.com/Justar96/toon-py/issues>`_

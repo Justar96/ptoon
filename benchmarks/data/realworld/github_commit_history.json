@@ -1,0 +1,211 @@
+[
+  {
+    "sha": "6dcb09b5b57875f334f61aebed695e2e4193db5e",
+    "node_id": "MDY6Q29tbWl0NmRjYjA5YjViNTc4NzVmMzM0ZjYxYWViZWQ2OTVlMmU0MTkzZGI1ZQ==",
+    "commit": {
+      "author": {
+        "name": "The Octocat",
+        "email": "octocat@github.com",
+        "date": "2024-01-15T14:20:15Z"
+      },
+      "committer": {
+        "name": "The Octocat",
+        "email": "octocat@github.com",
+        "date": "2024-01-15T14:20:15Z"
+      },
+      "message": "Fix critical security vulnerability in authentication",
+      "tree": {
+        "sha": "f9d2a07e9488b91af2641b26b9407fe22a451433",
+        "url": "https://api.github.com/repos/octocat/Hello-World/git/trees/f9d2a07e9488b91af2641b26b9407fe22a451433"
+      },
+      "url": "https://api.github.com/repos/octocat/Hello-World/git/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+      "comment_count": 3,
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN PGP SIGNATURE-----\n...\n-----END PGP SIGNATURE-----",
+        "payload": "tree f9d2a07e9488b91af2641b26b9407fe22a451433\n..."
+      }
+    },
+    "url": "https://api.github.com/repos/octocat/Hello-World/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+    "html_url": "https://github.com/octocat/Hello-World/commit/6dcb09b5b57875f334f61aebed695e2e4193db5e",
+    "comments_url": "https://api.github.com/repos/octocat/Hello-World/commits/6dcb09b5b57875f334f61aebed695e2e4193db5e/comments",
+    "author": {
+      "login": "octocat",
+      "id": 1,
+      "type": "User",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "octocat",
+      "id": 1,
+      "type": "User",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "7638417db6d59f3c431d3e1f261cc637155684cd",
+        "url": "https://api.github.com/repos/octocat/Hello-World/commits/7638417db6d59f3c431d3e1f261cc637155684cd",
+        "html_url": "https://github.com/octocat/Hello-World/commit/7638417db6d59f3c431d3e1f261cc637155684cd"
+      }
+    ],
+    "stats": {
+      "total": 56,
+      "additions": 45,
+      "deletions": 11
+    },
+    "files": [
+      {
+        "sha": "bbcd538c8e72b8c175046e27cc8f907076331401",
+        "filename": "src/auth/oauth.py",
+        "status": "modified",
+        "additions": 32,
+        "deletions": 8,
+        "changes": 40,
+        "blob_url": "https://github.com/octocat/Hello-World/blob/6dcb09b5b57875f334f61aebed695e2e4193db5e/src/auth/oauth.py",
+        "raw_url": "https://github.com/octocat/Hello-World/raw/6dcb09b5b57875f334f61aebed695e2e4193db5e/src/auth/oauth.py",
+        "contents_url": "https://api.github.com/repos/octocat/Hello-World/contents/src/auth/oauth.py?ref=6dcb09b5b57875f334f61aebed695e2e4193db5e",
+        "patch": "@@ -10,8 +10,32 @@ def authenticate(token):\n-    return validate_token(token)\n+    if not token:\n+        raise ValueError('Token required')\n+    return validate_token_secure(token)"
+      },
+      {
+        "sha": "c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0",
+        "filename": "tests/test_auth.py",
+        "status": "modified",
+        "additions": 13,
+        "deletions": 3,
+        "changes": 16,
+        "blob_url": "https://github.com/octocat/Hello-World/blob/6dcb09b5b57875f334f61aebed695e2e4193db5e/tests/test_auth.py",
+        "raw_url": "https://github.com/octocat/Hello-World/raw/6dcb09b5b57875f334f61aebed695e2e4193db5e/tests/test_auth.py",
+        "contents_url": "https://api.github.com/repos/octocat/Hello-World/contents/tests/test_auth.py?ref=6dcb09b5b57875f334f61aebed695e2e4193db5e",
+        "patch": "@@ -45,3 +45,16 @@ def test_authenticate_valid():\n+def test_authenticate_empty_token():\n+    with pytest.raises(ValueError):\n+        authenticate('')"
+      }
+    ]
+  },
+  {
+    "sha": "7638417db6d59f3c431d3e1f261cc637155684cd",
+    "node_id": "MDY6Q29tbWl0NzYzODQxN2RiNmQ1OWYzYzQzMWQzZTFmMjYxY2M2MzcxNTU2ODRjZA==",
+    "commit": {
+      "author": {
+        "name": "Contributor Name",
+        "email": "contributor@example.com",
+        "date": "2024-01-14T10:15:30Z"
+      },
+      "committer": {
+        "name": "The Octocat",
+        "email": "octocat@github.com",
+        "date": "2024-01-14T10:15:30Z"
+      },
+      "message": "Add support for multiple authentication providers",
+      "tree": {
+        "sha": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
+        "url": "https://api.github.com/repos/octocat/Hello-World/git/trees/a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0"
+      },
+      "url": "https://api.github.com/repos/octocat/Hello-World/git/commits/7638417db6d59f3c431d3e1f261cc637155684cd",
+      "comment_count": 0
+    },
+    "url": "https://api.github.com/repos/octocat/Hello-World/commits/7638417db6d59f3c431d3e1f261cc637155684cd",
+    "html_url": "https://github.com/octocat/Hello-World/commit/7638417db6d59f3c431d3e1f261cc637155684cd",
+    "author": {
+      "login": "contributor1",
+      "id": 10,
+      "type": "User"
+    },
+    "committer": {
+      "login": "octocat",
+      "id": 1,
+      "type": "User"
+    },
+    "parents": [
+      {
+        "sha": "553c2077f0edc3d5dc5d17262f6aa498e69d6f8e",
+        "url": "https://api.github.com/repos/octocat/Hello-World/commits/553c2077f0edc3d5dc5d17262f6aa498e69d6f8e"
+      }
+    ],
+    "stats": {
+      "total": 128,
+      "additions": 98,
+      "deletions": 30
+    },
+    "files": [
+      {
+        "sha": "d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0",
+        "filename": "src/auth/providers/google.py",
+        "status": "added",
+        "additions": 45,
+        "deletions": 0,
+        "changes": 45
+      },
+      {
+        "sha": "e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0",
+        "filename": "src/auth/providers/github.py",
+        "status": "added",
+        "additions": 38,
+        "deletions": 0,
+        "changes": 38
+      },
+      {
+        "sha": "f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0",
+        "filename": "src/auth/base.py",
+        "status": "modified",
+        "additions": 15,
+        "deletions": 30,
+        "changes": 45
+      }
+    ]
+  },
+  {
+    "sha": "553c2077f0edc3d5dc5d17262f6aa498e69d6f8e",
+    "commit": {
+      "author": {
+        "name": "The Octocat",
+        "email": "octocat@github.com",
+        "date": "2024-01-12T08:30:22Z"
+      },
+      "committer": {
+        "name": "The Octocat",
+        "email": "octocat@github.com",
+        "date": "2024-01-12T08:30:22Z"
+      },
+      "message": "Refactor database connection pooling",
+      "tree": {
+        "sha": "b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1",
+        "url": "https://api.github.com/repos/octocat/Hello-World/git/trees/b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1"
+      },
+      "url": "https://api.github.com/repos/octocat/Hello-World/git/commits/553c2077f0edc3d5dc5d17262f6aa498e69d6f8e",
+      "comment_count": 1
+    },
+    "url": "https://api.github.com/repos/octocat/Hello-World/commits/553c2077f0edc3d5dc5d17262f6aa498e69d6f8e",
+    "html_url": "https://github.com/octocat/Hello-World/commit/553c2077f0edc3d5dc5d17262f6aa498e69d6f8e",
+    "author": {
+      "login": "octocat",
+      "id": 1,
+      "type": "User"
+    },
+    "committer": {
+      "login": "octocat",
+      "id": 1,
+      "type": "User"
+    },
+    "parents": [
+      {
+        "sha": "462d81ae3d4cb76e6c8d80d5e8cf8e3f0f3d0e52",
+        "url": "https://api.github.com/repos/octocat/Hello-World/commits/462d81ae3d4cb76e6c8d80d5e8cf8e3f0f3d0e52"
+      }
+    ],
+    "stats": {
+      "total": 72,
+      "additions": 48,
+      "deletions": 24
+    },
+    "files": [
+      {
+        "sha": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0",
+        "filename": "src/database/pool.py",
+        "status": "modified",
+        "additions": 48,
+        "deletions": 24,
+        "changes": 72
+      }
+    ]
+  }
+]

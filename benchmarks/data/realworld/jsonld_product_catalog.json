@@ -1,0 +1,208 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "@id": "https://shop.example.com/products/laptop-pro-15",
+  "name": "Professional Laptop Pro 15",
+  "description": "High-performance laptop designed for professionals and creators with cutting-edge specifications",
+  "image": [
+    "https://shop.example.com/images/laptop-pro-15-front.jpg",
+    "https://shop.example.com/images/laptop-pro-15-side.jpg",
+    "https://shop.example.com/images/laptop-pro-15-keyboard.jpg"
+  ],
+  "brand": {
+    "@type": "Brand",
+    "name": "TechCorp",
+    "logo": "https://shop.example.com/brands/techcorp-logo.png",
+    "url": "https://techcorp.example.com"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "TechCorp Manufacturing",
+    "url": "https://manufacturing.techcorp.example.com"
+  },
+  "sku": "TCPL15-2024-BLK-512",
+  "gtin13": "1234567890123",
+  "mpn": "LAPTOP-PRO-15-2024",
+  "category": "Electronics > Computers > Laptops",
+  "offers": {
+    "@type": "Offer",
+    "url": "https://shop.example.com/products/laptop-pro-15/buy",
+    "priceCurrency": "USD",
+    "price": "1899.99",
+    "priceValidUntil": "2024-12-31",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+      "@type": "Organization",
+      "name": "Example Shop",
+      "url": "https://shop.example.com"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "USD"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "US"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 2,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 3,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.7",
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": "234",
+    "reviewCount": "189"
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Sarah M."
+      },
+      "datePublished": "2024-01-10",
+      "reviewBody": "Excellent laptop for professional work. The performance is outstanding and the build quality is top-notch.",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      }
+    },
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "John D."
+      },
+      "datePublished": "2024-01-08",
+      "reviewBody": "Great laptop overall, but the battery life could be better. Still recommend it for power users.",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "4",
+        "bestRating": "5"
+      }
+    },
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Emily R."
+      },
+      "datePublished": "2024-01-05",
+      "reviewBody": "Perfect for video editing and 3D rendering. The display is gorgeous and color-accurate.",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      }
+    }
+  ],
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "Processor",
+      "value": "Intel Core i9-13900H (14 cores, up to 5.4GHz)"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Memory",
+      "value": "32GB DDR5-5200"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Storage",
+      "value": "1TB NVMe SSD (PCIe 4.0)"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Display",
+      "value": "15.6 inch 4K OLED (3840x2160), 100% DCI-P3"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Graphics",
+      "value": "NVIDIA RTX 4070 8GB GDDR6"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Battery",
+      "value": "90Wh lithium-ion, up to 8 hours"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Weight",
+      "value": "4.2 lbs (1.9 kg)"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Operating System",
+      "value": "Windows 11 Pro"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Ports",
+      "value": "3x USB-C (Thunderbolt 4), 2x USB-A 3.2, HDMI 2.1, SD card reader, 3.5mm audio"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Connectivity",
+      "value": "WiFi 6E, Bluetooth 5.3"
+    }
+  ],
+  "warranty": {
+    "@type": "WarrantyPromise",
+    "durationOfWarranty": {
+      "@type": "QuantitativeValue",
+      "value": "3",
+      "unitCode": "ANN"
+    },
+    "warrantyScope": "Manufacturer warranty covering defects in materials and workmanship"
+  },
+  "audience": {
+    "@type": "PeopleAudience",
+    "suggestedMinAge": 18,
+    "audienceType": "Professionals, Content Creators, Gamers"
+  },
+  "releaseDate": "2024-01-01",
+  "color": ["Space Black", "Silver", "Midnight Blue"],
+  "weight": {
+    "@type": "QuantitativeValue",
+    "value": "1.9",
+    "unitCode": "KGM"
+  },
+  "width": {
+    "@type": "QuantitativeValue",
+    "value": "35.7",
+    "unitCode": "CMT"
+  },
+  "height": {
+    "@type": "QuantitativeValue",
+    "value": "1.8",
+    "unitCode": "CMT"
+  },
+  "depth": {
+    "@type": "QuantitativeValue",
+    "value": "24.5",
+    "unitCode": "CMT"
+  }
+}

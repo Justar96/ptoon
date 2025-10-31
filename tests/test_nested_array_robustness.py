@@ -5,7 +5,7 @@ Tests all nested array scenarios to verify complete coverage and robustness.
 
 import pytest
 
-from pytoon import decode, encode
+from ptoon import decode, encode
 
 
 class TestNestedArrayCompleteness:

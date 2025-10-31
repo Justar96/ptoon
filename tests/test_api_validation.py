@@ -8,8 +8,8 @@ import types
 
 import pytest
 
-import pytoon
-from pytoon import decode, encode
+import ptoon
+from ptoon import decode, encode
 
 
 class TestEncodeTypeValidation:
@@ -288,12 +288,12 @@ class TestPublicAPI:
     def test_exports_encode_function(self):
         """Test pytoon exports encode function."""
         assert hasattr(pytoon, "encode")
-        assert callable(pytoon.encode)
+        assert callable(ptoon.encode)
 
     def test_exports_decode_function(self):
         """Test pytoon exports decode function."""
         assert hasattr(pytoon, "decode")
-        assert callable(pytoon.decode)
+        assert callable(ptoon.decode)
 
     def test_exports_utility_functions(self):
         """Test pytoon exports utility functions."""

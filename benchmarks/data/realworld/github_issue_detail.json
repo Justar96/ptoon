@@ -1,0 +1,136 @@
+{
+  "id": 1,
+  "node_id": "MDU6SXNzdWUx",
+  "url": "https://api.github.com/repos/octocat/Hello-World/issues/1347",
+  "repository_url": "https://api.github.com/repos/octocat/Hello-World",
+  "labels_url": "https://api.github.com/repos/octocat/Hello-World/issues/1347/labels{/name}",
+  "comments_url": "https://api.github.com/repos/octocat/Hello-World/issues/1347/comments",
+  "events_url": "https://api.github.com/repos/octocat/Hello-World/issues/1347/events",
+  "html_url": "https://github.com/octocat/Hello-World/issues/1347",
+  "number": 1347,
+  "state": "open",
+  "title": "Found a bug",
+  "body": "I'm having a problem with this. When I try to do X, Y happens instead of Z. Expected behavior: Z should happen.\n\nSteps to reproduce:\n1. Go to X\n2. Click on Y\n3. See error\n\n**Environment:**\n- OS: macOS 14.1\n- Browser: Chrome 120\n- Version: 2.5.0",
+  "user": {
+    "login": "octocat",
+    "id": 1,
+    "node_id": "MDQ6VXNlcjE=",
+    "avatar_url": "https://github.com/images/error/octocat_happy.gif",
+    "type": "User",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 208045946,
+      "node_id": "MDU6TGFiZWwyMDgwNDU5NDY=",
+      "url": "https://api.github.com/repos/octocat/Hello-World/labels/bug",
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a",
+      "default": true
+    },
+    {
+      "id": 208045947,
+      "node_id": "MDU6TGFiZWwyMDgwNDU5NDc=",
+      "url": "https://api.github.com/repos/octocat/Hello-World/labels/help%20wanted",
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672",
+      "default": true
+    }
+  ],
+  "assignees": [
+    {
+      "login": "hubot",
+      "id": 2,
+      "node_id": "MDQ6VXNlcjI=",
+      "avatar_url": "https://github.com/images/error/hubot_happy.gif",
+      "type": "User",
+      "site_admin": false
+    }
+  ],
+  "milestone": {
+    "url": "https://api.github.com/repos/octocat/Hello-World/milestones/1",
+    "html_url": "https://github.com/octocat/Hello-World/milestone/1",
+    "labels_url": "https://api.github.com/repos/octocat/Hello-World/milestones/1/labels",
+    "id": 1002604,
+    "node_id": "MDk6TWlsZXN0b25lMTAwMjYwNA==",
+    "number": 1,
+    "state": "open",
+    "title": "v1.0",
+    "description": "First major release",
+    "creator": {
+      "login": "octocat",
+      "id": 1,
+      "type": "User"
+    },
+    "open_issues": 4,
+    "closed_issues": 8,
+    "created_at": "2011-04-10T20:09:31Z",
+    "updated_at": "2024-01-14T23:39:01Z",
+    "due_on": "2024-03-01T07:00:00Z"
+  },
+  "locked": false,
+  "active_lock_reason": null,
+  "comments": 15,
+  "created_at": "2011-04-22T13:33:48Z",
+  "updated_at": "2024-01-15T11:22:13Z",
+  "closed_at": null,
+  "author_association": "COLLABORATOR",
+  "reactions": {
+    "url": "https://api.github.com/repos/octocat/Hello-World/issues/1347/reactions",
+    "total_count": 23,
+    "+1": 12,
+    "-1": 0,
+    "laugh": 5,
+    "hooray": 3,
+    "confused": 2,
+    "heart": 1,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "comment_list": [
+    {
+      "id": 1,
+      "node_id": "MDEyOklzc3VlQ29tbWVudDE=",
+      "url": "https://api.github.com/repos/octocat/Hello-World/issues/comments/1",
+      "html_url": "https://github.com/octocat/Hello-World/issues/1347#issuecomment-1",
+      "body": "I can reproduce this issue. Same problem on Windows 11.",
+      "user": {
+        "login": "contributor1",
+        "id": 10,
+        "type": "User"
+      },
+      "created_at": "2011-04-22T14:15:22Z",
+      "updated_at": "2011-04-22T14:15:22Z"
+    },
+    {
+      "id": 2,
+      "node_id": "MDEyOklzc3VlQ29tbWVudDI=",
+      "url": "https://api.github.com/repos/octocat/Hello-World/issues/comments/2",
+      "html_url": "https://github.com/octocat/Hello-World/issues/1347#issuecomment-2",
+      "body": "I'll look into this. Might be related to #1234.",
+      "user": {
+        "login": "hubot",
+        "id": 2,
+        "type": "User"
+      },
+      "created_at": "2011-04-22T15:30:45Z",
+      "updated_at": "2011-04-22T15:30:45Z"
+    },
+    {
+      "id": 3,
+      "node_id": "MDEyOklzc3VlQ29tbWVudDM=",
+      "url": "https://api.github.com/repos/octocat/Hello-World/issues/comments/3",
+      "html_url": "https://github.com/octocat/Hello-World/issues/1347#issuecomment-3",
+      "body": "Workaround: You can temporarily fix this by setting `config.option = false` in your settings.",
+      "user": {
+        "login": "contributor2",
+        "id": 20,
+        "type": "User"
+      },
+      "created_at": "2011-04-23T09:12:08Z",
+      "updated_at": "2011-04-23T09:15:33Z"
+    }
+  ]
+}

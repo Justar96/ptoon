@@ -1,0 +1,121 @@
+{
+  "data": {
+    "search": {
+      "issueCount": 3,
+      "edges": [
+        {
+          "node": {
+            "__typename": "Repository",
+            "name": "react",
+            "owner": {
+              "login": "facebook"
+            },
+            "description": "A declarative, efficient, and flexible JavaScript library for building user interfaces.",
+            "stargazerCount": 218000,
+            "forkCount": 45123,
+            "primaryLanguage": {
+              "name": "JavaScript",
+              "color": "#f1e05a"
+            },
+            "url": "https://github.com/facebook/react"
+          }
+        },
+        {
+          "node": {
+            "__typename": "Issue",
+            "title": "Unable to render component with hooks",
+            "number": 12345,
+            "state": "OPEN",
+            "author": {
+              "login": "developer123"
+            },
+            "body": "When using useState hook in a nested component, the state doesn't update correctly...",
+            "createdAt": "2024-01-10T09:15:30Z",
+            "comments": {
+              "totalCount": 8
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "bug",
+                  "color": "d73a4a"
+                },
+                {
+                  "name": "hooks",
+                  "color": "0075ca"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "node": {
+            "__typename": "PullRequest",
+            "title": "Fix memory leak in useEffect cleanup",
+            "number": 12346,
+            "state": "MERGED",
+            "author": {
+              "login": "contributor456"
+            },
+            "body": "This PR fixes a memory leak that occurs when useEffect cleanup functions are not properly called.",
+            "createdAt": "2024-01-08T14:22:15Z",
+            "mergedAt": "2024-01-12T10:45:00Z",
+            "additions": 45,
+            "deletions": 12,
+            "changedFiles": 3,
+            "reviews": {
+              "totalCount": 5
+            },
+            "labels": {
+              "nodes": [
+                {
+                  "name": "fix",
+                  "color": "1d76db"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "node": {
+            "__typename": "User",
+            "login": "octocat",
+            "name": "The Octocat",
+            "bio": "GitHub mascot and all-around cool cat",
+            "avatarUrl": "https://github.com/images/error/octocat_happy.gif",
+            "followers": {
+              "totalCount": 9001
+            },
+            "following": {
+              "totalCount": 9
+            },
+            "repositories": {
+              "totalCount": 8
+            },
+            "contributionsCollection": {
+              "totalCommitContributions": 1234,
+              "totalPullRequestContributions": 456,
+              "totalIssueContributions": 234
+            }
+          }
+        },
+        {
+          "node": {
+            "__typename": "Organization",
+            "login": "facebook",
+            "name": "Facebook",
+            "description": "We work hard to contribute our work back to the web, mobile, big data, & infrastructure communities.",
+            "avatarUrl": "https://avatars.githubusercontent.com/u/69631?v=4",
+            "websiteUrl": "https://opensource.fb.com",
+            "members": {
+              "totalCount": 234
+            },
+            "repositories": {
+              "totalCount": 189
+            }
+          }
+        }
+      ]
+    }
+  }
+}

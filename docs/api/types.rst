@@ -1,12 +1,12 @@
 Type Definitions
 ================
 
-This page documents type definitions used in pytoon for better IDE support and type checking.
+This page documents type definitions used in ptoon for better IDE support and type checking.
 
 Type Definitions
 ----------------
 
-.. automodule:: pytoon.types
+.. automodule:: ptoon.types
    :members:
    :undoc-members:
 
@@ -81,35 +81,35 @@ Importing Types
 
 .. code-block:: python
 
-    from pytoon.types import JsonValue, JsonObject, JsonArray, EncodeOptions
+    from ptoon.types import JsonValue, JsonObject, JsonArray, EncodeOptions
 
 Function Type Hints
 ~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    from pytoon.types import JsonValue, JsonObject, EncodeOptions
-    import pytoon
+    from ptoon.types import JsonValue, JsonObject, EncodeOptions
+    import ptoon
 
     def process_data(data: JsonObject) -> str:
         """Encode object to TOON."""
-        return pytoon.encode(data)
+        return ptoon.encode(data)
 
     def custom_encode(value: JsonValue, opts: EncodeOptions) -> str:
         """Encode with custom options."""
-        return pytoon.encode(value, options=opts)
+        return ptoon.encode(value, options=opts)
 
     def batch_encode(items: list[JsonObject]) -> list[str]:
         """Encode multiple objects."""
-        return [pytoon.encode(item) for item in items]
+        return [ptoon.encode(item) for item in items]
 
 Using EncodeOptions
 ~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    from pytoon.types import EncodeOptions
-    import pytoon
+    from ptoon.types import EncodeOptions
+    import ptoon
 
     # Define reusable options
     compact_opts: EncodeOptions = {
@@ -127,21 +127,21 @@ Using EncodeOptions
     data = {"users": [{"id": 1, "name": "Alice"}]}
     
     # Use with encode
-    compact = pytoon.encode(data, options=compact_opts)
-    readable = pytoon.encode(data, options=readable_opts)
+    compact = ptoon.encode(data, options=compact_opts)
+    readable = ptoon.encode(data, options=readable_opts)
 
 Working with JsonValue
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    from pytoon.types import JsonValue, JsonObject
-    import pytoon
+    from ptoon.types import JsonValue, JsonObject
+    import ptoon
 
     def safe_encode(value: JsonValue) -> str:
         """Safely encode any JSON-compatible value."""
         try:
-            return pytoon.encode(value)
+            return ptoon.encode(value)
         except (TypeError, ValueError) as e:
             print(f"Encoding error: {e}")
             return ""
@@ -170,8 +170,8 @@ Example type-checked module:
 
 .. code-block:: python
 
-    from pytoon.types import JsonObject, EncodeOptions
-    import pytoon
+    from ptoon.types import JsonObject, EncodeOptions
+    import ptoon
 
     def create_user_data(name: str, age: int) -> JsonObject:
         """Create a user data object."""
@@ -180,7 +180,7 @@ Example type-checked module:
     def encode_users(users: list[JsonObject]) -> str:
         """Encode user list to TOON."""
         opts: EncodeOptions = {"indent": 2}
-        return pytoon.encode({"users": users}, options=opts)
+        return ptoon.encode({"users": users}, options=opts)
 
     # Type checker ensures correctness
     user = create_user_data("Alice", 30)

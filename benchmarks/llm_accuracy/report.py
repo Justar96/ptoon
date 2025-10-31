@@ -3,7 +3,7 @@
 This module provides comprehensive report generation capabilities including:
 - Token counting and efficiency analysis
 - Accuracy statistics aggregation
-- Cost estimation using OpenAI pricing
+- Provider-aware cost estimation (OpenAI, Vertex AI)
 - Markdown report generation with visualizations
 - JSON result serialization
 """
@@ -30,6 +30,7 @@ except ImportError:
 
 from benchmarks.token_efficiency import generate_bar_chart  # noqa: E402
 
+from .pricing import calculate_cost, format_pricing_info, get_model_pricing  # noqa: E402
 from .types import EvaluationResult, Question  # noqa: E402
 
 
@@ -124,13 +125,18 @@ def calculate_token_counts(
 
 
 def calculate_format_results(
-    results: list[EvaluationResult], token_counts: dict[str, int]
+    results: list[EvaluationResult],
+    token_counts: dict[str, int],
+    model: str = "gpt-5",
+    provider: str = "openai",
 ) -> list[FormatResult]:
     """Aggregate per-format statistics from evaluation results.
 
     Args:
         results: List of evaluation results from all evaluations
         token_counts: Token counts per format+dataset combination
+        model: Model identifier for pricing lookup
+        provider: Provider type ('openai' or 'vertex')
 
     Returns:
         List of FormatResult dicts, sorted by accuracy descending
@@ -172,13 +178,17 @@ def calculate_format_results(
         else:
             total_tokens = 0
 
-        # Calculate estimated cost
+        # Calculate estimated cost using provider-aware pricing
         # NOTE: This uses regular input token pricing. If prompt caching is enabled,
-        # actual costs will be lower (cached tokens are 90% cheaper at $0.125/1M).
-        # The OpenAI API response doesn't separate cached vs regular input tokens,
+        # actual costs will be lower (cached tokens are 90% cheaper).
+        # The API response doesn't separate cached vs regular input tokens,
         # so we calculate upper-bound estimates here.
-        estimated_cost = (total_input_tokens / 1_000_000 * GPT5_INPUT_PRICE_PER_1M) + (
-            total_output_tokens / 1_000_000 * GPT5_OUTPUT_PRICE_PER_1M
+        estimated_cost = calculate_cost(
+            input_tokens=total_input_tokens,
+            output_tokens=total_output_tokens,
+            model=model,
+            provider=provider,
+            cached_tokens=0,  # Conservative estimate - no caching assumed
         )
 
         format_result: FormatResult = {
@@ -230,6 +240,7 @@ def generate_markdown_report(
     questions: list[Question],
     token_counts: dict[str, int],
     model: str,
+    provider: str = "openai",
 ) -> str:
     """Generate comprehensive markdown report.
 
@@ -239,6 +250,7 @@ def generate_markdown_report(
         questions: All questions used in evaluation
         token_counts: Token counts per format+dataset
         model: Model name used for evaluation
+        provider: Provider type ('openai' or 'vertex')
 
     Returns:
         Complete markdown report string
@@ -307,9 +319,11 @@ def generate_markdown_report(
             f"{latency:.1f} | {input_tokens:,} | {output_tokens:,} | ${cost:.4f} |"
         )
 
+    # Add pricing information footer
+    pricing_info = format_pricing_info(model, provider)
+    provider_display = "OpenAI" if provider == "openai" else "Google Vertex AI"
     sections.append(
-        f"\n*Costs based on OpenAI pricing: ${GPT5_INPUT_PRICE_PER_1M:.2f} per 1M input tokens, "
-        f"${GPT5_OUTPUT_PRICE_PER_1M:.2f} per 1M output tokens. "
+        f"\n*Costs based on {provider_display} pricing: {pricing_info}. "
         f"Estimates use regular pricing; actual costs may be ~40-60% lower with prompt caching.*"
     )
     sections.append("")
@@ -482,6 +496,7 @@ def save_results(
     formatted_datasets: dict[str, dict[str, str]],
     model: str,
     output_dir: Path | None = None,
+    provider: str = "openai",
 ) -> Path:
     """Save all results to disk in timestamped and latest files.
 
@@ -497,6 +512,7 @@ def save_results(
         formatted_datasets: Formatted dataset strings
         model: Model name used
         output_dir: Output directory (defaults to benchmarks/results/llm_accuracy)
+        provider: Provider type ('openai' or 'vertex')
 
     Returns:
         Path to output directory
@@ -553,7 +569,7 @@ def save_results(
 
         # File 3: report.md (timestamped + latest)
         markdown = generate_markdown_report(
-            format_results, results, questions, token_counts, model
+            format_results, results, questions, token_counts, model, provider
         )
 
         report_timestamped = output_dir / f"report-{timestamp}.md"
@@ -580,6 +596,7 @@ def generate_report(
     formatted_datasets: dict[str, dict[str, str]],
     model: str = "gpt-5",
     output_dir: Path | None = None,
+    provider: str = "openai",
 ) -> dict[str, Any]:
     """Main entry point for report generation.
 
@@ -595,6 +612,7 @@ def generate_report(
         formatted_datasets: Formatted dataset strings for token counting
         model: Model name used for evaluation
         output_dir: Optional output directory override
+        provider: Provider type ('openai' or 'vertex')
 
     Returns:
         Summary dict with keys:
@@ -617,11 +635,18 @@ def generate_report(
 
     logger.info(f"Generating report for {len(results)} evaluation results")
 
+    # Extract actual model identifier from results if available
+    # This is set by evaluate.py when using provider-specific models
+    actual_model = model
+    if results and 'actual_model' in results[0]:  # type: ignore[operator]
+        actual_model = results[0]['actual_model']  # type: ignore[typeddict-item]
+        logger.info(f"Using actual model identifier for pricing: {actual_model}")
+
     # Step 1: Calculate token counts
     token_counts = calculate_token_counts(formatted_datasets)
 
-    # Step 2: Calculate format results
-    format_results = calculate_format_results(results, token_counts)
+    # Step 2: Calculate format results with provider-aware pricing
+    format_results = calculate_format_results(results, token_counts, actual_model, provider)
 
     # Step 3: Save all results
     output_path = save_results(
@@ -630,8 +655,9 @@ def generate_report(
         questions,
         token_counts,
         formatted_datasets,
-        model,
+        actual_model,
         output_dir,
+        provider,
     )
 
     # Step 4: Log summary statistics

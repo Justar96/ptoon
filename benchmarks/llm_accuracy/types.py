@@ -41,7 +41,7 @@ class Question(TypedDict):
     dataset: DatasetName
 
 
-class EvaluationResult(TypedDict):
+class EvaluationResult(TypedDict, total=False):
     """Results from evaluating an LLM's answer to a question.
 
     Attributes:
@@ -54,6 +54,7 @@ class EvaluationResult(TypedDict):
         input_tokens: Number of tokens in the prompt
         output_tokens: Number of tokens in the response
         latency_ms: Response time in milliseconds
+        provider: LLM provider used ('openai' or 'vertex') - optional for backward compatibility
     """
 
     question_id: str
@@ -65,6 +66,7 @@ class EvaluationResult(TypedDict):
     input_tokens: int
     output_tokens: int
     latency_ms: float
+    provider: str  # Optional field for provider tracking
 
 
 class Dataset(TypedDict):

@@ -1,0 +1,59 @@
+{
+  "formatResults": [
+    {
+      "format": "TOON",
+      "accuracy": 0.8,
+      "total_tokens": 2211,
+      "average_latency": 2552.3837500019,
+      "correct_count": 8,
+      "total_count": 10,
+      "total_input_tokens": 10806,
+      "total_output_tokens": 45,
+      "estimated_cost": 0.0033543
+    },
+    {
+      "format": "JSON",
+      "accuracy": 0.7,
+      "total_tokens": 5008,
+      "average_latency": 2567.9787100016256,
+      "correct_count": 7,
+      "total_count": 10,
+      "total_input_tokens": 12736,
+      "total_output_tokens": 43,
+      "estimated_cost": 0.0039283
+    }
+  ],
+  "questions": 10,
+  "model": "gemini-2.5-flash",
+  "datasets": [
+    {
+      "name": "tabular",
+      "description": "Uniform employee records (TOON optimal format)"
+    },
+    {
+      "name": "nested",
+      "description": "E-commerce orders with nested structures"
+    },
+    {
+      "name": "analytics",
+      "description": "Time-series analytics data"
+    },
+    {
+      "name": "github",
+      "description": "Top 100 GitHub repositories"
+    }
+  ],
+  "tokenCounts": {
+    "JSON-rag-documentation": 1051,
+    "JSON-code-generation": 705,
+    "JSON-customer-support": 648,
+    "JSON-data-analysis": 21649,
+    "JSON-multi-document": 987,
+    "TOON-rag-documentation": 923,
+    "TOON-code-generation": 517,
+    "TOON-customer-support": 493,
+    "TOON-data-analysis": 8411,
+    "TOON-multi-document": 710
+  },
+  "timestamp": "2025-10-31T19:40:59.655385+00:00"
+}

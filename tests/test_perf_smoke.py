@@ -2,7 +2,7 @@ import time
 
 import pytest
 
-from pytoon import decode, encode
+from ptoon import decode, encode
 
 
 @pytest.mark.slow

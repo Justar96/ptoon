@@ -1,0 +1,234 @@
+{
+  "total": 247,
+  "limit": 20,
+  "offset": 40,
+  "results": [
+    {
+      "id": 41,
+      "name": "Product Alpha",
+      "description": "High-quality product with excellent features",
+      "price": 299.99,
+      "currency": "USD",
+      "category": "Electronics",
+      "in_stock": true,
+      "rating": 4.5,
+      "reviews_count": 128
+    },
+    {
+      "id": 42,
+      "name": "Product Beta",
+      "description": "Innovative solution for modern needs",
+      "price": 149.99,
+      "currency": "USD",
+      "category": "Accessories",
+      "in_stock": true,
+      "rating": 4.2,
+      "reviews_count": 87
+    },
+    {
+      "id": 43,
+      "name": "Product Gamma",
+      "description": "Premium quality at an affordable price",
+      "price": 79.99,
+      "currency": "USD",
+      "category": "Home & Garden",
+      "in_stock": false,
+      "rating": 4.8,
+      "reviews_count": 234
+    },
+    {
+      "id": 44,
+      "name": "Product Delta",
+      "description": "Essential item for daily use",
+      "price": 24.99,
+      "currency": "USD",
+      "category": "Personal Care",
+      "in_stock": true,
+      "rating": 4.1,
+      "reviews_count": 56
+    },
+    {
+      "id": 45,
+      "name": "Product Epsilon",
+      "description": "Professional-grade equipment",
+      "price": 599.99,
+      "currency": "USD",
+      "category": "Professional Tools",
+      "in_stock": true,
+      "rating": 4.9,
+      "reviews_count": 312
+    },
+    {
+      "id": 46,
+      "name": "Product Zeta",
+      "description": "Compact and portable design",
+      "price": 89.99,
+      "currency": "USD",
+      "category": "Travel",
+      "in_stock": true,
+      "rating": 4.4,
+      "reviews_count": 145
+    },
+    {
+      "id": 47,
+      "name": "Product Eta",
+      "description": "Eco-friendly and sustainable",
+      "price": 39.99,
+      "currency": "USD",
+      "category": "Eco Products",
+      "in_stock": true,
+      "rating": 4.7,
+      "reviews_count": 203
+    },
+    {
+      "id": 48,
+      "name": "Product Theta",
+      "description": "Advanced technology integration",
+      "price": 899.99,
+      "currency": "USD",
+      "category": "Smart Devices",
+      "in_stock": false,
+      "rating": 4.6,
+      "reviews_count": 178
+    },
+    {
+      "id": 49,
+      "name": "Product Iota",
+      "description": "Elegant and minimalist design",
+      "price": 129.99,
+      "currency": "USD",
+      "category": "Home Decor",
+      "in_stock": true,
+      "rating": 4.3,
+      "reviews_count": 92
+    },
+    {
+      "id": 50,
+      "name": "Product Kappa",
+      "description": "Durable and long-lasting",
+      "price": 199.99,
+      "currency": "USD",
+      "category": "Outdoor",
+      "in_stock": true,
+      "rating": 4.8,
+      "reviews_count": 267
+    },
+    {
+      "id": 51,
+      "name": "Product Lambda",
+      "description": "Cutting-edge performance",
+      "price": 449.99,
+      "currency": "USD",
+      "category": "Computing",
+      "in_stock": true,
+      "rating": 4.5,
+      "reviews_count": 189
+    },
+    {
+      "id": 52,
+      "name": "Product Mu",
+      "description": "Versatile and multifunctional",
+      "price": 64.99,
+      "currency": "USD",
+      "category": "Kitchen",
+      "in_stock": true,
+      "rating": 4.2,
+      "reviews_count": 112
+    },
+    {
+      "id": 53,
+      "name": "Product Nu",
+      "description": "Lightweight and easy to use",
+      "price": 34.99,
+      "currency": "USD",
+      "category": "Sports",
+      "in_stock": true,
+      "rating": 4.0,
+      "reviews_count": 78
+    },
+    {
+      "id": 54,
+      "name": "Product Xi",
+      "description": "Premium materials and craftsmanship",
+      "price": 349.99,
+      "currency": "USD",
+      "category": "Fashion",
+      "in_stock": false,
+      "rating": 4.9,
+      "reviews_count": 421
+    },
+    {
+      "id": 55,
+      "name": "Product Omicron",
+      "description": "Smart connectivity features",
+      "price": 279.99,
+      "currency": "USD",
+      "category": "IoT Devices",
+      "in_stock": true,
+      "rating": 4.4,
+      "reviews_count": 156
+    },
+    {
+      "id": 56,
+      "name": "Product Pi",
+      "description": "Energy-efficient operation",
+      "price": 159.99,
+      "currency": "USD",
+      "category": "Appliances",
+      "in_stock": true,
+      "rating": 4.6,
+      "reviews_count": 201
+    },
+    {
+      "id": 57,
+      "name": "Product Rho",
+      "description": "Ergonomic and comfortable",
+      "price": 119.99,
+      "currency": "USD",
+      "category": "Office",
+      "in_stock": true,
+      "rating": 4.3,
+      "reviews_count": 134
+    },
+    {
+      "id": 58,
+      "name": "Product Sigma",
+      "description": "Industry-leading warranty",
+      "price": 399.99,
+      "currency": "USD",
+      "category": "Electronics",
+      "in_stock": true,
+      "rating": 4.7,
+      "reviews_count": 298
+    },
+    {
+      "id": 59,
+      "name": "Product Tau",
+      "description": "Sleek and modern aesthetic",
+      "price": 189.99,
+      "currency": "USD",
+      "category": "Furniture",
+      "in_stock": false,
+      "rating": 4.5,
+      "reviews_count": 167
+    },
+    {
+      "id": 60,
+      "name": "Product Upsilon",
+      "description": "User-friendly interface",
+      "price": 99.99,
+      "currency": "USD",
+      "category": "Software",
+      "in_stock": true,
+      "rating": 4.1,
+      "reviews_count": 89
+    }
+  ],
+  "pagination": {
+    "current_page": 3,
+    "total_pages": 13,
+    "per_page": 20,
+    "next_offset": 60,
+    "previous_offset": 20
+  }
+}

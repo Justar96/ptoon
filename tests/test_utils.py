@@ -12,7 +12,7 @@ from unittest.mock import patch
 
 import pytest
 
-from pytoon import compare_formats, count_tokens, encode, estimate_savings
+from ptoon import compare_formats, count_tokens, encode, estimate_savings
 
 
 # Marker for tests that require tiktoken to be installed
@@ -134,7 +134,7 @@ class TestCountTokens:
 
     def test_count_tokens_without_tiktoken(self):
         """Test count_tokens raises helpful error when tokenizer unavailable."""
-        from pytoon import utils as utils_mod
+        from ptoon import utils as utils_mod
 
         utils_mod._get_tokenizer.cache_clear()
 
@@ -442,7 +442,7 @@ class TestUtilitiesIntegration:
         assert table1 == table2
 
     def test_consistency_with_benchmark_token_counting(self):
-        """Test that pytoon.count_tokens matches benchmarks.token_efficiency.count_tokens.
+        """Test that ptoon.count_tokens matches benchmarks.token_efficiency.count_tokens.
 
         This verifies the consolidation didn't change behavior compared to the
         existing benchmark implementation.
@@ -474,6 +474,6 @@ class TestUtilitiesIntegration:
 
             assert pytoon_result == benchmark_result, (
                 f"Token count mismatch for text: {text!r}\n"
-                f"pytoon.count_tokens: {pytoon_result}\n"
+                f"ptoon.count_tokens: {pytoon_result}\n"
                 f"benchmark.count_tokens: {benchmark_result}"
             )

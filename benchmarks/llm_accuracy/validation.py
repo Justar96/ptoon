@@ -138,8 +138,7 @@ Respond with only "YES" or "NO"."""
             response = client.chat.completions.create(
                 model=model,
                 messages=[{"role": "user", "content": prompt}],
-                temperature=0,  # Deterministic for validation
-                max_tokens=10,  # Only need YES/NO
+                max_completion_tokens=10,  # Only need YES/NO
             )
 
             # Extract and parse response

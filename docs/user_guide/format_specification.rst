@@ -166,7 +166,7 @@ Large integers (>2^53-1) are encoded as strings for JavaScript compatibility:
 .. code-block:: python
 
     # Python
-    pytoon.encode({"big": 9007199254740992})
+    ptoon.encode({"big": 9007199254740992})
     # Output: big: "9007199254740992"
 
 Strings
@@ -304,10 +304,10 @@ Python datetime objects are encoded as ISO 8601 strings:
 .. code-block:: python
 
     from datetime import datetime
-    import pytoon
+    import ptoon
 
     data = {"timestamp": datetime(2025, 10, 31, 12, 30)}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     # timestamp: 2025-10-31T12:30:00
 
 Sets
@@ -318,7 +318,7 @@ Python sets are encoded as sorted arrays:
 .. code-block:: python
 
     data = {"tags": {3, 1, 2}}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     # tags[3]: 1, 2, 3
 
 Length Markers

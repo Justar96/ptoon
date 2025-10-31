@@ -1,0 +1,287 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Stripe API",
+    "description": "The Stripe REST API. Please see https://stripe.com/docs/api for more details.",
+    "version": "2024-01-15",
+    "contact": {
+      "email": "dev-platform@stripe.com",
+      "name": "Stripe Dev Platform Team",
+      "url": "https://stripe.com/docs/support"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.stripe.com/v1"
+    }
+  ],
+  "paths": {
+    "/charges": {
+      "get": {
+        "summary": "List charges",
+        "description": "Returns a list of charges you've previously created. The charges are returned in sorted order, with the most recent charges appearing first.",
+        "operationId": "listCharges",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "A limit on the number of objects to be returned",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10
+            }
+          },
+          {
+            "name": "starting_after",
+            "in": "query",
+            "description": "A cursor for use in pagination",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChargeList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create a charge",
+        "description": "To charge a credit or a debit card, you create a Charge object.",
+        "operationId": "createCharge",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer",
+                    "description": "Amount in cents"
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "Three-letter ISO currency code"
+                  },
+                  "source": {
+                    "type": "string",
+                    "description": "A payment source to be charged"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": ["amount", "currency"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Charge"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "summary": "List customers",
+        "operationId": "listCustomers",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a customer",
+        "operationId": "createCustomer",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Charge": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the object"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["charge"]
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Amount charged in cents"
+          },
+          "currency": {
+            "type": "string",
+            "description": "Three-letter ISO currency code"
+          },
+          "customer": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "paid": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["succeeded", "pending", "failed"]
+          },
+          "created": {
+            "type": "integer",
+            "description": "Time at which the object was created (Unix timestamp)"
+          }
+        },
+        "required": ["id", "object", "amount", "currency", "paid", "status"]
+      },
+      "ChargeList": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "string",
+            "enum": ["list"]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Charge"
+            }
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["customer"]
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "created": {
+            "type": "integer"
+          }
+        }
+      },
+      "CustomerList": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "string",
+            "enum": ["list"]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Customer"
+            }
+          },
+          "has_more": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

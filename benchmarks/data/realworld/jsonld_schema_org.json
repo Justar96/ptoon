@@ -1,0 +1,153 @@
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "@id": "https://example.com/products/wireless-headphones-pro",
+  "name": "Wireless Headphones Pro",
+  "description": "Premium wireless headphones with active noise cancellation, 30-hour battery life, and superior sound quality",
+  "image": [
+    "https://example.com/images/headphones-front.jpg",
+    "https://example.com/images/headphones-side.jpg",
+    "https://example.com/images/headphones-case.jpg"
+  ],
+  "sku": "WHP-2024-BLK",
+  "mpn": "12345-ABCDE",
+  "brand": {
+    "@type": "Brand",
+    "name": "AudioTech",
+    "@id": "https://example.com/brands/audiotech",
+    "logo": "https://example.com/images/audiotech-logo.png"
+  },
+  "manufacturer": {
+    "@type": "Organization",
+    "name": "AudioTech Manufacturing Co.",
+    "url": "https://audiotech.example.com"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": "https://example.com/products/wireless-headphones-pro",
+    "price": "299.99",
+    "priceCurrency": "USD",
+    "priceValidUntil": "2024-12-31",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+      "@type": "Organization",
+      "name": "Example Electronics Store",
+      "@id": "https://example.com/store",
+      "url": "https://example.com"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0.00",
+        "currency": "USD"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "US"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 2,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 3,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.7",
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": "1247",
+    "reviewCount": "892"
+  },
+  "review": [
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Sarah Johnson",
+        "@id": "https://example.com/users/sarah-j"
+      },
+      "datePublished": "2024-01-10",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      },
+      "reviewBody": "Absolutely love these headphones! The noise cancellation is incredible and the battery life exceeds expectations. Sound quality is pristine across all genres.",
+      "name": "Best headphones I've ever owned"
+    },
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Michael Chen",
+        "@id": "https://example.com/users/michael-c"
+      },
+      "datePublished": "2024-01-08",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "4",
+        "bestRating": "5"
+      },
+      "reviewBody": "Great headphones with excellent build quality. Only minor complaint is they can feel slightly heavy during extended use.",
+      "name": "Excellent quality with minor comfort issue"
+    },
+    {
+      "@type": "Review",
+      "author": {
+        "@type": "Person",
+        "name": "Emily Rodriguez",
+        "@id": "https://example.com/users/emily-r"
+      },
+      "datePublished": "2024-01-05",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": "5",
+        "bestRating": "5"
+      },
+      "reviewBody": "Perfect for my daily commute. The ANC blocks out all the train noise and the battery lasts all week without needing a charge.",
+      "name": "Perfect commuter headphones"
+    }
+  ],
+  "additionalProperty": [
+    {
+      "@type": "PropertyValue",
+      "name": "Wireless Technology",
+      "value": "Bluetooth 5.2"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Battery Life",
+      "value": "30 hours (ANC on), 40 hours (ANC off)"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Weight",
+      "value": "250g"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Driver Size",
+      "value": "40mm"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Frequency Response",
+      "value": "20Hz - 20kHz"
+    }
+  ],
+  "category": "Electronics > Audio > Headphones > Over-Ear Headphones"
+}

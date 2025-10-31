@@ -12,9 +12,9 @@ Coverage targets:
 
 import pytest
 
-from pytoon import decode, encode
-from pytoon.encoder import Encoder
-from pytoon.primitives import _format_float
+from ptoon import decode, encode
+from ptoon.encoder import Encoder
+from ptoon.primitives import _format_float
 
 
 class TestDeepNestedArraysInListItems:
@@ -252,7 +252,7 @@ class TestSplitValuesEdgeCases:
     def test_empty_string_split(self):
         """Test splitting empty string."""
         # Tests decoder.py line 966 (empty string check)
-        from pytoon.decoder import Decoder
+        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         result = decoder._split_values("", ",")
@@ -261,7 +261,7 @@ class TestSplitValuesEdgeCases:
     def test_multi_character_delimiter_check(self):
         """Test _at_delimiter with multi-char delimiter."""
         # Tests decoder.py line 1006 (multi-char delimiter)
-        from pytoon.decoder import Decoder
+        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         # Test with multi-character delimiter (though TOON uses single-char)
@@ -366,7 +366,7 @@ class TestErrorMessageHints:
         """Test error falls back to generic hint."""
         # Tests decoder.py line 370 (generic hint fallback)
         # Most errors provide specific hints, so this is rare
-        from pytoon.decoder import Decoder
+        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         error = decoder._err(1, "test error", "test line", hint=None)
@@ -395,7 +395,7 @@ class TestPrimitiveParsingErrors:
         # Tests decoder.py lines 887-888 (int ValueError)
         # Python can handle arbitrarily large integers, so this path is very hard to hit
         # The defensive code is there for edge cases, but in practice int() succeeds
-        from pytoon.decoder import Decoder
+        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         # Very large integers parse fine in Python
@@ -406,7 +406,7 @@ class TestPrimitiveParsingErrors:
     def test_float_parsing_value_error(self):
         """Test float() raising ValueError."""
         # Tests decoder.py lines 892-893 (float ValueError)
-        from pytoon.decoder import Decoder
+        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         # Malformed float that passes regex but fails parsing

@@ -1,4 +1,4 @@
-from pytoon import decode, encode
+from ptoon import decode, encode
 
 
 def test_preserves_key_order_in_objects():

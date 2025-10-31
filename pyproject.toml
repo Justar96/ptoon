@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pytoon"
+name = "ptoon"
 version = "0.0.1"
 description = "Token-Oriented Object Notation - A Python implementation optimized for LLM token efficiency."
 requires-python = ">=3.10"
@@ -43,9 +43,10 @@ benchmark = [
     "faker>=20.0.0,<40.0.0",
     "tqdm>=4.65.0,<5.0.0",
 ]
-# LLM accuracy benchmark dependencies (requires OpenAI API)
+# LLM accuracy benchmark dependencies (requires OpenAI API or Vertex AI)
 llm-benchmark = [
     "openai>=1.0.0,<2.0.0",
+    "google-cloud-aiplatform>=1.122.0,<2.0.0",
     "tiktoken>=0.5.0,<1.0.0",
     "tqdm>=4.65.0,<5.0.0",
     "python-dotenv>=1.0.0,<2.0.0",
@@ -89,7 +90,7 @@ toon-benchmark = "benchmarks.run_benchmarks:main"
 toon-llm-benchmark = "benchmarks.llm_accuracy.__main__:main"
 
 [tool.hatchling.build.targets.wheel]
-packages = ["pytoon", "benchmarks"]
+packages = ["ptoon", "benchmarks"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -102,7 +103,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["pytoon"]
+source = ["ptoon"]
 omit = ["tests/*", "benchmarks/*"]
 branch = true
 
@@ -150,7 +151,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["pytoon"]
+known-first-party = ["ptoon"]
 force-single-line = false
 lines-after-imports = 2
 
@@ -196,7 +197,7 @@ reportMissingTypeStubs = false
 reportUnusedImport = true
 reportUnusedVariable = true
 reportDuplicateImport = true
-include = ["pytoon"]
+include = ["ptoon"]
 strictListInference = true
 strictDictionaryInference = true
 strictParameterNoneValue = true

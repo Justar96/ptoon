@@ -7,23 +7,14 @@ import tracemalloc
 from pathlib import Path
 from typing import Any
 
-import pytoon
+import ptoon
 
 from .datasets import get_all_datasets
+from .utils import format_bytes
 
 
 # Number of times to repeat memory measurements (use min to get conservative estimate)
 MEMORY_REPEATS = 5
-
-
-def format_bytes(n: int) -> str:
-    if n < 1024:
-        return f"{n} B"
-    kb = n / 1024.0
-    if kb < 1024:
-        return f"{kb:.2f} KB"
-    mb = kb / 1024.0
-    return f"{mb:.2f} MB"
 
 
 def measure_memory(func, *args, **kwargs) -> tuple[Any, int, int]:
@@ -53,7 +44,7 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
 
     for name, _emoji, _description, data in datasets:
         json_str = json.dumps(data, ensure_ascii=False)
-        toon_str = pytoon.encode(data)
+        toon_str = ptoon.encode(data)
 
         # output size comparison (bytes of Python str -> size in memory via getsizeof)
         json_size = sys.getsizeof(json_str)
@@ -75,7 +66,7 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
             lambda data=data: json.dumps(data, ensure_ascii=False)
         )
         _, cur_toon, peak_toon = measure_memory_repeated(
-            lambda data=data: pytoon.encode(data)
+            lambda data=data: ptoon.encode(data)
         )
         results["encoding"].append(
             {
@@ -91,7 +82,7 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
             lambda json_str=json_str: json.loads(json_str)
         )
         _, cur_toon_d, peak_toon_d = measure_memory_repeated(
-            lambda toon_str=toon_str: pytoon.decode(toon_str)
+            lambda toon_str=toon_str: ptoon.decode(toon_str)
         )
         results["decoding"].append(
             {

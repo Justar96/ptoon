@@ -269,3 +269,5 @@ examples/**/__pycache__/
 .augment/
 docs/plan/
 toon-ts/
+
+toon-vertex-key.json

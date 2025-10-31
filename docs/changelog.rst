@@ -1,7 +1,7 @@
 Changelog
 =========
 
-All notable changes to pytoon are documented here.
+All notable changes to ptoon are documented here.
 
 Version 0.0.1 (Current)
 -----------------------

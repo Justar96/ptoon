@@ -6,7 +6,7 @@ This page documents the ``Encoder`` class used for converting Python values to T
 Encoder Class
 -------------
 
-.. autoclass:: pytoon.encoder.Encoder
+.. autoclass:: ptoon.encoder.Encoder
    :members:
    :undoc-members:
    :show-inheritance:
@@ -18,7 +18,7 @@ Direct usage (advanced):
 
 .. code-block:: python
 
-    from pytoon.encoder import Encoder
+    from ptoon.encoder import Encoder
 
     # Create encoder with options
     encoder = Encoder(indent=4, delimiter="|", length_marker=True)
@@ -26,7 +26,7 @@ Direct usage (advanced):
     # Encode data
     toon_str = encoder.encode({"users": [...]})
 
-**Note:** Most users should use ``pytoon.encode()`` instead of using the ``Encoder`` class directly.
+**Note:** Most users should use ``ptoon.encode()`` instead of using the ``Encoder`` class directly.
 
 Encoding Strategies
 -------------------

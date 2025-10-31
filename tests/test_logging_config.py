@@ -1,4 +1,4 @@
-"""Tests for pytoon.logging_config module.
+"""Tests for ptoon.logging_config module.
 
 Tests environment variable handling, logger configuration,
 and programmatic logging control.
@@ -10,7 +10,7 @@ from unittest import mock
 
 import pytest
 
-from pytoon.logging_config import (
+from ptoon.logging_config import (
     DEBUG_LOG_LEVEL,
     DEFAULT_LOG_LEVEL,
     PYTOON_DEBUG_ENV_VAR,
@@ -195,7 +195,7 @@ class TestConfigureLogging:
     def test_sets_level_to_debug(self):
         """Test configure_logging(DEBUG) sets debug level."""
         # Create a logger first
-        logger = get_logger("pytoon.test_set_debug")
+        logger = get_logger("ptoon.test_set_debug")
 
         # Configure to DEBUG
         configure_logging(logging.DEBUG)
@@ -208,7 +208,7 @@ class TestConfigureLogging:
     def test_sets_level_to_warning(self):
         """Test configure_logging(WARNING) sets warning level."""
         # Create a logger first
-        logger = get_logger("pytoon.test_set_warning")
+        logger = get_logger("ptoon.test_set_warning")
 
         # Configure to WARNING
         configure_logging(logging.WARNING)
@@ -221,7 +221,7 @@ class TestConfigureLogging:
     def test_sets_level_to_info(self):
         """Test configure_logging(INFO) sets info level."""
         # Create a logger first
-        logger = get_logger("pytoon.test_set_info")
+        logger = get_logger("ptoon.test_set_info")
 
         # Configure to INFO
         configure_logging(logging.INFO)
@@ -236,7 +236,7 @@ class TestConfigureLogging:
         monkeypatch.setenv(PYTOON_DEBUG_ENV_VAR, "1")
         is_debug_enabled.cache_clear()
 
-        logger = get_logger("pytoon.test_none_debug")
+        logger = get_logger("ptoon.test_none_debug")
         configure_logging(None)
 
         assert logger.level == DEBUG_LOG_LEVEL
@@ -246,15 +246,15 @@ class TestConfigureLogging:
         monkeypatch.delenv(PYTOON_DEBUG_ENV_VAR, raising=False)
         is_debug_enabled.cache_clear()
 
-        logger = get_logger("pytoon.test_none_default")
+        logger = get_logger("ptoon.test_none_default")
         configure_logging(None)
 
         assert logger.level == DEFAULT_LOG_LEVEL
 
     def test_only_affects_pytoon_loggers(self):
-        """Test configure_logging() only modifies pytoon.* loggers."""
+        """Test configure_logging() only modifies ptoon.* loggers."""
         # Create pytoon logger
-        pytoon_logger = get_logger("pytoon.submodule")
+        pytoon_logger = get_logger("ptoon.submodule")
 
         # Create non-pytoon logger
         other_logger = logging.getLogger("other_package.module")
@@ -271,11 +271,11 @@ class TestConfigureLogging:
         assert other_logger.level == other_original_level
 
     def test_updates_all_existing_pytoon_loggers(self):
-        """Test configure_logging() updates all pytoon.* loggers."""
+        """Test configure_logging() updates all ptoon.* loggers."""
         # Create multiple pytoon loggers
-        logger1 = get_logger("pytoon.module1")
-        logger2 = get_logger("pytoon.module2")
-        logger3 = get_logger("pytoon.subpackage.module3")
+        logger1 = get_logger("ptoon.module1")
+        logger2 = get_logger("ptoon.module2")
+        logger3 = get_logger("ptoon.subpackage.module3")
 
         # Configure all at once
         configure_logging(logging.ERROR)

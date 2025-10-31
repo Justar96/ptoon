@@ -57,7 +57,7 @@ except ImportError:  # pragma: no cover - example dependency check
     )
     sys.exit(1)
 
-import pytoon
+import ptoon
 from benchmarks.datasets import generate_tabular_dataset
 
 
@@ -90,7 +90,7 @@ def format_data_json(data: dict[str, Any]) -> str:
 
 def format_data_toon(data: dict[str, Any]) -> str:
     """Format data as TOON (token-optimized approach)."""
-    return pytoon.encode(data)
+    return ptoon.encode(data)
 
 
 def compare_token_counts(data: dict[str, Any]) -> dict[str, float | int]:
@@ -133,7 +133,7 @@ def example_basic_pattern() -> None:
     print("Data to send:")
     print(data)
 
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     print("\nEncoded as TOON:")
     print("\n" + toon_str)
 
@@ -344,7 +344,7 @@ def example_error_handling() -> None:
         "    # Missing closing bracket\n"
     )
     try:
-        result = pytoon.decode(malformed_toon)
+        result = ptoon.decode(malformed_toon)
         print("Decoded successfully:", result)
     except Exception as e:  # noqa: BLE001 - example error display
         print(f"Decode error: {type(e).__name__}: {e}")
@@ -353,7 +353,7 @@ def example_error_handling() -> None:
     print("\n--- Scenario 2: LLM Returns JSON Instead ---")
     json_response = '{"name": "Ada", "salary": 120000}'
     try:
-        result = pytoon.decode(json_response)
+        result = ptoon.decode(json_response)
         print("Parsed as TOON:", result)
     except Exception:
         try:
@@ -367,7 +367,7 @@ def example_error_handling() -> None:
     def safe_decode(response_text: str) -> dict[str, Any] | str:
         # Try TOON first
         try:
-            return pytoon.decode(response_text)  # type: ignore[return-value]
+            return ptoon.decode(response_text)  # type: ignore[return-value]
         except Exception:
             pass
         # Try JSON
@@ -389,7 +389,7 @@ def example_error_handling() -> None:
         # Placeholder for real LLM call
         response_text = malformed_toon if attempt < max_retries - 1 else "name: Ada"
         try:
-            _ = pytoon.decode(response_text)
+            _ = ptoon.decode(response_text)
             print(f"Attempt {attempt + 1}: success")
             break
         except Exception:

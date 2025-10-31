@@ -54,15 +54,15 @@ Optimization Strategies
     data = {"values": list(range(100))}
 
     # Comma (default) - good balance
-    pytoon.encode(data, options={"delimiter": ","})
+    ptoon.encode(data, options={"delimiter": ","})
     # values[100]: 0, 1, 2, ...
 
     # Tab - most compact (2-3% savings)
-    pytoon.encode(data, options={"delimiter": "\t"})
+    ptoon.encode(data, options={"delimiter": "\t"})
     # values[100\t]: 0	1	2	...
 
     # Pipe - when data contains commas
-    pytoon.encode(data, options={"delimiter": "|"})
+    ptoon.encode(data, options={"delimiter": "|"})
     # values[100|]: 0| 1| 2| ...
 
 3. Shorten Field Names
@@ -112,12 +112,12 @@ Combine queries to reuse encoded data:
 
     # Inefficient: encode for each query
     for question in questions:
-        toon_str = pytoon.encode(data)
+        toon_str = ptoon.encode(data)
         prompt = f"Data:\n{toon_str}\n\n{question}"
         # Send to LLM
 
     # Efficient: encode once
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     for question in questions:
         prompt = f"Data:\n{toon_str}\n\n{question}"
         # Send to LLM
@@ -127,12 +127,12 @@ Measuring Token Savings
 
 .. note::
 
-    **Model/Tokenizer Mapping:** Token counting in pytoon uses OpenAI's ``tiktoken`` library with the ``o200k_base`` encoding (GPT-4o and newer models). Counts shown are for OpenAI models. For Anthropic Claude or Google Gemini, use their tokenizers for accuracy; pytoon counts will be approximate.
+    **Model/Tokenizer Mapping:** Token counting in ptoon uses OpenAI's ``tiktoken`` library with the ``o200k_base`` encoding (GPT-4o and newer models). Counts shown are for OpenAI models. For Anthropic Claude or Google Gemini, use their tokenizers for accuracy; ptoon counts will be approximate.
 
     While absolute token counts differ across providers, the **relative savings (30-60%) remain consistent**. For provider-specific precision:
 
-    * **OpenAI (GPT-4o, GPT-4o-mini):** Use ``pytoon.count_tokens()`` (default ``o200k_base``)
-    * **OpenAI (GPT-4, GPT-3.5):** Use ``pytoon.count_tokens(text, encoding="cl100k_base")``
+    * **OpenAI (GPT-4o, GPT-4o-mini):** Use ``ptoon.count_tokens()`` (default ``o200k_base``)
+    * **OpenAI (GPT-4, GPT-3.5):** Use ``ptoon.count_tokens(text, encoding="cl100k_base")``
     * **Anthropic Claude:** Use the ``anthropic`` SDK's token counting
     * **Google Gemini:** Use ``google-generativeai`` SDK's token counting
     * **Llama models:** Use Hugging Face tokenizers
@@ -144,10 +144,10 @@ Use estimate_savings()
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     data = {"employees": [...]}  # Your data
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
 
     print(f"JSON tokens: {result['json_tokens']}")
     print(f"TOON tokens: {result['toon_tokens']}")
@@ -158,7 +158,7 @@ Use compare_formats()
 
 .. code-block:: python
 
-    print(pytoon.compare_formats(data))
+    print(ptoon.compare_formats(data))
 
 Output:
 
@@ -229,7 +229,7 @@ Per-Request Savings
 .. code-block:: python
 
     # Calculate cost savings per request
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     
     # GPT-4o-mini pricing: $0.60 per 1M input tokens
     cost_per_million = 0.60
@@ -273,10 +273,10 @@ Choose format based on data characteristics:
 .. code-block:: python
 
     def choose_format(data):
-        result = pytoon.estimate_savings(data)
+        result = ptoon.estimate_savings(data)
         
         if result['savings_percent'] > 30:
-            return "toon", pytoon.encode(data)
+            return "toon", ptoon.encode(data)
         else:
             return "json", json.dumps(data)
 
@@ -291,7 +291,7 @@ Mix TOON and JSON based on use case:
 .. code-block:: python
 
     # TOON for large data in prompts
-    data_toon = pytoon.encode(large_dataset)
+    data_toon = ptoon.encode(large_dataset)
 
     # JSON for function calling schemas
     functions = [{

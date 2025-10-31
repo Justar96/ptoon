@@ -1,7 +1,7 @@
 Quickstart Guide
 ================
 
-This guide will get you started with pytoon in minutes.
+This guide will get you started with ptoon in minutes.
 
 Basic Encoding
 --------------
@@ -11,7 +11,7 @@ Simple Dictionary
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     data = {
         "name": "Alice",
@@ -19,7 +19,7 @@ Simple Dictionary
         "city": "San Francisco"
     }
 
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     print(toon_str)
 
 Output:
@@ -36,7 +36,7 @@ Simple List
 .. code-block:: python
 
     data = {"numbers": [1, 2, 3, 4, 5]}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     print(toon_str)
 
 Output:
@@ -60,7 +60,7 @@ Nested Structure
         }
     }
 
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     print(toon_str)
 
 Output:
@@ -86,7 +86,7 @@ Decode TOON string back to Python:
     city: San Francisco
     """
 
-    data = pytoon.decode(toon_str)
+    data = ptoon.decode(toon_str)
     print(data)
     # Output: {'name': 'Alice', 'age': 30, 'city': 'San Francisco'}
 
@@ -97,7 +97,7 @@ Verify data integrity:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     original = {
         "users": [
@@ -107,10 +107,10 @@ Verify data integrity:
     }
 
     # Encode
-    toon_str = pytoon.encode(original)
+    toon_str = ptoon.encode(original)
     
     # Decode
-    decoded = pytoon.decode(toon_str)
+    decoded = ptoon.decode(toon_str)
     
     # Verify
     assert decoded == original
@@ -126,7 +126,7 @@ Reduce token usage when sending data to language models:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import openai
 
     # Your data
@@ -137,7 +137,7 @@ Reduce token usage when sending data to language models:
     ]
 
     # Encode to TOON
-    toon_str = pytoon.encode({"employees": employees})
+    toon_str = ptoon.encode({"employees": employees})
 
     # Use in LLM prompt
     prompt = f"""
@@ -183,18 +183,18 @@ Count tokens in your data:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     data = {"employees": [...]}  # Your data
 
     # Count JSON tokens
     import json
     json_str = json.dumps(data)
-    json_tokens = pytoon.count_tokens(json_str)
+    json_tokens = ptoon.count_tokens(json_str)
 
     # Count TOON tokens
-    toon_str = pytoon.encode(data)
-    toon_tokens = pytoon.count_tokens(toon_str)
+    toon_str = ptoon.encode(data)
+    toon_tokens = ptoon.count_tokens(toon_str)
 
     print(f"JSON: {json_tokens} tokens")
     print(f"TOON: {toon_tokens} tokens")
@@ -207,7 +207,7 @@ Easily compare JSON vs TOON:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     data = {
         "users": [
@@ -217,7 +217,7 @@ Easily compare JSON vs TOON:
     }
 
     # Visual comparison
-    print(pytoon.compare_formats(data))
+    print(ptoon.compare_formats(data))
 
 Output:
 
@@ -235,7 +235,7 @@ You can also use ``estimate_savings()`` for programmatic access:
 
 .. code-block:: python
 
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     print(f"JSON tokens: {result['json_tokens']}")
     print(f"TOON tokens: {result['toon_tokens']}")
     print(f"Savings: {result['savings_percent']:.1f}%")
@@ -256,7 +256,7 @@ TOON supports several encoding options to customize output:
         "length_marker": False # include #N in headers
     }
 
-    toon_str = pytoon.encode(data, options=options)
+    toon_str = ptoon.encode(data, options=options)
 
 Delimiter Options
 ~~~~~~~~~~~~~~~~~
@@ -268,15 +268,15 @@ Choose delimiter based on your data:
     data = {"values": [1, 2, 3]}
 
     # Comma (default)
-    pytoon.encode(data, options={"delimiter": ","})
+    ptoon.encode(data, options={"delimiter": ","})
     # values[3]: 1, 2, 3
 
     # Pipe
-    pytoon.encode(data, options={"delimiter": "|"})
+    ptoon.encode(data, options={"delimiter": "|"})
     # values[3|]: 1| 2| 3
 
     # Tab
-    pytoon.encode(data, options={"delimiter": "\t"})
+    ptoon.encode(data, options={"delimiter": "\t"})
     # values[3\t]: 1	2	3
 
 For detailed encoding options, see :doc:`/guides/encoding_options`.

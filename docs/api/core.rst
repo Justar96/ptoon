@@ -1,28 +1,28 @@
 Core API Reference
 ==================
 
-This page documents the main ``pytoon`` module API.
+This page documents the main ``ptoon`` module API.
 
 Module Overview
 ---------------
 
-The ``pytoon`` module provides the main entry points for encoding and decoding TOON format.
+The ``ptoon`` module provides the main entry points for encoding and decoding TOON format.
 
 Main Functions
 --------------
 
-.. automodule:: pytoon
+.. automodule:: ptoon
    :members: encode, decode
    :undoc-members:
 
 Utility Functions
 -----------------
 
-.. autofunction:: pytoon.count_tokens
+.. autofunction:: ptoon.count_tokens
 
-.. autofunction:: pytoon.estimate_savings
+.. autofunction:: ptoon.estimate_savings
 
-.. autofunction:: pytoon.compare_formats
+.. autofunction:: ptoon.compare_formats
 
 Examples
 --------
@@ -32,14 +32,14 @@ Basic Usage
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     # Encode
     data = {"name": "Alice", "age": 30}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Decode
-    decoded = pytoon.decode(toon_str)
+    decoded = ptoon.decode(toon_str)
     assert decoded == data
 
 With Options
@@ -52,7 +52,7 @@ With Options
         "indent": 4,
         "length_marker": True
     }
-    toon_str = pytoon.encode(data, options=options)
+    toon_str = ptoon.encode(data, options=options)
 
 Token Counting
 ~~~~~~~~~~~~~~
@@ -60,14 +60,14 @@ Token Counting
 .. code-block:: python
 
     # Count tokens
-    tokens = pytoon.count_tokens(toon_str)
+    tokens = ptoon.count_tokens(toon_str)
 
     # Estimate savings
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     print(f"Savings: {result['savings_percent']:.1f}%")
 
     # Visual comparison
-    print(pytoon.compare_formats(data))
+    print(ptoon.compare_formats(data))
 
 See Also
 --------

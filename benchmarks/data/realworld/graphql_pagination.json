@@ -1,0 +1,202 @@
+{
+  "data": {
+    "repository": {
+      "name": "typescript",
+      "owner": {
+        "login": "microsoft"
+      },
+      "issues": {
+        "totalCount": 5847,
+        "pageInfo": {
+          "hasNextPage": true,
+          "hasPreviousPage": false,
+          "startCursor": "Y3Vyc29yOnYyOpHOABc7gA==",
+          "endCursor": "Y3Vyc29yOnYyOpHOABdCIA=="
+        },
+        "edges": [
+          {
+            "cursor": "Y3Vyc29yOnYyOpHOABc7gA==",
+            "node": {
+              "id": "I_kwDOADtDG85ZxOgA",
+              "number": 54321,
+              "title": "Type inference fails for generic constrained types",
+              "state": "OPEN",
+              "author": {
+                "login": "developer789"
+              },
+              "createdAt": "2024-01-15T08:30:15Z",
+              "updatedAt": "2024-01-15T12:45:22Z",
+              "body": "When using generic types with constraints, the type inference doesn't work as expected in certain cases...",
+              "labels": {
+                "totalCount": 3,
+                "nodes": [
+                  {
+                    "name": "Bug",
+                    "color": "d73a4a",
+                    "description": "Something isn't working"
+                  },
+                  {
+                    "name": "Needs Investigation",
+                    "color": "fbca04",
+                    "description": "Requires further analysis"
+                  },
+                  {
+                    "name": "Type System",
+                    "color": "0075ca",
+                    "description": "Related to TypeScript's type system"
+                  }
+                ]
+              },
+              "reactions": {
+                "totalCount": 15
+              },
+              "comments": {
+                "totalCount": 7
+              }
+            }
+          },
+          {
+            "cursor": "Y3Vyc29yOnYyOpHOABc7hQ==",
+            "node": {
+              "id": "I_kwDOADtDG85ZxPhQ",
+              "number": 54322,
+              "title": "Add support for template literal types in mapped types",
+              "state": "OPEN",
+              "author": {
+                "login": "contributor234"
+              },
+              "createdAt": "2024-01-14T16:20:45Z",
+              "updatedAt": "2024-01-15T10:15:33Z",
+              "body": "It would be useful to have better support for template literal types when using mapped types...",
+              "labels": {
+                "totalCount": 2,
+                "nodes": [
+                  {
+                    "name": "Suggestion",
+                    "color": "c5def5",
+                    "description": "An idea for TypeScript"
+                  },
+                  {
+                    "name": "Type System",
+                    "color": "0075ca",
+                    "description": "Related to TypeScript's type system"
+                  }
+                ]
+              },
+              "reactions": {
+                "totalCount": 42
+              },
+              "comments": {
+                "totalCount": 12
+              }
+            }
+          },
+          {
+            "cursor": "Y3Vyc29yOnYyOpHOABc7iA==",
+            "node": {
+              "id": "I_kwDOADtDG85ZxQiA",
+              "number": 54323,
+              "title": "Performance regression in 5.3.2",
+              "state": "CLOSED",
+              "author": {
+                "login": "user567"
+              },
+              "createdAt": "2024-01-13T11:45:12Z",
+              "updatedAt": "2024-01-15T09:22:18Z",
+              "closedAt": "2024-01-15T09:22:18Z",
+              "body": "After upgrading to TypeScript 5.3.2, we're seeing significant performance degradation in our CI builds...",
+              "labels": {
+                "totalCount": 2,
+                "nodes": [
+                  {
+                    "name": "Bug",
+                    "color": "d73a4a",
+                    "description": "Something isn't working"
+                  },
+                  {
+                    "name": "Performance",
+                    "color": "e99695",
+                    "description": "Related to compilation or runtime performance"
+                  }
+                ]
+              },
+              "reactions": {
+                "totalCount": 28
+              },
+              "comments": {
+                "totalCount": 18
+              }
+            }
+          },
+          {
+            "cursor": "Y3Vyc29yOnYyOpHOABc7jQ==",
+            "node": {
+              "id": "I_kwDOADtDG85ZxRjQ",
+              "number": 54324,
+              "title": "Documentation: Clarify behavior of satisfies operator",
+              "state": "OPEN",
+              "author": {
+                "login": "docs_contributor"
+              },
+              "createdAt": "2024-01-12T14:30:00Z",
+              "updatedAt": "2024-01-14T16:45:30Z",
+              "body": "The current documentation for the satisfies operator could be clearer about edge cases...",
+              "labels": {
+                "totalCount": 1,
+                "nodes": [
+                  {
+                    "name": "Documentation",
+                    "color": "0075ca",
+                    "description": "Improvements or additions to documentation"
+                  }
+                ]
+              },
+              "reactions": {
+                "totalCount": 8
+              },
+              "comments": {
+                "totalCount": 5
+              }
+            }
+          },
+          {
+            "cursor": "Y3Vyc29yOnYyOpHOABdCIA==",
+            "node": {
+              "id": "I_kwDOADtDG85ZxSkA",
+              "number": 54325,
+              "title": "Allow const type parameters in classes",
+              "state": "OPEN",
+              "author": {
+                "login": "feature_requester"
+              },
+              "createdAt": "2024-01-11T09:15:22Z",
+              "updatedAt": "2024-01-15T11:30:45Z",
+              "body": "Similar to how const type parameters work in functions, it would be beneficial to have them in classes as well...",
+              "labels": {
+                "totalCount": 2,
+                "nodes": [
+                  {
+                    "name": "Suggestion",
+                    "color": "c5def5",
+                    "description": "An idea for TypeScript"
+                  },
+                  {
+                    "name": "Awaiting More Feedback",
+                    "color": "fbca04",
+                    "description": "This means we'd like to hear from more people who would be helped by this feature"
+                  }
+                ]
+              },
+              "reactions": {
+                "totalCount": 64
+              },
+              "comments": {
+                "totalCount": 23
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

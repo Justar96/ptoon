@@ -1,7 +1,7 @@
 Core API
 ========
 
-This page documents the main API functions provided by pytoon. See :doc:`../api/types` for reusable type aliases used throughout the examples.
+This page documents the main API functions provided by ptoon. See :doc:`../api/types` for reusable type aliases used throughout the examples.
 
 .. note::
 
@@ -15,7 +15,7 @@ encode()
 
 .. code-block:: python
 
-    pytoon.encode(value: JsonValue, *, options: EncodeOptions | None = None) -> str
+    ptoon.encode(value: JsonValue, *, options: EncodeOptions | None = None) -> str
 
 Encode a Python value to TOON format.
 
@@ -46,7 +46,7 @@ Simple object:
 .. code-block:: python
 
     data = {"name": "Alice", "age": 30}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     print(toon_str)
     # Output:
     # name: Alice
@@ -62,7 +62,7 @@ Array of objects (tabular format):
             {"id": 2, "name": "Bob"}
         ]
     }
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     print(toon_str)
     # Output:
     # users[2]{id, name}:
@@ -78,7 +78,7 @@ With options:
         "indent": 4,
         "length_marker": True
     }
-    toon_str = pytoon.encode(data, options=options)
+    toon_str = ptoon.encode(data, options=options)
 
 **Errors:**
 
@@ -90,7 +90,7 @@ decode()
 
 .. code-block:: python
 
-    pytoon.decode(text: str) -> JsonValue
+    ptoon.decode(text: str) -> JsonValue
 
 Decode a TOON-formatted string to Python value.
 
@@ -112,7 +112,7 @@ Simple object:
     name: Alice
     age: 30
     """
-    data = pytoon.decode(toon_str)
+    data = ptoon.decode(toon_str)
     print(data)
     # Output: {'name': 'Alice', 'age': 30}
 
@@ -125,7 +125,7 @@ Tabular array:
       1, Alice
       2, Bob
     """
-    data = pytoon.decode(toon_str)
+    data = ptoon.decode(toon_str)
     print(data)
     # Output: {'users': [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]}
 
@@ -147,7 +147,7 @@ count_tokens()
 
 .. code-block:: python
 
-    pytoon.count_tokens(text: str, encoding: str = "o200k_base") -> int
+    ptoon.count_tokens(text: str, encoding: str = "o200k_base") -> int
 
 Count tokens in a string using tiktoken.
 
@@ -179,22 +179,22 @@ Requires ``tiktoken`` package:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     text = "Hello, world!"
-    token_count = pytoon.count_tokens(text)
+    token_count = ptoon.count_tokens(text)
     print(f"Tokens: {token_count}")
     # Output: Tokens: 4
 
     # With different encoding
-    token_count = pytoon.count_tokens(text, encoding="cl100k_base")
+    token_count = ptoon.count_tokens(text, encoding="cl100k_base")
 
 estimate_savings()
 ~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    pytoon.estimate_savings(data: Any, encoding: str = "o200k_base") -> dict[str, int | float]
+    ptoon.estimate_savings(data: Any, encoding: str = "o200k_base") -> dict[str, int | float]
 
 Compare JSON vs TOON token efficiency for a value.
 
@@ -216,7 +216,7 @@ Dictionary with keys:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     data = {
         "users": [
@@ -225,21 +225,21 @@ Dictionary with keys:
         ]
     }
 
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     print(f"JSON tokens: {result['json_tokens']}")
     print(f"TOON tokens: {result['toon_tokens']}")
     print(f"Savings: {result['savings']} tokens ({result['savings_percent']:.1f}%)")
 
 **Note:**
 
-To compare specific encoding options, encode manually with ``pytoon.encode(..., options=...)`` and count tokens using ``pytoon.count_tokens()``.
+To compare specific encoding options, encode manually with ``ptoon.encode(..., options=...)`` and count tokens using ``ptoon.count_tokens()``.
 
 compare_formats()
 ~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    pytoon.compare_formats(data: Any, encoding: str = "o200k_base") -> str
+    ptoon.compare_formats(data: Any, encoding: str = "o200k_base") -> str
 
 Generate visual comparison table of JSON vs TOON formats.
 
@@ -256,10 +256,10 @@ Generate visual comparison table of JSON vs TOON formats.
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     data = {"users": [{"id": 1, "name": "Alice"}]}
-    print(pytoon.compare_formats(data))
+    print(ptoon.compare_formats(data))
 
 Output:
 
@@ -292,12 +292,12 @@ Number of spaces per indentation level.
 .. code-block:: python
 
     # indent=2 (default)
-    pytoon.encode({"user": {"name": "Alice"}}, options={"indent": 2})
+    ptoon.encode({"user": {"name": "Alice"}}, options={"indent": 2})
     # user:
     #   name: Alice
 
     # indent=4
-    pytoon.encode({"user": {"name": "Alice"}}, options={"indent": 4})
+    ptoon.encode({"user": {"name": "Alice"}}, options={"indent": 4})
     # user:
     #     name: Alice
 
@@ -317,15 +317,15 @@ Delimiter for array values in inline and tabular formats.
     data = {"values": [1, 2, 3]}
 
     # Comma (default)
-    pytoon.encode(data, options={"delimiter": ","})
+    ptoon.encode(data, options={"delimiter": ","})
     # values[3]: 1, 2, 3
 
     # Pipe
-    pytoon.encode(data, options={"delimiter": "|"})
+    ptoon.encode(data, options={"delimiter": "|"})
     # values[3|]: 1| 2| 3
 
     # Tab
-    pytoon.encode(data, options={"delimiter": "\t"})
+    ptoon.encode(data, options={"delimiter": "\t"})
     # values[3\t]: 1	2	3
 
 length_marker
@@ -344,11 +344,11 @@ Include ``#`` prefix in array length markers for strict validation.
     data = {"items": [1, 2, 3]}
 
     # length_marker=False (default)
-    pytoon.encode(data, options={"length_marker": False})
+    ptoon.encode(data, options={"length_marker": False})
     # items[3]: 1, 2, 3
 
     # length_marker=True
-    pytoon.encode(data, options={"length_marker": True})
+    ptoon.encode(data, options={"length_marker": True})
     # items[#3]: 1, 2, 3
 
 With length markers, the decoder strictly validates array lengths and raises ``ValueError`` if mismatch occurs.
@@ -356,11 +356,11 @@ With length markers, the decoder strictly validates array lengths and raises ``V
 Type System
 -----------
 
-pytoon provides type hints for better IDE support:
+ptoon provides type hints for better IDE support:
 
 .. code-block:: python
 
-    from pytoon.types import (
+    from ptoon.types import (
         JsonValue,      # Any JSON-compatible value
         JsonObject,     # dict[str, JsonValue]
         JsonArray,      # list[JsonValue]
@@ -373,11 +373,11 @@ pytoon provides type hints for better IDE support:
 
 .. code-block:: python
 
-    from pytoon.types import JsonObject, EncodeOptions
-    import pytoon
+    from ptoon.types import JsonObject, EncodeOptions
+    import ptoon
 
     def process_data(data: JsonObject, opts: EncodeOptions) -> str:
-        return pytoon.encode(data, options=opts)
+        return ptoon.encode(data, options=opts)
 
 Best Practices
 --------------
@@ -407,7 +407,7 @@ Always wrap decode in try-except:
 .. code-block:: python
 
     try:
-        data = pytoon.decode(toon_str)
+        data = ptoon.decode(toon_str)
     except ValueError as e:
         print(f"Decode error: {e}")
         # Handle error or fallback to JSON

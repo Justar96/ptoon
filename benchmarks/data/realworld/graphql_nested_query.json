@@ -1,0 +1,136 @@
+{
+  "data": {
+    "repository": {
+      "name": "react",
+      "description": "A declarative, efficient, and flexible JavaScript library for building user interfaces",
+      "stargazerCount": 215678,
+      "forkCount": 44567,
+      "owner": {
+        "login": "facebook",
+        "avatarUrl": "https://avatars.githubusercontent.com/u/69631?v=4",
+        "repositories": {
+          "totalCount": 153,
+          "edges": [
+            {
+              "node": {
+                "name": "react",
+                "description": "A declarative, efficient, and flexible JavaScript library",
+                "stargazerCount": 215678,
+                "issues": {
+                  "totalCount": 1234,
+                  "edges": [
+                    {
+                      "node": {
+                        "title": "Bug: useState hook not updating in nested component",
+                        "state": "OPEN",
+                        "createdAt": "2024-01-10T14:23:45Z",
+                        "author": {
+                          "login": "developer123"
+                        },
+                        "comments": {
+                          "totalCount": 8,
+                          "edges": [
+                            {
+                              "node": {
+                                "body": "I can reproduce this issue in version 18.2.0",
+                                "createdAt": "2024-01-10T15:45:12Z",
+                                "author": {
+                                  "login": "contributor456"
+                                }
+                              }
+                            },
+                            {
+                              "node": {
+                                "body": "This might be related to the batching changes",
+                                "createdAt": "2024-01-10T16:22:33Z",
+                                "author": {
+                                  "login": "maintainer789"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "node": {
+                        "title": "Feature Request: Add support for async rendering",
+                        "state": "OPEN",
+                        "createdAt": "2024-01-09T10:11:22Z",
+                        "author": {
+                          "login": "poweruser321"
+                        },
+                        "comments": {
+                          "totalCount": 15,
+                          "edges": [
+                            {
+                              "node": {
+                                "body": "This would be really useful for our use case",
+                                "createdAt": "2024-01-09T11:33:44Z",
+                                "author": {
+                                  "login": "teamlead555"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "pageInfo": {
+                    "hasNextPage": true,
+                    "endCursor": "Y3Vyc29yOnYyOpHOABCD1234"
+                  }
+                }
+              }
+            },
+            {
+              "node": {
+                "name": "react-native",
+                "description": "A framework for building native apps using React",
+                "stargazerCount": 112345,
+                "issues": {
+                  "totalCount": 567,
+                  "edges": [
+                    {
+                      "node": {
+                        "title": "iOS build fails with Xcode 15",
+                        "state": "CLOSED",
+                        "createdAt": "2024-01-08T09:15:33Z",
+                        "author": {
+                          "login": "mobileDev999"
+                        },
+                        "comments": {
+                          "totalCount": 4,
+                          "edges": [
+                            {
+                              "node": {
+                                "body": "Fixed by updating the podfile",
+                                "createdAt": "2024-01-08T10:22:11Z",
+                                "author": {
+                                  "login": "iosDeveloper"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "pageInfo": {
+                    "hasNextPage": true,
+                    "endCursor": "Y3Vyc29yOnYyOpHOABCD5678"
+                  }
+                }
+              }
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": true,
+            "endCursor": "Y3Vyc29yOnYyOpHOABCD9999"
+          }
+        }
+      }
+    }
+  }
+}

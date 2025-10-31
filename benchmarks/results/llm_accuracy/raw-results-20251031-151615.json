@@ -1,0 +1,222 @@
+[
+  {
+    "question_id": "q1",
+    "format": "JSON",
+    "model": "gpt-5",
+    "expected": "90804",
+    "actual": "90804",
+    "is_correct": true,
+    "input_tokens": 7451,
+    "output_tokens": 5,
+    "latency_ms": 5967.844758008141
+  },
+  {
+    "question_id": "q1",
+    "format": "TOON",
+    "model": "gpt-5",
+    "expected": "90804",
+    "actual": "90804",
+    "is_correct": true,
+    "input_tokens": 2861,
+    "output_tokens": 5,
+    "latency_ms": 5736.015859991312
+  },
+  {
+    "question_id": "q2",
+    "format": "JSON",
+    "model": "gpt-5",
+    "expected": "Marketing",
+    "actual": "Marketing",
+    "is_correct": true,
+    "input_tokens": 7451,
+    "output_tokens": 1,
+    "latency_ms": 6252.318266953807
+  },
+  {
+    "question_id": "q2",
+    "format": "TOON",
+    "model": "gpt-5",
+    "expected": "Marketing",
+    "actual": "Marketing",
+    "is_correct": true,
+    "input_tokens": 2861,
+    "output_tokens": 1,
+    "latency_ms": 6720.20015201997
+  },
+  {
+    "question_id": "q3",
+    "format": "JSON",
+    "model": "gpt-5",
+    "expected": "lindsay31@example.com",
+    "actual": "lindsay31@example.com",
+    "is_correct": true,
+    "input_tokens": 7452,
+    "output_tokens": 8,
+    "latency_ms": 6232.957173022442
+  },
+  {
+    "question_id": "q3",
+    "format": "TOON",
+    "model": "gpt-5",
+    "expected": "lindsay31@example.com",
+    "actual": "lindsay31@example.com",
+    "is_correct": true,
+    "input_tokens": 2862,
+    "output_tokens": 8,
+    "latency_ms": 5919.45108800428
+  },
+  {
+    "question_id": "q4",
+    "format": "JSON",
+    "model": "gpt-5",
+    "expected": "127827",
+    "actual": "127827",
+    "is_correct": true,
+    "input_tokens": 7451,
+    "output_tokens": 6,
+    "latency_ms": 6705.830565013457
+  },
+  {
+    "question_id": "q4",
+    "format": "TOON",
+    "model": "gpt-5",
+    "expected": "127827",
+    "actual": "127827",
+    "is_correct": true,
+    "input_tokens": 2861,
+    "output_tokens": 6,
+    "latency_ms": 6324.189791979734
+  },
+  {
+    "question_id": "q5",
+    "format": "JSON",
+    "model": "gpt-5",
+    "expected": "Marketing",
+    "actual": "Marketing",
+    "is_correct": true,
+    "input_tokens": 7451,
+    "output_tokens": 1,
+    "latency_ms": 5447.726500977296
+  },
+  {
+    "question_id": "q5",
+    "format": "TOON",
+    "model": "gpt-5",
+    "expected": "Marketing",
+    "actual": "Marketing",
+    "is_correct": true,
+    "input_tokens": 2861,
+    "output_tokens": 1,
+    "latency_ms": 6007.053509994876
+  },
+  {
+    "question_id": "q6",
+    "format": "JSON",
+    "model": "gpt-5",
+    "expected": "pbutler@example.org",
+    "actual": "pbutler@example.org",
+    "is_correct": true,
+    "input_tokens": 7452,
+    "output_tokens": 7,
+    "latency_ms": 6782.448595040478
+  },
+  {
+    "question_id": "q6",
+    "format": "TOON",
+    "model": "gpt-5",
+    "expected": "pbutler@example.org",
+    "actual": "pbutler@example.org",
+    "is_correct": true,
+    "input_tokens": 2862,
+    "output_tokens": 7,
+    "latency_ms": 6907.659473014064
+  },
+  {
+    "question_id": "q7",
+    "format": "JSON",
+    "model": "gpt-5",
+    "expected": "75692",
+    "actual": "75692",
+    "is_correct": true,
+    "input_tokens": 7451,
+    "output_tokens": 5,
+    "latency_ms": 8326.599625987
+  },
+  {
+    "question_id": "q7",
+    "format": "TOON",
+    "model": "gpt-5",
+    "expected": "75692",
+    "actual": "75692",
+    "is_correct": true,
+    "input_tokens": 2861,
+    "output_tokens": 5,
+    "latency_ms": 7388.739179994445
+  },
+  {
+    "question_id": "q8",
+    "format": "JSON",
+    "model": "gpt-5",
+    "expected": "Marketing",
+    "actual": "Marketing",
+    "is_correct": true,
+    "input_tokens": 7451,
+    "output_tokens": 1,
+    "latency_ms": 7183.231984032318
+  },
+  {
+    "question_id": "q8",
+    "format": "TOON",
+    "model": "gpt-5",
+    "expected": "Marketing",
+    "actual": "Marketing",
+    "is_correct": true,
+    "input_tokens": 2861,
+    "output_tokens": 1,
+    "latency_ms": 7830.907950003166
+  },
+  {
+    "question_id": "q9",
+    "format": "JSON",
+    "model": "gpt-5",
+    "expected": "jessica61@example.net",
+    "actual": "jessica61@example.net",
+    "is_correct": true,
+    "input_tokens": 7452,
+    "output_tokens": 7,
+    "latency_ms": 8251.555897004437
+  },
+  {
+    "question_id": "q9",
+    "format": "TOON",
+    "model": "gpt-5",
+    "expected": "jessica61@example.net",
+    "actual": "jessica61@example.net",
+    "is_correct": true,
+    "input_tokens": 2862,
+    "output_tokens": 7,
+    "latency_ms": 6817.43178301258
+  },
+  {
+    "question_id": "q10",
+    "format": "JSON",
+    "model": "gpt-5",
+    "expected": "104834",
+    "actual": "104834",
+    "is_correct": true,
+    "input_tokens": 7451,
+    "output_tokens": 6,
+    "latency_ms": 5789.538182958495
+  },
+  {
+    "question_id": "q10",
+    "format": "TOON",
+    "model": "gpt-5",
+    "expected": "104834",
+    "actual": "104834",
+    "is_correct": true,
+    "input_tokens": 2861,
+    "output_tokens": 6,
+    "latency_ms": 7956.795534992125
+  }
+]

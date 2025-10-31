@@ -17,6 +17,13 @@ from benchmarks.datasets import (
     generate_tabular_dataset,
     load_github_dataset,
 )
+from benchmarks.llm_accuracy.realworld_datasets import (
+    generate_code_generation_dataset,
+    generate_customer_support_dataset,
+    generate_data_analysis_dataset,
+    generate_multidoc_reasoning_dataset,
+    generate_rag_documentation_dataset,
+)
 
 from .compare import compare_and_save
 from .evaluate import (
@@ -28,6 +35,7 @@ from .evaluate import (
     run_evaluation,
 )
 from .questions import generate_questions
+from .realworld_questions import generate_realworld_questions
 from .report import generate_report
 
 
@@ -103,21 +111,54 @@ def check_dependencies() -> None:
         ) from exc
 
 
-def validate_environment() -> dict[str, str]:
-    json_key = os.getenv("OPENAI_API_KEY_JSON")
-    toon_key = os.getenv("OPENAI_API_KEY_TOON")
+def validate_environment(provider_type: str = "openai") -> dict[str, str]:
+    """Validate environment variables for the selected provider.
 
-    if not json_key or not toon_key:
-        raise ValueError(
-            "Both OPENAI_API_KEY_JSON and OPENAI_API_KEY_TOON are required. "
-            "Dual API keys enable separate tracking in OpenAI console for JSON vs TOON evaluations."
-        )
+    Args:
+        provider_type: 'openai' or 'vertex'
 
-    config = {
-        "OPENAI_API_KEY_JSON": json_key,
-        "OPENAI_API_KEY_TOON": toon_key,
-        "CONCURRENCY": os.getenv("CONCURRENCY", str(DEFAULT_CONCURRENCY)),
-    }
+    Returns:
+        Configuration dictionary
+
+    Raises:
+        ValueError: If required environment variables are missing
+    """
+    if provider_type == "openai":
+        json_key = os.getenv("OPENAI_API_KEY_JSON")
+        toon_key = os.getenv("OPENAI_API_KEY_TOON")
+
+        if not json_key or not toon_key:
+            raise ValueError(
+                "Both OPENAI_API_KEY_JSON and OPENAI_API_KEY_TOON are required. "
+                "Dual API keys enable separate tracking in OpenAI console for JSON vs TOON evaluations."
+            )
+
+        config = {
+            "OPENAI_API_KEY_JSON": json_key,
+            "OPENAI_API_KEY_TOON": toon_key,
+            "CONCURRENCY": os.getenv("CONCURRENCY", str(DEFAULT_CONCURRENCY)),
+            "provider": "openai",
+        }
+
+    elif provider_type == "vertex":
+        project_id = os.getenv("VERTEX_PROJECT_ID")
+        location = os.getenv("VERTEX_LOCATION", "us-central1")
+
+        if not project_id:
+            raise ValueError(
+                "VERTEX_PROJECT_ID is required for Vertex AI provider. "
+                "Set it to your Google Cloud project ID."
+            )
+
+        config = {
+            "VERTEX_PROJECT_ID": project_id,
+            "VERTEX_LOCATION": location,
+            "CONCURRENCY": os.getenv("CONCURRENCY", str(DEFAULT_CONCURRENCY)),
+            "provider": "vertex",
+        }
+
+    else:
+        raise ValueError(f"Unknown provider type: {provider_type}. Must be 'openai' or 'vertex'.")
 
     return config
 
@@ -157,9 +198,9 @@ def _load_existing_results(
 
 
 def _resolve_questions_from_results(
-    results: list[dict[str, Any]],
+    results: list[dict[str, Any]], use_realworld: bool = False
 ) -> list[dict[str, Any]]:
-    questions = generate_questions()
+    questions = generate_realworld_questions() if use_realworld else generate_questions()
     question_map = {q["id"]: q for q in questions}
     seen_ids = {entry.get("question_id") for entry in results if "question_id" in entry}
     ordered: list[dict[str, Any]] = [
@@ -168,13 +209,22 @@ def _resolve_questions_from_results(
     return ordered
 
 
-def _build_datasets() -> dict[str, dict[str, Any]]:
-    return {
-        "tabular": generate_tabular_dataset(),
-        "nested": generate_nested_dataset(),
-        "analytics": generate_analytics_data(180),
-        "github": load_github_dataset(),
-    }
+def _build_datasets(use_realworld: bool = False) -> dict[str, dict[str, Any]]:
+    if use_realworld:
+        return {
+            "rag-documentation": generate_rag_documentation_dataset(),
+            "code-generation": generate_code_generation_dataset(),
+            "customer-support": generate_customer_support_dataset(),
+            "data-analysis": generate_data_analysis_dataset(),
+            "multi-document": generate_multidoc_reasoning_dataset(),
+        }
+    else:
+        return {
+            "tabular": generate_tabular_dataset(),
+            "nested": generate_nested_dataset(),
+            "analytics": generate_analytics_data(180),
+            "github": load_github_dataset(),
+        }
 
 
 def _display_summary(summary: dict[str, Any]) -> None:
@@ -216,6 +266,13 @@ def main(argv: list[str] | None = None) -> int:
         description="Run LLM accuracy benchmark comparing JSON vs TOON formats",
     )
     parser.add_argument(
+        "--provider",
+        type=str,
+        choices=["openai", "vertex"],
+        default="openai",
+        help="LLM provider to use (default: openai)",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help=f"Limit to {DRY_RUN_MAX_QUESTIONS} questions for cost control (takes precedence over .env DRY_RUN)",
@@ -248,6 +305,11 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Regenerate report from existing results without re-running evaluation",
     )
+    parser.add_argument(
+        "--realworld",
+        action="store_true",
+        help="Use real-world scenario questions (RAG, code generation, customer support, etc.)",
+    )
 
     args = parser.parse_args(argv)
 
@@ -266,7 +328,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     try:
-        env_config = validate_environment()
+        env_config = validate_environment(args.provider)
     except ValueError as exc:
         logger.error(str(exc))
         return 1
@@ -286,7 +348,8 @@ def main(argv: list[str] | None = None) -> int:
     effective_dry_run = args.dry_run or is_dry_run()
 
     logger.info(
-        "Configuration: dry_run=%s (cli=%s, env=%s), concurrency=%s, max_questions=%s, output_dir=%s",
+        "Configuration: provider=%s, dry_run=%s (cli=%s, env=%s), concurrency=%s, max_questions=%s, output_dir=%s",
+        args.provider,
         effective_dry_run,
         args.dry_run,
         is_dry_run(),
@@ -303,13 +366,13 @@ def main(argv: list[str] | None = None) -> int:
             return 1
 
         print_section("Generating Report")
-        questions = _resolve_questions_from_results(results)
-        datasets = _build_datasets()
+        questions = _resolve_questions_from_results(results, use_realworld=args.realworld)
+        datasets = _build_datasets(use_realworld=args.realworld)
         formatted = format_datasets(datasets)
 
         try:
             summary = generate_report(
-                results, questions, formatted, model=MODEL, output_dir=output_dir
+                results, questions, formatted, model=MODEL, output_dir=output_dir, provider=args.provider
             )
         except Exception as exc:  # noqa: BLE001
             logger.exception("Failed to regenerate report: %s", exc)
@@ -339,8 +402,12 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     print_section("Generating Questions")
-    questions = generate_questions()
-    logger.info("Generated %d questions across datasets", len(questions))
+    if args.realworld:
+        questions = generate_realworld_questions()
+        logger.info("Generated %d real-world scenario questions", len(questions))
+    else:
+        questions = generate_questions()
+        logger.info("Generated %d questions across datasets", len(questions))
 
     # CLI --dry-run flag: slice here to take precedence over .env or evaluate_all_questions() behavior
     # .env DRY_RUN: handled by evaluate_all_questions() for both CLI and library usage
@@ -365,8 +432,13 @@ def main(argv: list[str] | None = None) -> int:
     print_section("Running Evaluation")
     start_time = time.time()
 
+    # Build datasets before evaluation
+    datasets = _build_datasets(use_realworld=args.realworld)
+
     try:
-        results = run_evaluation(questions)
+        results = run_evaluation(
+            questions, provider_type=args.provider, datasets=datasets
+        )
     except Exception as exc:  # noqa: BLE001
         logger.exception("Evaluation failed: %s", exc)
         return 1
@@ -375,12 +447,11 @@ def main(argv: list[str] | None = None) -> int:
     logger.info("Evaluation completed in %.1fs", elapsed)
 
     print_section("Generating Report")
-    datasets = _build_datasets()
     formatted = format_datasets(datasets)
 
     try:
         summary = generate_report(
-            results, questions, formatted, model=MODEL, output_dir=output_dir
+            results, questions, formatted, model=MODEL, output_dir=output_dir, provider=args.provider
         )
     except Exception as exc:  # noqa: BLE001
         logger.exception("Failed to generate report: %s", exc)

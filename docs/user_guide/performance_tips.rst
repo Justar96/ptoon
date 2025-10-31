@@ -113,15 +113,15 @@ Optimization Strategies
 .. code-block:: python
 
     # Encoders are cached internally
-    toon_str = pytoon.encode(data)  # Creates encoder
-    toon_str = pytoon.encode(data2)  # Reuses encoder
+    toon_str = ptoon.encode(data)  # Creates encoder
+    toon_str = ptoon.encode(data2)  # Reuses encoder
 
 **2. Pre-encode static data:**
 
 .. code-block:: python
 
     # Encode once, reuse many times
-    static_data_toon = pytoon.encode(static_data)
+    static_data_toon = ptoon.encode(static_data)
     
     for query in queries:
         prompt = f"Data:\n{static_data_toon}\n\nQuestion: {query}"
@@ -133,29 +133,29 @@ Optimization Strategies
 
     # Tab is most compact (2-3% savings)
     options = {"delimiter": "\t"}
-    toon_str = pytoon.encode(data, options=options)
+    toon_str = ptoon.encode(data, options=options)
 
 Token Counting
 --------------
 
 .. note::
 
-    **Tokenizer Variance:** Token counts shown use OpenAI's ``o200k_base`` encoding (GPT-4o, GPT-4o-mini). For Anthropic Claude or Google Gemini, use their respective tokenizers for accuracy. pytoon's built-in counting provides approximations for non-OpenAI models, but relative savings (30-60%) remain consistent across providers.
+    **Tokenizer Variance:** Token counts shown use OpenAI's ``o200k_base`` encoding (GPT-4o, GPT-4o-mini). For Anthropic Claude or Google Gemini, use their respective tokenizers for accuracy. ptoon's built-in counting provides approximations for non-OpenAI models, but relative savings (30-60%) remain consistent across providers.
 
 Use Built-in Utilities
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     # Quick comparison
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     if result['savings_percent'] > 30:
         use_toon = True
 
     # Detailed comparison
-    print(pytoon.compare_formats(data))
+    print(ptoon.compare_formats(data))
 
 Cache Token Counts
 ~~~~~~~~~~~~~~~~~~
@@ -167,8 +167,8 @@ Cache Token Counts
     
     def get_token_count(data_id, data):
         if data_id not in token_cache:
-            toon_str = pytoon.encode(data)
-            token_cache[data_id] = pytoon.count_tokens(toon_str)
+            toon_str = ptoon.encode(data)
+            token_cache[data_id] = ptoon.count_tokens(toon_str)
         return token_cache[data_id]
 
 Real-World Cost Analysis
@@ -219,17 +219,17 @@ Measure Before Optimizing
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import json
 
     # Your actual data
     data = {...}
 
     # Get detailed comparison
-    print(pytoon.compare_formats(data))
+    print(ptoon.compare_formats(data))
 
     # Programmatic decision
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     
     if result['savings_percent'] > 30:
         print("✓ TOON recommended")
@@ -246,8 +246,8 @@ Test with Different Options
     # Try different delimiters
     for delim in [",", "|", "\t"]:
         opts = {"delimiter": delim}
-        toon_str = pytoon.encode(data, options=opts)
-        toon_tokens = pytoon.count_tokens(toon_str)
+        toon_str = ptoon.encode(data, options=opts)
+        toon_tokens = ptoon.count_tokens(toon_str)
         print(f"{delim}: {toon_tokens} tokens")
 
 Best Practices Summary
