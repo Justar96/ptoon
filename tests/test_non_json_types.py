@@ -1,7 +1,7 @@
 import datetime
 from decimal import Decimal
 
-from pytoon import encode
+from ptoon import encode
 
 
 def test_converts_large_integers_to_string():

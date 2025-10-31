@@ -20,7 +20,7 @@ import math
 from collections.abc import Mapping
 from typing import Any, TypeGuard
 
-from pytoon.logging_config import get_logger
+from ptoon.logging_config import get_logger
 from .types import JsonArray, JsonObject, JsonPrimitive, JsonValue
 
 

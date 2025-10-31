@@ -1,4 +1,4 @@
-from pytoon import decode, encode
+from ptoon import decode, encode
 
 
 def test_encodes_nested_arrays_of_primitives():

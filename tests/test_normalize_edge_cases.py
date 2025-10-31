@@ -1,4 +1,4 @@
-"""Tests for pytoon.normalize edge cases and error handling.
+"""Tests for ptoon.normalize edge cases and error handling.
 
 Tests special cases in value normalization including negative zero,
 datetime conversion, heterogeneous sets, and unsupported types.
@@ -12,8 +12,8 @@ from collections.abc import Mapping
 
 import pytest
 
-from pytoon import encode
-from pytoon.normalize import normalize_value
+from ptoon import encode
+from ptoon.normalize import normalize_value
 
 
 class TestNegativeZero:
@@ -220,7 +220,7 @@ class TestUnsupportedTypes:
 
     def test_unsupported_type_logs_warning(self, caplog):
         """Test unsupported types trigger warning logs."""
-        with caplog.at_level(logging.WARNING, logger="pytoon.normalize"):
+        with caplog.at_level(logging.WARNING, logger="ptoon.normalize"):
             normalize_value(complex(1, 2))
 
         # Check that a warning was logged

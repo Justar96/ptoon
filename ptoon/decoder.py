@@ -25,7 +25,7 @@ from .constants import (
     TRUE_LITERAL,
     UNESCAPE_SEQUENCES,
 )
-from pytoon.logging_config import get_logger
+from ptoon.logging_config import get_logger
 
 
 if TYPE_CHECKING:

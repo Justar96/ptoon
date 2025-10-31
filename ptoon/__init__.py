@@ -15,19 +15,19 @@ Token analysis utilities (`count_tokens`, `estimate_savings`, `compare_formats`)
 help measure and compare token efficiency between JSON and TOON formats.
 
 Quick Start:
-    >>> import pytoon
+    >>> import ptoon
     >>> data = {"users": [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]}
-    >>> toon_str = pytoon.encode(data)
+    >>> toon_str = ptoon.encode(data)
     >>> print(toon_str)
     users[2]{id, name}:
       1, Alice
       2, Bob
-    >>> pytoon.decode(toon_str)
+    >>> ptoon.decode(toon_str)
     {'users': [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]}
 
 Debug Mode:
     Enable detailed logging with environment variable:
-    $ PYTOON_DEBUG=1 python your_script.py
+    $ PTOON_DEBUG=1 python your_script.py
 
 See Also:
     - SPEC.md: Complete format specification
@@ -82,14 +82,14 @@ def encode(input: Any, options: EncodeOptions | dict | None = None) -> str:
                     or invalid option values.
 
     Examples:
-        >>> import pytoon
-        >>> pytoon.encode({"name": "Alice", "age": 30})
+        >>> import ptoon
+        >>> ptoon.encode({"name": "Alice", "age": 30})
         'name: Alice\\nage: 30'
 
-        >>> pytoon.encode([{"id": 1}, {"id": 2}])
+        >>> ptoon.encode([{"id": 1}, {"id": 2}])
         '[2]{id}:\\n  1\\n  2'
 
-        >>> pytoon.encode({"users": ["Alice", "Bob"]}, options={"delimiter": "|"})
+        >>> ptoon.encode({"users": ["Alice", "Bob"]}, options={"delimiter": "|"})
         'users[2|]: Alice| Bob'
 
     Note:
@@ -97,7 +97,7 @@ def encode(input: Any, options: EncodeOptions | dict | None = None) -> str:
         - Large integers (>2^53-1) are converted to strings
         - Sets are converted to sorted lists
         - Datetime objects are converted to ISO format strings
-        - Enable debug logging with PYTOON_DEBUG=1 environment variable
+        - Enable debug logging with PTOON_DEBUG=1 environment variable
 
     See Also:
         decode: Parse TOON strings back to Python values
@@ -207,14 +207,14 @@ def decode(input: str, options: dict | None = None) -> JsonValue:
             - Unexpected structure or nesting
 
     Examples:
-        >>> import pytoon
-        >>> pytoon.decode('name: Alice\\nage: 30')
+        >>> import ptoon
+        >>> ptoon.decode('name: Alice\\nage: 30')
         {'name': 'Alice', 'age': 30}
 
-        >>> pytoon.decode('[2]{id}:\\n  1\\n  2')
+        >>> ptoon.decode('[2]{id}:\\n  1\\n  2')
         [{'id': 1}, {'id': 2}]
 
-        >>> pytoon.decode('[3]: Alice, Bob, Carol')
+        >>> ptoon.decode('[3]: Alice, Bob, Carol')
         ['Alice', 'Bob', 'Carol']
 
     Note:
@@ -223,7 +223,7 @@ def decode(input: str, options: dict | None = None) -> JsonValue:
         - Tabs are not allowed for indentation
         - Blank lines are only allowed between top-level structures
         - Array length markers (#N) are validated if present
-        - Enable debug logging with PYTOON_DEBUG=1 environment variable
+        - Enable debug logging with PTOON_DEBUG=1 environment variable
 
     See Also:
         encode: Convert Python values to TOON format

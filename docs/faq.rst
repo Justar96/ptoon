@@ -138,10 +138,10 @@ Enable warnings with:
 .. code-block:: python
 
    import os
-   os.environ['PYTOON_DEBUG'] = '1'
+   os.environ['PTOON_DEBUG'] = '1'
 
-   import pytoon
-   result = pytoon.encode(deep_data)  # Will show warnings
+   import ptoon
+   result = ptoon.encode(deep_data)  # Will show warnings
 
 Performance & Efficiency
 ------------------------
@@ -214,8 +214,8 @@ Can I use TOON with OpenAI function calling?
    }
 
    # Encode user data as TOON and pass as string parameter
-   import pytoon
-   user_data_toon = pytoon.encode(large_user_dataset)
+   import ptoon
+   user_data_toon = ptoon.encode(large_user_dataset)
 
    response = client.chat.completions.create(
        model="gpt-4",
@@ -260,7 +260,7 @@ Can I mix TOON and JSON in the same message?
    {json.dumps(config)}
 
    And here is a large dataset (TOON):
-   {pytoon.encode(large_data)}
+   {ptoon.encode(large_data)}
 
    Please analyze the dataset using the configuration.
    """
@@ -283,9 +283,9 @@ Why does my encoded data look incomplete?
 .. code-block:: python
 
    import os
-   os.environ['PYTOON_DEBUG'] = '1'
+   os.environ['PTOON_DEBUG'] = '1'
 
-   result = pytoon.encode(data)
+   result = ptoon.encode(data)
    # Look for: "WARNING: Skipping deeply nested array..."
 
 **Solution:** Restructure your data to flatten the nesting (see patterns above).
@@ -297,11 +297,11 @@ How do I validate that TOON encoding is correct?
 
 .. code-block:: python
 
-   import pytoon
+   import ptoon
 
    original = {"users": [{"id": 1, "name": "Alice"}]}
-   encoded = pytoon.encode(original)
-   decoded = pytoon.decode(encoded)
+   encoded = ptoon.encode(original)
+   decoded = ptoon.decode(encoded)
 
    assert decoded == original  # Should always pass!
 
@@ -373,9 +373,9 @@ Why is decoding failing with "invalid TOON syntax"?
 .. code-block:: python
 
    import os
-   os.environ['PYTOON_DEBUG'] = '1'
+   os.environ['PTOON_DEBUG'] = '1'
 
-   pytoon.decode(toon_string)  # Will show detailed error location
+   ptoon.decode(toon_string)  # Will show detailed error location
 
 Advanced Topics
 ---------------
@@ -392,7 +392,7 @@ How does TOON handle special characters?
 .. code-block:: python
 
    data = {"message": "Line 1\nLine 2", "path": "C:\\Users"}
-   encoded = pytoon.encode(data)
+   encoded = ptoon.encode(data)
    # Output:
    # message: "Line 1\nLine 2"
    # path: "C:\\Users"
@@ -404,7 +404,7 @@ Can I customize the TOON format?
 
 .. code-block:: python
 
-   pytoon.encode(data, options={
+   ptoon.encode(data, options={
        "indent": 4,           # Spaces per level (default: 2)
        "delimiter": "|",      # Value separator: ',', '|', '\t'
        "length_marker": True  # Include #N in headers (default: False)
@@ -430,7 +430,7 @@ I found a bug, where do I report it?
 
 - Minimal reproduction example
 - Expected vs actual behavior
-- Python version and pytoon version
+- Python version and ptoon version
 
 Where can I learn more?
 ~~~~~~~~~~~~~~~~~~~~~~~~

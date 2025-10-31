@@ -16,7 +16,7 @@ This installs:
 - `openai` - OpenAI SDK for API access
 - `tiktoken` - Token counting utilities
 
-See the [Installation guide](https://pytoon.readthedocs.io/en/latest/installation.html) for details on optional extras.
+See the Installation section in the documentation for details on optional extras.
 
 For additional features:
 ```bash

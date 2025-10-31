@@ -8,7 +8,7 @@ Run: python examples/better_patterns_demo.py
 """
 
 import json
-from pytoon import encode, count_tokens
+from ptoon import encode, count_tokens
 
 
 def print_comparison(name, nested_data, flat_data):

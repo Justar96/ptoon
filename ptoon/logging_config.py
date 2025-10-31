@@ -1,8 +1,8 @@
 """
-Centralized logging configuration for pytoon.
+Centralized logging configuration for ptoon.
 
-This module provides consistent logging infrastructure across all pytoon
-modules with support for the PYTOON_DEBUG environment variable.
+This module provides consistent logging infrastructure across all ptoon
+modules with support for the PTOON_DEBUG environment variable.
 """
 
 import logging
@@ -11,14 +11,14 @@ from functools import lru_cache
 
 
 # Constants
-PYTOON_DEBUG_ENV_VAR = "PYTOON_DEBUG"
+PTOON_DEBUG_ENV_VAR = "PTOON_DEBUG"
 DEFAULT_LOG_LEVEL = logging.WARNING
 DEBUG_LOG_LEVEL = logging.DEBUG
 
 
 @lru_cache(maxsize=1)
 def is_debug_enabled() -> bool:
-    """Check if PYTOON_DEBUG environment variable is set to truthy value.
+    """Check if PTOON_DEBUG environment variable is set to truthy value.
 
     Accepts: "1", "true", "True", "TRUE", "yes", "Yes", "YES"
 
@@ -28,7 +28,7 @@ def is_debug_enabled() -> bool:
     Note:
         Result is cached for performance.
     """
-    value = os.environ.get(PYTOON_DEBUG_ENV_VAR, "").lower()
+    value = os.environ.get(PTOON_DEBUG_ENV_VAR, "").lower()
     return value in ("1", "true", "yes")
 
 
@@ -46,7 +46,7 @@ def get_logger(name: str) -> logging.Logger:
 
     Examples:
         >>> logger = get_logger(__name__)
-        >>> logger.debug("Debug message")  # Only shown if PYTOON_DEBUG=1
+        >>> logger.debug("Debug message")  # Only shown if PTOON_DEBUG=1
     """
     logger = logging.getLogger(name)
 
@@ -66,7 +66,7 @@ def get_logger(name: str) -> logging.Logger:
 
 
 def configure_logging(level: int | None = None) -> None:
-    """Configure log level programmatically for all pytoon loggers.
+    """Configure log level programmatically for all ptoon loggers.
 
     Useful for testing and programmatic control of logging.
 
@@ -81,9 +81,9 @@ def configure_logging(level: int | None = None) -> None:
     if level is None:
         level = DEBUG_LOG_LEVEL if is_debug_enabled() else DEFAULT_LOG_LEVEL
 
-    # Update all existing pytoon loggers
+    # Update all existing ptoon loggers
     for name in list(logging.Logger.manager.loggerDict.keys()):
-        if name.startswith("pytoon"):
+        if name.startswith("ptoon"):
             logger = logging.getLogger(name)
             logger.setLevel(level)
             for handler in logger.handlers:

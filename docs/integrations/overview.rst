@@ -9,7 +9,7 @@ General Integration Pattern
 Basic Flow
 ~~~~~~~~~~
 
-1. **Encode data:** ``toon_str = pytoon.encode(data)``
+1. **Encode data:** ``toon_str = ptoon.encode(data)``
 2. **Include in prompt:** ``f"Given this data:\n{toon_str}\n\nQuestion: ..."``
 3. **Send to LLM API:** Use provider's SDK/API
 4. **Parse response:** Decode if response is TOON, otherwise handle as text
@@ -19,11 +19,11 @@ Example
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     # 1. Encode your data
     data = {"employees": [...]}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # 2. Construct prompt
     prompt = f"""
@@ -81,14 +81,14 @@ Structure data as dict or list:
 
 .. code-block:: python
 
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
 With options:
 
 .. code-block:: python
 
     options = {"delimiter": "|"}  # If data contains commas
-    toon_str = pytoon.encode(data, options=options)
+    toon_str = ptoon.encode(data, options=options)
 
 3. Construct Prompt
 ~~~~~~~~~~~~~~~~~~~
@@ -142,7 +142,7 @@ Try parsing as TOON first, fallback to text:
     def safe_parse_response(text):
         # Try TOON
         try:
-            return pytoon.decode(text)
+            return ptoon.decode(text)
         except ValueError:
             pass
         
@@ -184,10 +184,10 @@ OpenAI
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     # Use o200k_base for GPT-4o/GPT-4
-    tokens = pytoon.count_tokens(toon_str, encoding="o200k_base")
+    tokens = ptoon.count_tokens(toon_str, encoding="o200k_base")
 
 Anthropic
 ~~~~~~~~~
@@ -209,7 +209,7 @@ Google AI
     model = genai.GenerativeModel('gemini-pro')
     tokens = model.count_tokens(toon_str).total_tokens
 
-**Note:** ``pytoon.count_tokens()`` uses OpenAI's tokenizer by default, providing approximations for other providers.
+**Note:** ``ptoon.count_tokens()`` uses OpenAI's tokenizer by default, providing approximations for other providers.
 
 Best Practices
 --------------
@@ -219,7 +219,7 @@ Best Practices
 
 .. code-block:: python
 
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     if result['savings_percent'] < 20:
         # Consider using JSON instead
         use_json = True
@@ -231,7 +231,7 @@ Best Practices
 
     # Test with simple data first
     test_data = {"test": [{"a": 1}, {"a": 2}]}
-    toon_str = pytoon.encode(test_data)
+    toon_str = ptoon.encode(test_data)
     # Verify LLM understands it
 
 3. Implement Error Handling
@@ -240,7 +240,7 @@ Best Practices
 .. code-block:: python
 
     try:
-        toon_str = pytoon.encode(data)
+        toon_str = ptoon.encode(data)
     except (TypeError, ValueError) as e:
         # Fallback to JSON
         toon_str = json.dumps(data)
@@ -251,8 +251,8 @@ Best Practices
 .. code-block:: python
 
     # Track token usage
-    json_tokens = pytoon.count_tokens(json.dumps(data))
-    toon_tokens = pytoon.count_tokens(pytoon.encode(data))
+    json_tokens = ptoon.count_tokens(json.dumps(data))
+    toon_tokens = ptoon.count_tokens(ptoon.encode(data))
     
     savings_per_request = json_tokens - toon_tokens
     monthly_savings = savings_per_request * requests_per_month
@@ -267,7 +267,7 @@ RAG (Retrieval-Augmented Generation)
 
     # Encode retrieved documents
     documents = [{"title": "...", "content": "..."}, ...]
-    toon_str = pytoon.encode({"documents": documents})
+    toon_str = ptoon.encode({"documents": documents})
 
     prompt = f"Given these documents:\n{toon_str}\n\nAnswer: {question}"
 
@@ -278,7 +278,7 @@ Data Analysis
 
     # Encode analytics data
     analytics = [{"date": "...", "views": 100}, ...]
-    toon_str = pytoon.encode({"analytics": analytics})
+    toon_str = ptoon.encode({"analytics": analytics})
 
     prompt = f"Analyze trends in:\n{toon_str}"
 
@@ -292,7 +292,7 @@ Structured Output
     
     # Parse response
     try:
-        result = pytoon.decode(response)
+        result = ptoon.decode(response)
     except ValueError:
         # Handle non-TOON response
         pass
@@ -309,7 +309,7 @@ Troubleshooting
 **Token savings lower than expected**
 
 * Check data structure (uniform objects work best)
-* Use ``pytoon.estimate_savings()`` to verify
+* Use ``ptoon.estimate_savings()`` to verify
 * Consider restructuring data
 
 **Decoding fails**

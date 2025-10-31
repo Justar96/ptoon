@@ -103,21 +103,54 @@ def check_dependencies() -> None:
         ) from exc
 
 
-def validate_environment() -> dict[str, str]:
-    json_key = os.getenv("OPENAI_API_KEY_JSON")
-    toon_key = os.getenv("OPENAI_API_KEY_TOON")
+def validate_environment(provider_type: str = "openai") -> dict[str, str]:
+    """Validate environment variables for the selected provider.
 
-    if not json_key or not toon_key:
-        raise ValueError(
-            "Both OPENAI_API_KEY_JSON and OPENAI_API_KEY_TOON are required. "
-            "Dual API keys enable separate tracking in OpenAI console for JSON vs TOON evaluations."
-        )
+    Args:
+        provider_type: 'openai' or 'vertex'
 
-    config = {
-        "OPENAI_API_KEY_JSON": json_key,
-        "OPENAI_API_KEY_TOON": toon_key,
-        "CONCURRENCY": os.getenv("CONCURRENCY", str(DEFAULT_CONCURRENCY)),
-    }
+    Returns:
+        Configuration dictionary
+
+    Raises:
+        ValueError: If required environment variables are missing
+    """
+    if provider_type == "openai":
+        json_key = os.getenv("OPENAI_API_KEY_JSON")
+        toon_key = os.getenv("OPENAI_API_KEY_TOON")
+
+        if not json_key or not toon_key:
+            raise ValueError(
+                "Both OPENAI_API_KEY_JSON and OPENAI_API_KEY_TOON are required. "
+                "Dual API keys enable separate tracking in OpenAI console for JSON vs TOON evaluations."
+            )
+
+        config = {
+            "OPENAI_API_KEY_JSON": json_key,
+            "OPENAI_API_KEY_TOON": toon_key,
+            "CONCURRENCY": os.getenv("CONCURRENCY", str(DEFAULT_CONCURRENCY)),
+            "provider": "openai",
+        }
+
+    elif provider_type == "vertex":
+        project_id = os.getenv("VERTEX_PROJECT_ID")
+        location = os.getenv("VERTEX_LOCATION", "us-central1")
+
+        if not project_id:
+            raise ValueError(
+                "VERTEX_PROJECT_ID is required for Vertex AI provider. "
+                "Set it to your Google Cloud project ID."
+            )
+
+        config = {
+            "VERTEX_PROJECT_ID": project_id,
+            "VERTEX_LOCATION": location,
+            "CONCURRENCY": os.getenv("CONCURRENCY", str(DEFAULT_CONCURRENCY)),
+            "provider": "vertex",
+        }
+
+    else:
+        raise ValueError(f"Unknown provider type: {provider_type}. Must be 'openai' or 'vertex'.")
 
     return config
 
@@ -216,6 +249,13 @@ def main(argv: list[str] | None = None) -> int:
         description="Run LLM accuracy benchmark comparing JSON vs TOON formats",
     )
     parser.add_argument(
+        "--provider",
+        type=str,
+        choices=["openai", "vertex"],
+        default="openai",
+        help="LLM provider to use (default: openai)",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help=f"Limit to {DRY_RUN_MAX_QUESTIONS} questions for cost control (takes precedence over .env DRY_RUN)",
@@ -266,7 +306,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     try:
-        env_config = validate_environment()
+        env_config = validate_environment(args.provider)
     except ValueError as exc:
         logger.error(str(exc))
         return 1
@@ -286,7 +326,8 @@ def main(argv: list[str] | None = None) -> int:
     effective_dry_run = args.dry_run or is_dry_run()
 
     logger.info(
-        "Configuration: dry_run=%s (cli=%s, env=%s), concurrency=%s, max_questions=%s, output_dir=%s",
+        "Configuration: provider=%s, dry_run=%s (cli=%s, env=%s), concurrency=%s, max_questions=%s, output_dir=%s",
+        args.provider,
         effective_dry_run,
         args.dry_run,
         is_dry_run(),
@@ -366,7 +407,7 @@ def main(argv: list[str] | None = None) -> int:
     start_time = time.time()
 
     try:
-        results = run_evaluation(questions)
+        results = run_evaluation(questions, provider_type=args.provider)
     except Exception as exc:  # noqa: BLE001
         logger.exception("Evaluation failed: %s", exc)
         return 1

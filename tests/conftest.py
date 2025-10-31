@@ -4,7 +4,7 @@ import typing as _t
 
 import pytest
 
-from pytoon import decode, encode
+from ptoon import decode, encode
 
 
 @pytest.fixture

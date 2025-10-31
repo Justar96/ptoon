@@ -2,7 +2,7 @@ import importlib.util
 
 import pytest
 
-from pytoon import count_tokens, decode, encode
+from ptoon import count_tokens, decode, encode
 
 
 requires_tiktoken = pytest.mark.skipif(

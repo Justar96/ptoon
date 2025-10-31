@@ -17,9 +17,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from pytoon import decode, encode
-from pytoon.decoder import Decoder
-from pytoon.encoder import Encoder
+from ptoon import decode, encode
+from ptoon.decoder import Decoder
+from ptoon.encoder import Encoder
 
 
 class TestTypeValidationErrors:
@@ -252,7 +252,7 @@ class TestNormalizeEdgeCases:
 
     def test_datetime_isoformat_exception(self):
         """Test datetime that fails ISO format conversion."""
-        from pytoon.normalize import normalize_value
+        from ptoon.normalize import normalize_value
 
         # Mock a datetime that raises exception on isoformat()
         mock_dt = Mock(spec=datetime)
@@ -263,7 +263,7 @@ class TestNormalizeEdgeCases:
 
     def test_empty_array_type_checks(self):
         """Test that empty arrays return True for all type checks."""
-        from pytoon.normalize import (
+        from ptoon.normalize import (
             is_array_of_arrays,
             is_array_of_objects,
             is_array_of_primitives,
@@ -280,7 +280,7 @@ class TestPrimitivesFloatFormatting:
 
     def test_float_formatting_strips_trailing_zeros(self):
         """Test float formatting removes trailing zeros."""
-        from pytoon.primitives import encode_primitive
+        from ptoon.primitives import encode_primitive
 
         assert encode_primitive(3.0) == "3"
         assert encode_primitive(3.14000) == "3.14"
@@ -288,7 +288,7 @@ class TestPrimitivesFloatFormatting:
 
     def test_float_formatting_very_small_number(self):
         """Test float formatting for very small numbers."""
-        from pytoon.primitives import encode_primitive
+        from ptoon.primitives import encode_primitive
 
         # Very small float that might format to empty after stripping
         result = encode_primitive(0.0)

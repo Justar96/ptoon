@@ -1,21 +1,43 @@
-# Toon (Python)
+# ptoon
 
-[![Docs](https://img.shields.io/badge/docs-latest-blue)](https://pytoon.readthedocs.io/)
+A Python implementation of [TOON](https://github.com/johannschopplich/toon) (Token-Oriented Object Notation), a text format optimized for LLM token efficiency.
 
-A Python implementation of [toon](https://github.com/johannschopplich/toon), a Token-Oriented Object Notation for LLMs.
+## What is TOON?
+
+TOON is a text format designed to reduce LLM token consumption by 30-60% compared to JSON while maintaining human readability and semantic clarity. It's optimized for common data patterns in LLM applications:
+
+- **Tabular data** (API responses, database records) - uses column-based format
+- **Structured objects** - removes redundant syntax like quotes and braces
+- **Arrays** - compact inline or list formats based on content
+
+**Key Benefits:**
+- 🎯 **30-60% token reduction** - Direct cost savings on LLM API calls
+- 📖 **Human-readable** - Easy to understand and debug
+- 🔄 **Lossless** - Perfect round-trip encoding/decoding
+- 🐍 **Pure Python** - No runtime dependencies
+
+**When to use TOON:**
+- Large structured datasets in prompts (RAG, analytics, catalogs)
+- Cost-sensitive applications where tokens drive costs
+- Context window optimization (fit more data in limited context)
+
+**When to use JSON:**
+- Strict API contracts (OpenAI function calling, tool use)
+- Tiny payloads (< 100 tokens) where overhead isn't worth it
+- Real-time streaming where encoding latency matters
 
 ## Quick Start
 
-1. Install `pytoon`:
+1. Install `ptoon`:
 
    ```bash
-   pip install pytoon
+   pip install ptoon
    ```
 
 2. Encode and decode data while measuring token savings:
 
 ```python
-import pytoon
+import ptoon
 
 # Encode Python data to TOON format
 data = {
@@ -25,7 +47,7 @@ data = {
     ]
 }
 
-toon_str = pytoon.encode(data)
+toon_str = ptoon.encode(data)
 print(toon_str)
 # Output:
 # users[2]{id, name, role}:
@@ -33,17 +55,15 @@ print(toon_str)
 #   2, Bob, Designer
 
 # Decode TOON back to Python
-decoded = pytoon.decode(toon_str)
+decoded = ptoon.decode(toon_str)
 assert decoded == data
 
 # Compare token efficiency
-result = pytoon.estimate_savings(data)
+result = ptoon.estimate_savings(data)
 print(f"Savings: {result['savings_percent']:.1f}%")  # 35.7%
 ```
 
-For optional extras (examples, benchmarks, docs), see the [Installation guide](https://pytoon.readthedocs.io/en/latest/installation.html).
-
-For more details, see the [Quick Start guide](https://pytoon.readthedocs.io/en/latest/user_guide/quickstart.html).
+For optional extras (examples, benchmarks, docs), see the Installation section in the documentation.
 
 ## Format Limitations & Best Practices
 
@@ -82,14 +102,14 @@ See [`examples/better_patterns_demo.py`](examples/better_patterns_demo.py) for r
 
 ## Documentation
 
-Comprehensive documentation is available at:
+Comprehensive documentation is available in the `docs/` directory:
 
-- **[Read the Docs](https://pytoon.readthedocs.io/)** (full documentation, guides, API reference)
-- [Changelog](https://pytoon.readthedocs.io/en/latest/changelog.html) (version history and changes)
-- [README](README.md) (quick start and overview)
-- [SPEC](SPEC.md) (formal TOON format specification)
+- [README](README.md) - Quick start and overview
+- [SPEC](SPEC.md) - Formal TOON format specification
+- [Changelog](docs/changelog.rst) - Version history and changes
+- [docs/](docs/) - Full documentation, guides, and API reference
 
-For detailed guides on token optimization, encoding options, and advanced usage, refer to the full documentation.
+For detailed guides on token optimization, encoding options, and advanced usage, refer to the documentation in the `docs/` directory.
 
 ## API Stability
 
@@ -107,7 +127,7 @@ pytest
 Useful commands:
 
 - Run a specific module: `pytest tests/test_primitives.py`
-- Run with coverage: `pytest --cov=toon --cov-report=html`
+- Run with coverage: `pytest --cov=ptoon --cov-report=html`
 - Verbose output: `pytest -v`
 
 The test suite covers primitive encoding/decoding, objects (simple, nested, special keys), array formats (inline, tabular, list), delimiter options (comma, tab, pipe), length marker option, round‑trip validation, whitespace/formatting invariants, and non‑JSON type handling.
@@ -116,13 +136,13 @@ The test suite covers primitive encoding/decoding, objects (simple, nested, spec
 
 > ⚠️ Running the examples can incur OpenAI API costs. Enable guardrails with `SMALL_DATA=1` and `DRY_RUN=true` (see `examples/.env.example`).
 
-The `examples/` directory contains practical demonstrations of using TOON with LLM providers.
+The `examples/` directory contains practical demonstrations of using ptoon with LLM providers.
 
 ### OpenAI Integration
 
 See [`examples/openai_integration.py`](examples/openai_integration.py) for a comprehensive example demonstrating:
 
-- Basic Pattern: Encode data with `pytoon.encode()` → send to OpenAI → decode response
+- Basic Pattern: Encode data with `ptoon.encode()` → send to OpenAI → decode response
 - Token Comparison: Measure token savings vs JSON (typically 30-60%)
 - RAG Use Case: Question-answering over structured data
 - Error Handling: Robust parsing with fallback strategies
@@ -143,134 +163,31 @@ Expected results:
 - Cost reduction: Proportional to token savings
 - Same semantic accuracy as JSON
 
-### When to Use TOON with LLMs
-
-✅ Ideal use cases:
-- Large structured datasets in prompts (RAG, analytics, catalogs)
-- Cost-sensitive applications (tokens = primary cost driver)
-- Context window optimization (fit more data in limited context)
-- Repeated queries over the same dataset
-
-❌ Not recommended for:
-- Tiny payloads (< 100 tokens) where overhead isn't worth it
-- Strict JSON contracts (OpenAI function calling, tool use)
-- Real-time streaming where encoding latency matters
-- Highly heterogeneous data structures
-
-Key insight: For LLM applications, token count is the primary cost driver, not encoding time. TOON's 30-60% token reduction translates directly to cost savings and faster inference.
-
-### Performance Trade-offs
-
-| Aspect | JSON | TOON | Notes |
-|--------|------|------|-------|
-| Token count | Baseline | -30% to -60% | Varies by data structure |
-| Encoding speed | Baseline | ~0.8x | Python implementation |
-| Decoding speed | Baseline | ~0.9x | Optimized parser |
-| LLM inference | Baseline | Faster | Fewer tokens to process |
-| API cost | Baseline | -30% to -60% | Proportional to tokens |
-
 See [`examples/README.md`](examples/README.md) for more details and additional examples.
 
 ## Benchmarking
 
-TOON is optimized for token efficiency and performance. The benchmark suite measures token count reduction, encoding/decoding speed, and memory usage compared to JSON.
+ptoon is optimized for token efficiency and performance. The benchmark suite measures:
 
-### Installing Benchmark Dependencies
+- **Token Efficiency:** 30-60% reduction vs JSON
+- **Speed Performance:** Encode/decode speed comparison
+- **Memory Usage:** Memory consumption and output size
+- **LLM Accuracy:** Real-world question-answering accuracy
 
-Install benchmark dependencies using the `[benchmark]` extra:
+**Quick Start:**
 
 ```bash
+# Install benchmark dependencies
 pip install -e ".[benchmark]"
+
+# Run all benchmarks
+python -m benchmarks
+
+# Run specific benchmarks
+python -m benchmarks --token-efficiency
 ```
 
-This installs `tiktoken` (GPT tokenizer), `faker` (dataset generation), and `tqdm` (progress bars). These are optional and only needed to run benchmarks. See the [Installation guide](https://pytoon.readthedocs.io/en/latest/installation.html) for more details on available extras.
-
-### Running Benchmarks
-
-- All benchmarks: `python -m benchmarks` or `toon-benchmark`
-- Token efficiency only: `python -m benchmarks --token-efficiency`
-- JSON output: `python -m benchmarks --all --json`
-- Help: `python -m benchmarks --help`
-
-Results are written to `benchmarks/results/` as markdown reports.
-
-### Benchmark Types
-
-- Token Efficiency: Token count reduction vs JSON (typically 30–60% savings)
-- Speed Performance: Encode/decode speed vs Python stdlib JSON
-- Memory Usage: Memory consumption during encoding/decoding and output size
-
-See [`benchmarks/results/`](benchmarks/results/) for detailed reports:
-- [Token Efficiency Results](benchmarks/results/token-efficiency.md)
-- [Speed Benchmark](benchmarks/results/speed-benchmark.md)
-- [Memory Benchmark](benchmarks/results/memory-benchmark.md)
-- [LLM Accuracy Report](benchmarks/results/llm_accuracy/report.md) - Compares TOON vs JSON accuracy with real LLMs
-
-### LLM Accuracy Benchmark
-
-The LLM accuracy benchmark measures how well LLMs can extract information from TOON vs JSON formats using real question-answering tasks.
-
-**Installation:**
-
-```bash
-pip install -e ".[llm-benchmark]"
-```
-
-**Configuration:**
-
-Set up dual OpenAI API keys for independent tracking (allows monitoring JSON and TOON evaluations separately in the OpenAI console):
-
-```bash
-export OPENAI_API_KEY_JSON="your-json-evaluation-key"
-export OPENAI_API_KEY_TOON="your-toon-evaluation-key"
-```
-
-**Running the benchmark:**
-
-```bash
-# Full benchmark
-uv run toon-llm-benchmark
-
-# Dry run (limited questions for cost control)
-uv run toon-llm-benchmark --dry-run
-
-# Custom concurrency (default: 20)
-uv run toon-llm-benchmark --concurrency 10
-
-# Verbose output
-uv run toon-llm-benchmark --verbose
-
-# Regenerate report from existing results
-uv run toon-llm-benchmark --regenerate-report
-```
-
-**Environment variables:**
-
-- `OPENAI_API_KEY_JSON` - API key for JSON format evaluation (required)
-- `OPENAI_API_KEY_TOON` - API key for TOON format evaluation (required)
-- `CONCURRENCY` - Parallel evaluation concurrency (default: 20)
-- `DRY_RUN` - Enable dry-run mode (default: false)
-- `VERBOSE` - Enable verbose logging (default: false)
-- `KEEP_LAST_N_RUNS` - Number of historical result sets to keep (default: 10, set to 0 to disable cleanup)
-
-See `examples/.env.example` for full configuration details and `benchmarks/llm_accuracy/README.md` for more information.
-
-### Datasets
-
-- GitHub Repositories: 100 uniform records (tabular optimal)
-- Daily Analytics: 180 days of time-series metrics
-- E-Commerce Orders: Nested structures with customer and items
-- Employee Records: 100 uniform employee records
-
-Datasets use seeded randomness for reproducible results.
-
-### Expected Results
-
-- Token savings: 30–60% reduction vs JSON (varies by dataset structure)
-- Speed: JSON may be faster (C-optimized); TOON focuses on token savings
-- Memory: Comparable in typical datasets
-
-For LLM applications, token count is the primary cost driver; encoding overhead is usually negligible compared to inference time.
+For detailed benchmark documentation, configuration options, LLM accuracy testing, and results, see [`benchmarks/README.md`](benchmarks/README.md).
 
 ## Building Documentation
 
@@ -293,42 +210,6 @@ start _build/html/index.html  # Windows
 
 The built documentation will be in `docs/_build/html/`.
 
-## Migration from Earlier Versions
-
-**Removed OpenAI Wrapper (v0.0.1+)**
-
-The `pytoon.openai` module and wrapper functions have been removed to keep the library focused on encoding/decoding. Use the direct-encode pattern with the raw OpenAI SDK instead:
-
-```python
-import pytoon
-from openai import OpenAI
-
-client = OpenAI()
-
-# Encode data to TOON format
-data = {"employees": [...]}  # Your data
-toon_str = pytoon.encode(data)
-
-# Send to OpenAI with TOON-formatted data
-response = client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[
-        {"role": "user", "content": f"Data:\n{toon_str}\n\nQuestion: How many employees?"}
-    ]
-)
-
-# Decode TOON responses if needed
-if "format: toon" in response.choices[0].message.content.lower():
-    result = pytoon.decode(response.choices[0].message.content)
-```
-
-See [`examples/openai_integration.py`](examples/openai_integration.py) for a complete working example with token comparison, error handling, and RAG patterns.
-
-**Deprecated Imports:**
-
-- `from pytoon.openai import encode_and_send` ❌ (removed)
-- `from pytoon import encode; from openai import OpenAI` ✅ (use this)
-
 ## Changelog
 
-See [docs/changelog.rst](docs/changelog.rst) or the [published changelog](https://pytoon.readthedocs.io/en/latest/changelog.html) for release history and upgrade notes.
+See [docs/changelog.rst](docs/changelog.rst) for release history and upgrade notes.

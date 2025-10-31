@@ -5,9 +5,9 @@ These tests target the remaining hard-to-reach code paths in decoder and encoder
 
 import pytest
 
-from pytoon import decode, encode
-from pytoon.decoder import Decoder
-from pytoon.encoder import Encoder
+from ptoon import decode, encode
+from ptoon.decoder import Decoder
+from ptoon.encoder import Encoder
 
 
 class TestDecoderComplexUnwinding:
@@ -240,7 +240,7 @@ class TestErrorMessageFormatting:
     def test_error_with_empty_line_snippet(self):
         """Test error formatting when snippet is empty."""
         # Targets line 363 (empty snippet formatting)
-        from pytoon.decoder import Decoder
+        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         # Error with empty line
@@ -254,7 +254,7 @@ class TestInlineObjectParsingWithBracket:
     def test_looks_header_token_with_escape(self):
         """Test header token detection with escapes."""
         # Targets line 507 (found '{' before ']')
-        from pytoon.decoder import Decoder
+        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         # String that looks like header but has '{' before ']'
@@ -269,7 +269,7 @@ class TestSplitValuesEmptyString:
     def test_split_empty_string(self):
         """Test _split_values with empty string."""
         # Targets line 966 (empty string check)
-        from pytoon.decoder import Decoder
+        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         result = decoder._split_values("", ",")
@@ -282,7 +282,7 @@ class TestPrimitivesFloatFormatting:
     def test_format_float_zero(self):
         """Test formatting zero float."""
         # Targets line 268 (empty string case)
-        from pytoon.primitives import _format_float
+        from ptoon.primitives import _format_float
 
         result = _format_float(0.0)
         # Should return "0", not empty string

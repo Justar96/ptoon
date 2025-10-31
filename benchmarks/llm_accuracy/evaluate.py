@@ -23,12 +23,11 @@ except ImportError:  # pragma: no cover - tqdm is optional
     tqdm = None  # type: ignore[assignment]
 
 try:  # OpenAI SDK (requires v1.2+)
-    from openai import APIConnectionError, APIError, AsyncOpenAI, RateLimitError
+    from openai import APIConnectionError, APIError, RateLimitError
 except ImportError:  # pragma: no cover - defer hard failure to runtime use
-    AsyncOpenAI = None  # type: ignore[assignment]
     APIError = APIConnectionError = RateLimitError = Exception  # type: ignore[assignment]
 
-import pytoon
+import ptoon
 from benchmarks.datasets import (
     generate_analytics_data,
     generate_nested_dataset,
@@ -36,6 +35,9 @@ from benchmarks.datasets import (
     load_github_dataset,
 )
 
+from .providers import LLMProvider
+from .providers.openai_provider import OpenAIProvider
+from .providers.vertex_provider import VertexAIProvider
 from .questions import generate_questions
 from .types import EvaluationResult, Question
 from .validation import validate_answer
@@ -45,13 +47,15 @@ logger = logging.getLogger(__name__)
 
 
 # Evaluation model - can be overridden via OPENAI_MODEL environment variable
-MODEL = os.getenv("OPENAI_MODEL", "gpt-5")
+# Default: gpt-5-mini (maps to gemini-2.5-flash on Vertex AI - best price/performance)
+MODEL = os.getenv("OPENAI_MODEL", "gpt-5-mini")
 DEFAULT_CONCURRENCY = 20
 # DRY_RUN_MAX_QUESTIONS: Maximum questions to evaluate when DRY_RUN is enabled.
 # Precedence: CLI --dry-run flag takes precedence, otherwise .env DRY_RUN is honored.
 DRY_RUN_MAX_QUESTIONS = 10
 # Validation model - can be overridden via VALIDATION_MODEL environment variable
-VALIDATION_MODEL = os.getenv("VALIDATION_MODEL", "gpt-4o-mini")
+# Default: gpt-5 (maps to gemini-2.5-pro on Vertex AI - best quality for validation)
+VALIDATION_MODEL = os.getenv("VALIDATION_MODEL", "gpt-5")
 
 
 def is_dry_run() -> bool:
@@ -64,15 +68,54 @@ def is_dry_run() -> bool:
     return os.getenv("DRY_RUN", "false").lower() == "true"
 
 
-_client_cache: dict[str, AsyncOpenAI] = {}
+_provider_cache: dict[str, LLMProvider] = {}
 
 
-def _get_async_client(api_key: str) -> AsyncOpenAI:
-    if AsyncOpenAI is None:  # pragma: no cover - defensive guard
-        raise RuntimeError("openai package with AsyncOpenAI client is required")
-    if api_key not in _client_cache:
-        _client_cache[api_key] = AsyncOpenAI(api_key=api_key)
-    return _client_cache[api_key]
+def _get_provider(
+    provider_type: str, json_config: dict[str, str], toon_config: dict[str, str]
+) -> tuple[LLMProvider, LLMProvider]:
+    """Get or create provider instances for JSON and TOON evaluations.
+
+    Args:
+        provider_type: 'openai' or 'vertex'
+        json_config: Configuration for JSON evaluation provider
+        toon_config: Configuration for TOON evaluation provider
+
+    Returns:
+        Tuple of (json_provider, toon_provider)
+    """
+    cache_key_json = f"{provider_type}_json_{hash(frozenset(json_config.items()))}"
+    cache_key_toon = f"{provider_type}_toon_{hash(frozenset(toon_config.items()))}"
+
+    if cache_key_json not in _provider_cache:
+        if provider_type == "openai":
+            _provider_cache[cache_key_json] = OpenAIProvider(
+                api_key=json_config["api_key"]
+            )
+        elif provider_type == "vertex":
+            _provider_cache[cache_key_json] = VertexAIProvider(
+                project_id=json_config["project_id"],
+                location=json_config.get("location", "us-central1"),
+                credentials_path=json_config.get("credentials_path"),
+            )
+        else:
+            raise ValueError(f"Unknown provider type: {provider_type}")
+
+    if cache_key_toon not in _provider_cache:
+        if provider_type == "openai":
+            _provider_cache[cache_key_toon] = OpenAIProvider(
+                api_key=toon_config["api_key"]
+            )
+        elif provider_type == "vertex":
+            _provider_cache[cache_key_toon] = VertexAIProvider(
+                project_id=toon_config["project_id"],
+                location=toon_config.get("location", "us-central1"),
+                credentials_path=toon_config.get("credentials_path"),
+            )
+        else:
+            raise ValueError(f"Unknown provider type: {provider_type}")
+
+    return _provider_cache[cache_key_json], _provider_cache[cache_key_toon]
 
 
 def format_datasets(datasets: dict[str, dict[str, Any]]) -> dict[str, dict[str, str]]:
@@ -82,7 +125,7 @@ def format_datasets(datasets: dict[str, dict[str, Any]]) -> dict[str, dict[str, 
 
     for name, data in datasets.items():
         json_str = json.dumps(data, indent=2)
-        toon_str = pytoon.encode(data)
+        toon_str = ptoon.encode(data)
 
         formatted["JSON"][name] = json_str
         formatted["TOON"][name] = toon_str
@@ -101,10 +144,10 @@ async def evaluate_single_question(
     question: Question,
     format_name: str,
     formatted_data: str,
-    api_key: str,
+    provider: LLMProvider,
     semaphore: asyncio.Semaphore,
 ) -> EvaluationResult:
-    """Evaluate a single question for a given data format using OpenAI."""
+    """Evaluate a single question for a given data format using an LLM provider."""
 
     prompt = (
         f"Given the following data in {format_name} format:\n\n"
@@ -120,39 +163,19 @@ async def evaluate_single_question(
     last_latency_ms: float | None = None
 
     async with semaphore:
-        client = _get_async_client(api_key)
         max_attempts = 3
         backoff_seconds = 1.0
 
         for attempt in range(1, max_attempts + 1):
             attempt_start = time.perf_counter()
             try:
-                response = await client.chat.completions.create(
-                    model=MODEL,
-                    messages=[{"role": "user", "content": prompt}],
-                )
-                latency_ms = (time.perf_counter() - attempt_start) * 1000
-                last_latency_ms = latency_ms
-
-                content = (
-                    (response.choices[0].message.content or "")
-                    if response.choices
-                    else ""
-                )
-                actual = content.strip()
-
-                usage = getattr(response, "usage", None)
-                prompt_tokens = getattr(usage, "prompt_tokens", None)
-                completion_tokens = getattr(usage, "completion_tokens", None)
-                input_tokens = int(prompt_tokens) if prompt_tokens is not None else 0
-                output_tokens = (
-                    int(completion_tokens) if completion_tokens is not None else 0
-                )
+                result = await provider.complete(prompt, MODEL)
+                last_latency_ms = result.latency_ms
 
                 is_correct = await loop.run_in_executor(
                     None,
                     validate_answer,
-                    actual,
+                    result.content,
                     question["ground_truth"],
                     question["prompt"],
                     None,  # api_key
@@ -165,11 +188,11 @@ async def evaluate_single_question(
                     "format": format_name,  # type: ignore[assignment]
                     "model": MODEL,
                     "expected": question["ground_truth"],
-                    "actual": actual,
+                    "actual": result.content,
                     "is_correct": is_correct,
-                    "input_tokens": input_tokens,
-                    "output_tokens": output_tokens,
-                    "latency_ms": latency_ms,
+                    "input_tokens": result.input_tokens,
+                    "output_tokens": result.output_tokens,
+                    "latency_ms": result.latency_ms,
                 }
 
             except RateLimitError as err:  # type: ignore[misc]
@@ -246,8 +269,8 @@ async def evaluate_single_question(
 async def evaluate_all_questions(
     questions: list[Question],
     formatted_datasets: dict[str, dict[str, str]],
-    json_api_key: str,
-    toon_api_key: str,
+    json_provider: LLMProvider,
+    toon_provider: LLMProvider,
     concurrency: int = DEFAULT_CONCURRENCY,
 ) -> list[EvaluationResult]:
     """Evaluate all questions across both JSON and TOON formats."""
@@ -279,12 +302,12 @@ async def evaluate_all_questions(
 
         tasks.append(
             lambda q=question, data=json_payload: evaluate_single_question(
-                q, "JSON", data, json_api_key, semaphore
+                q, "JSON", data, json_provider, semaphore
             )
         )
         tasks.append(
             lambda q=question, data=toon_payload: evaluate_single_question(
-                q, "TOON", data, toon_api_key, semaphore
+                q, "TOON", data, toon_provider, semaphore
             )
         )
 
@@ -340,8 +363,18 @@ async def evaluate_all_questions(
     return results
 
 
-def run_evaluation(questions: list[Question] | None = None) -> list[EvaluationResult]:
-    """Synchronously execute the full evaluation workflow."""
+def run_evaluation(
+    questions: list[Question] | None = None, provider_type: str = "openai"
+) -> list[EvaluationResult]:
+    """Synchronously execute the full evaluation workflow.
+
+    Args:
+        questions: Optional list of questions to evaluate. If None, generates all questions.
+        provider_type: LLM provider to use ('openai' or 'vertex')
+
+    Returns:
+        List of evaluation results
+    """
 
     if questions is None:
         questions = generate_questions()
@@ -355,13 +388,42 @@ def run_evaluation(questions: list[Question] | None = None) -> list[EvaluationRe
 
     formatted = format_datasets(datasets)
 
-    json_api_key = os.getenv("OPENAI_API_KEY_JSON")
-    toon_api_key = os.getenv("OPENAI_API_KEY_TOON")
+    # Get provider-specific configuration
+    if provider_type == "openai":
+        json_api_key = os.getenv("OPENAI_API_KEY_JSON")
+        toon_api_key = os.getenv("OPENAI_API_KEY_TOON")
 
-    if not json_api_key or not toon_api_key:
-        raise ValueError(
-            "Missing OPENAI_API_KEY_JSON or OPENAI_API_KEY_TOON environment variables"
-        )
+        if not json_api_key or not toon_api_key:
+            raise ValueError(
+                "Missing OPENAI_API_KEY_JSON or OPENAI_API_KEY_TOON environment variables"
+            )
+
+        json_config = {"api_key": json_api_key}
+        toon_config = {"api_key": toon_api_key}
+
+    elif provider_type == "vertex":
+        project_id = os.getenv("VERTEX_PROJECT_ID")
+        location = os.getenv("VERTEX_LOCATION", "us-central1")
+        credentials_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+
+        if not project_id:
+            raise ValueError("Missing VERTEX_PROJECT_ID environment variable")
+
+        json_config = {
+            "project_id": project_id,
+            "location": location,
+            "credentials_path": credentials_path,
+        }
+        toon_config = {
+            "project_id": project_id,
+            "location": location,
+            "credentials_path": credentials_path,
+        }
+
+    else:
+        raise ValueError(f"Unknown provider type: {provider_type}")
+
+    json_provider, toon_provider = _get_provider(provider_type, json_config, toon_config)
 
     concurrency = int(os.getenv("CONCURRENCY", str(DEFAULT_CONCURRENCY)))
 
@@ -369,8 +431,8 @@ def run_evaluation(questions: list[Question] | None = None) -> list[EvaluationRe
         evaluate_all_questions(
             questions,
             formatted,
-            json_api_key=json_api_key,
-            toon_api_key=toon_api_key,
+            json_provider=json_provider,
+            toon_provider=toon_provider,
             concurrency=concurrency,
         )
     )

@@ -15,10 +15,10 @@ Install dependencies:
 
 .. code-block:: bash
 
-    pip install pytoon[examples]
+    pip install ptoon[examples]
 
 This installs:
-* ``pytoon`` - TOON encoder/decoder
+* ``ptoon`` - TOON encoder/decoder
 * ``openai`` - OpenAI Python SDK
 * ``tiktoken`` - Token counting library
 
@@ -35,7 +35,7 @@ Simple query with TOON-encoded data:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import openai
 
     # Your data
@@ -47,7 +47,7 @@ Simple query with TOON-encoded data:
     }
 
     # Encode to TOON
-    toon_str = pytoon.encode(employee)
+    toon_str = ptoon.encode(employee)
     print("TOON format:")
     print(toon_str)
     # Output:
@@ -77,7 +77,7 @@ Compare JSON vs TOON token counts:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import tiktoken
     import json
 
@@ -92,7 +92,7 @@ Compare JSON vs TOON token counts:
     json_str = json.dumps(data, indent=2)
     
     # TOON format
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Count tokens (GPT-4o uses o200k_base)
     enc = tiktoken.get_encoding("o200k_base")
@@ -141,7 +141,7 @@ Real-world use case: question answering over a dataset.
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import openai
 
     # Simulate retrieved documents
@@ -152,7 +152,7 @@ Real-world use case: question answering over a dataset.
     ]
 
     # Encode to TOON
-    toon_str = pytoon.encode({"employees": employees})
+    toon_str = ptoon.encode({"employees": employees})
 
     # Ask multiple questions
     client = openai.OpenAI()
@@ -195,7 +195,7 @@ Handle malformed responses gracefully:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import openai
     import json
 
@@ -205,7 +205,7 @@ Handle malformed responses gracefully:
         
         # Encode data
         try:
-            toon_str = pytoon.encode(data)
+            toon_str = ptoon.encode(data)
         except (TypeError, ValueError) as e:
             print(f"Encoding error: {e}, falling back to JSON")
             toon_str = json.dumps(data, indent=2)
@@ -221,7 +221,7 @@ Handle malformed responses gracefully:
         
         # Try parsing as structured data
         try:
-            return pytoon.decode(answer)
+            return ptoon.decode(answer)
         except ValueError:
             pass
         
@@ -286,7 +286,7 @@ Choose appropriate delimiter:
 
     # If data contains commas, use pipe
     options = {"delimiter": "|"}
-    toon_str = pytoon.encode(data, options=options)
+    toon_str = ptoon.encode(data, options=options)
 
 Cost Management
 ~~~~~~~~~~~~~~~
@@ -306,7 +306,7 @@ Calculate savings:
 
 .. code-block:: python
 
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     
     # At $0.60 per 1M input tokens (gpt-4o-mini)
     json_cost = result['json_tokens'] * 0.60 / 1_000_000
@@ -322,12 +322,12 @@ TOON works with streaming:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import openai
 
     client = openai.OpenAI()
     data = {"employees": [...]}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Stream response
     stream = client.chat.completions.create(
@@ -346,7 +346,7 @@ TOON works with streaming:
     # Parse complete response
     full_response = "".join(chunks)
     try:
-        result = pytoon.decode(full_response)
+        result = ptoon.decode(full_response)
     except ValueError:
         result = full_response
 
@@ -360,7 +360,7 @@ OpenAI's function calling requires strict JSON schemas. Use TOON for data in pro
 .. code-block:: python
 
     # TOON for data
-    data_toon = pytoon.encode({"employees": [...]})
+    data_toon = ptoon.encode({"employees": [...]})
 
     # JSON for function schema
     functions = [{
@@ -392,7 +392,7 @@ GPT-4o
 
 .. code-block:: python
 
-    tokens = pytoon.count_tokens(toon_str, encoding="o200k_base")
+    tokens = ptoon.count_tokens(toon_str, encoding="o200k_base")
 
 GPT-4
 ~~~~~
@@ -408,7 +408,7 @@ GPT-3.5-turbo
 
 .. code-block:: python
 
-    tokens = pytoon.count_tokens(toon_str, encoding="cl100k_base")
+    tokens = ptoon.count_tokens(toon_str, encoding="cl100k_base")
 
 Performance Metrics
 -------------------
@@ -440,7 +440,7 @@ Full working script:
     #!/usr/bin/env python3
     """Complete OpenAI + TOON integration example."""
 
-    import pytoon
+    import ptoon
     import openai
     import json
 
@@ -455,15 +455,15 @@ Full working script:
 
         # Compare formats
         json_str = json.dumps(data, indent=2)
-        toon_str = pytoon.encode(data)
+        toon_str = ptoon.encode(data)
 
         print("JSON format:")
         print(json_str)
-        print(f"\nJSON tokens: {pytoon.count_tokens(json_str)}")
+        print(f"\nJSON tokens: {ptoon.count_tokens(json_str)}")
 
         print("\nTOON format:")
         print(toon_str)
-        print(f"\nTOON tokens: {pytoon.count_tokens(toon_str)}")
+        print(f"\nTOON tokens: {ptoon.count_tokens(toon_str)}")
 
         # Query with TOON
         client = openai.OpenAI()

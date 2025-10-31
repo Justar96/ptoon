@@ -1,4 +1,4 @@
-from pytoon import decode, encode
+from ptoon import decode, encode
 
 
 def test_encodes_objects_with_mixed_arrays_and_nested_objects():

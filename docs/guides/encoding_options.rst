@@ -6,7 +6,7 @@ This guide covers all encoding options in detail with visual examples.
 Overview
 --------
 
-``pytoon.encode()`` accepts an optional ``options`` parameter to customize output:
+``ptoon.encode()`` accepts an optional ``options`` parameter to customize output:
 
 .. code-block:: python
 
@@ -16,7 +16,7 @@ Overview
         "length_marker": False # include #N in headers (bool)
     }
 
-    toon_str = pytoon.encode(data, options=options)
+    toon_str = ptoon.encode(data, options=options)
 
 Option: indent
 --------------
@@ -123,13 +123,13 @@ Example:
     }
 
     # With comma delimiter (requires quoting)
-    pytoon.encode(data, options={"delimiter": ","})
+    ptoon.encode(data, options={"delimiter": ","})
     # products[2]{name, price}:
     #   "Widget, Large", 19.99
     #   "Gadget, Small", 9.99
 
     # With pipe delimiter (no quoting needed)
-    pytoon.encode(data, options={"delimiter": "|"})
+    ptoon.encode(data, options={"delimiter": "|"})
     # products[2|]{name| price}:
     #   Widget, Large| 19.99
     #   Gadget, Small| 9.99
@@ -205,7 +205,7 @@ Validation Behavior
       - apple
       - banana
     """
-    pytoon.decode(toon_str)  # ValueError: expected 3, got 2
+    ptoon.decode(toon_str)  # ValueError: expected 3, got 2
 
 **Without length markers:**
 
@@ -217,7 +217,7 @@ Validation Behavior
       - apple
       - banana
     """
-    pytoon.decode(toon_str)  # Still validates but less strict
+    ptoon.decode(toon_str)  # Still validates but less strict
 
 Token Impact
 ~~~~~~~~~~~~
@@ -249,7 +249,7 @@ Example 1: Maximum Compactness
         "length_marker": False
     }
 
-    toon_str = pytoon.encode(data, options=options)
+    toon_str = ptoon.encode(data, options=options)
 
 **Token savings:** ~5-10% compared to default
 
@@ -266,7 +266,7 @@ Example 2: Maximum Readability
         "length_marker": True
     }
 
-    toon_str = pytoon.encode(data, options=options)
+    toon_str = ptoon.encode(data, options=options)
 
 **Token cost:** ~3-5% more than default
 
@@ -285,7 +285,7 @@ Example 3: Balanced (Default)
     }
 
     # Or simply omit options
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
 **Good balance:** Readability and efficiency
 
@@ -378,19 +378,19 @@ Options affect token count by 0-10%:
     data = {"employees": [...]}  # 100 employees
 
     # Default
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     # TOON: 2,162 tokens
 
     # Compact options (indent=1 for nested data)
     options = {"indent": 1, "delimiter": "\t"}
-    toon_str = pytoon.encode(data, options=options)
-    toon_tokens = pytoon.count_tokens(toon_str)
+    toon_str = ptoon.encode(data, options=options)
+    toon_tokens = ptoon.count_tokens(toon_str)
     # TOON: 2,100 tokens (-2.9%)
 
     # Readable options
     options = {"indent": 4, "length_marker": True}
-    toon_str = pytoon.encode(data, options=options)
-    toon_tokens = pytoon.count_tokens(toon_str)
+    toon_str = ptoon.encode(data, options=options)
+    toon_tokens = ptoon.count_tokens(toon_str)
     # TOON: 2,240 tokens (+3.6%)
 
 **Encoding speed:** Unaffected by options
@@ -404,7 +404,7 @@ Best Practices
 .. code-block:: python
 
     # Simple and effective
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
 2. Measure Impact
 ~~~~~~~~~~~~~~~~~
@@ -414,8 +414,8 @@ Best Practices
     # Test different options
     for delim in [",", "|", "\t"]:
         opts = {"delimiter": delim}
-        toon_str = pytoon.encode(data, options=opts)
-        toon_tokens = pytoon.count_tokens(toon_str)
+        toon_str = ptoon.encode(data, options=opts)
+        toon_tokens = ptoon.count_tokens(toon_str)
         print(f"{delim}: {toon_tokens} tokens")
 
 3. Be Consistent
@@ -427,7 +427,7 @@ Best Practices
     APP_OPTIONS = {"delimiter": "|", "indent": 2}
 
     def encode_for_llm(data):
-        return pytoon.encode(data, options=APP_OPTIONS)
+        return ptoon.encode(data, options=APP_OPTIONS)
 
 4. Document Choices
 ~~~~~~~~~~~~~~~~~~~

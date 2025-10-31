@@ -6,7 +6,7 @@ to push coverage from 90% to 95%+.
 
 import pytest
 
-from pytoon import decode, encode
+from ptoon import decode, encode
 
 
 class TestAdvancedListArrayEdgeCases:

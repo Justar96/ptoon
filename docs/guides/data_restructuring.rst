@@ -141,7 +141,7 @@ Helper Function
    # Usage
    tree = {"name": "root", "children": [{"name": "child", "children": []}]}
    flat = {"nodes": tree_to_adjacency(tree)}
-   encoded = pytoon.encode(flat)  # Beautiful tabular format!
+   encoded = ptoon.encode(flat)  # Beautiful tabular format!
 
 Real-World Example: Organization Chart
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -276,7 +276,7 @@ Helper Functions
    # Usage
    tensor_3d = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
    flat = tensor_to_flat(tensor_3d)
-   encoded = pytoon.encode(flat)
+   encoded = ptoon.encode(flat)
 
    # Reconstruct
    original = flat_to_tensor(flat)
@@ -558,7 +558,7 @@ Best Practices
 2. **Explicit is better than implicit** - Include shape, type, metadata
 3. **Tables over hierarchies** - Tabular format is TOON's strength
 4. **Foreign keys over embedding** - Database normalization principles apply
-5. **Test token counts** - Measure before/after with ``pytoon.estimate_savings()``
+5. **Test token counts** - Measure before/after with ``ptoon.estimate_savings()``
 
 See Also
 --------

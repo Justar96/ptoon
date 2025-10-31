@@ -1,7 +1,7 @@
 Contributing
 ============
 
-We welcome contributions to pytoon! This guide explains how to contribute.
+We welcome contributions to ptoon! This guide explains how to contribute.
 
 Development Setup
 -----------------
@@ -50,7 +50,7 @@ Development Workflow
 .. code-block:: bash
 
     pytest
-    pytest --cov=pytoon --cov-report=html
+    pytest --cov=ptoon --cov-report=html
 
 4. Run linters:
 
@@ -58,7 +58,7 @@ Development Workflow
 
     ruff check .
     black --check .
-    mypy pytoon
+    mypy ptoon
 
 5. Format code:
 
@@ -101,7 +101,7 @@ Testing
 
     def test_encode_simple_dict():
         data = {"key": "value"}
-        result = pytoon.encode(data)
+        result = ptoon.encode(data)
         assert result == "key: value"
 
 Documentation
@@ -192,8 +192,8 @@ Project Structure
 
 .. code-block:: text
 
-    pytoon/
-    ├── pytoon/          # Core library
+    ptoon/
+    ├── ptoon/          # Core library
     │   ├── __init__.py  # Public API
     │   ├── encoder.py   # Encoding logic
     │   ├── decoder.py   # Decoding logic
@@ -218,7 +218,7 @@ Getting Help
 
 * GitHub Discussions
 * GitHub Issues
-* Stack Overflow (tag: ``pytoon``)
+* Stack Overflow (tag: ``ptoon``)
 
 See Also
 --------

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from pytoon import decode
+from ptoon import decode
 
 
 _FIXTURE_PATH = Path(__file__).parent / "fixtures" / "decoder_strictness.json"

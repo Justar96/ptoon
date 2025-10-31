@@ -40,7 +40,7 @@ from .constants import (
     TRUE_LITERAL,
     VALID_KEY_REGEX,
 )
-from pytoon.logging_config import get_logger
+from ptoon.logging_config import get_logger
 from .types import Delimiter, JsonPrimitive
 
 

@@ -16,9 +16,9 @@ Requirements:
     tiktoken: Install with `pip install tiktoken`
 
 Example:
-    >>> import pytoon
+    >>> import ptoon
     >>> data = {"name": "Alice", "age": 30}
-    >>> result = pytoon.estimate_savings(data)
+    >>> result = ptoon.estimate_savings(data)
     >>> print(f"TOON saves {result['savings_percent']:.1f}% tokens")
 """
 
@@ -74,9 +74,9 @@ def count_tokens(text: str, encoding: str = "o200k_base") -> int:
         int: The number of tokens in the text.
 
     Example:
-        >>> import pytoon
+        >>> import ptoon
         >>> text = "Hello, world!"
-        >>> pytoon.count_tokens(text)
+        >>> ptoon.count_tokens(text)
         4
 
     Note:
@@ -106,9 +106,9 @@ def estimate_savings(data: Any, encoding: str = "o200k_base") -> dict[str, Any]:
             - savings_percent (float): Percentage savings
 
     Example:
-        >>> import pytoon
+        >>> import ptoon
         >>> data = {"employees": [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]}
-        >>> result = pytoon.estimate_savings(data)
+        >>> result = ptoon.estimate_savings(data)
         >>> print(f"Savings: {result['savings_percent']:.1f}%")
         Savings: 42.3%
 
@@ -148,9 +148,9 @@ def compare_formats(data: Any, encoding: str = "o200k_base") -> str:
              character sizes, and savings percentage.
 
     Example:
-        >>> import pytoon
+        >>> import ptoon
         >>> data = {"users": [{"id": 1, "name": "Alice"}]}
-        >>> print(pytoon.compare_formats(data))
+        >>> print(ptoon.compare_formats(data))
         Format Comparison
         ────────────────────────────────────────────────
         Format      Tokens    Size (chars)

@@ -15,7 +15,7 @@ Encoding Errors
 
     # Error: functions can't be encoded
     data = {"func": lambda x: x}
-    pytoon.encode(data)  # TypeError or normalizes to null
+    ptoon.encode(data)  # TypeError or normalizes to null
 
 **Solution:** Remove or convert unsupported types
 
@@ -32,7 +32,7 @@ Decoding Errors
 .. code-block:: python
 
     invalid_toon = "key value"  # Missing colon
-    pytoon.decode(invalid_toon)  # ValueError
+    ptoon.decode(invalid_toon)  # ValueError
 
 **Invalid indentation:**
 
@@ -43,7 +43,7 @@ Decoding Errors
        name: Alice
       age: 30
     """
-    pytoon.decode(invalid_toon)  # ValueError: Invalid indentation
+    ptoon.decode(invalid_toon)  # ValueError: Invalid indentation
 
 **Solution:** Ensure TOON is well-formed or implement fallback
 
@@ -56,7 +56,7 @@ LLM Response Errors
 
     response = llm.generate("List users in TOON format")
     # Response might be malformed
-    pytoon.decode(response)  # ValueError
+    ptoon.decode(response)  # ValueError
 
 **Solution:** Implement fallback parsing
 
@@ -68,14 +68,14 @@ Error Handling Patterns
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import json
 
     def safe_decode(text):
         """Try TOON, then JSON, then return as text."""
         # Try TOON first
         try:
-            return pytoon.decode(text)
+            return ptoon.decode(text)
         except ValueError:
             pass
         
@@ -99,7 +99,7 @@ Error Handling Patterns
     def encode_safe(data):
         """Encode to TOON, fallback to JSON on error."""
         try:
-            return "toon", pytoon.encode(data)
+            return "toon", ptoon.encode(data)
         except (TypeError, ValueError) as e:
             print(f"Warning: TOON encoding failed ({e}), using JSON")
             return "json", json.dumps(data, indent=2)
@@ -115,14 +115,14 @@ Error Handling Patterns
 
     def query_with_retry(data, question, max_retries=3):
         """Query LLM, retry on decode errors."""
-        toon_str = pytoon.encode(data)
+        toon_str = ptoon.encode(data)
         prompt = f"Data:\n{toon_str}\n\n{question}"
         
         for attempt in range(max_retries):
             response = llm.generate(prompt)
             
             try:
-                return pytoon.decode(response)
+                return ptoon.decode(response)
             except ValueError as e:
                 if attempt < max_retries - 1:
                     # Add clarification for next attempt
@@ -156,7 +156,7 @@ Error Handling Patterns
         check_serializable(data)
         
         # Encode
-        return pytoon.encode(data)
+        return ptoon.encode(data)
 
 Debug Mode
 ----------
@@ -165,15 +165,15 @@ Enable debug logging:
 
 .. code-block:: bash
 
-    export PYTOON_DEBUG=1
+    export PTOON_DEBUG=1
 
 .. code-block:: python
 
     import os
-    os.environ['PYTOON_DEBUG'] = '1'
+    os.environ['PTOON_DEBUG'] = '1'
 
     # Now encoding decisions are logged
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
 Understanding Error Messages
 -----------------------------
@@ -243,7 +243,7 @@ ValueError: Tabs not allowed
 
     # Convert tabs to spaces
     toon_str = toon_str.replace('\t', '  ')
-    pytoon.decode(toon_str)
+    ptoon.decode(toon_str)
 
 Complete Example
 ----------------
@@ -252,7 +252,7 @@ Robust LLM integration with comprehensive error handling:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import json
     import logging
 
@@ -266,7 +266,7 @@ Robust LLM integration with comprehensive error handling:
         """
         # Encode data
         try:
-            toon_str = pytoon.encode(data)
+            toon_str = ptoon.encode(data)
             format_type = "TOON"
         except (TypeError, ValueError) as e:
             logger.warning(f"TOON encoding failed: {e}, falling back to JSON")
@@ -285,7 +285,7 @@ Robust LLM integration with comprehensive error handling:
                 # Try parsing response
                 # 1. Try TOON
                 try:
-                    return pytoon.decode(response)
+                    return ptoon.decode(response)
                 except ValueError:
                     pass
                 
@@ -331,11 +331,11 @@ Never assume decode will succeed:
 .. code-block:: python
 
     # Bad
-    result = pytoon.decode(response)
+    result = ptoon.decode(response)
 
     # Good
     try:
-        result = pytoon.decode(response)
+        result = ptoon.decode(response)
     except ValueError as e:
         logger.error(f"Decode failed: {e}")
         result = response  # Use raw text
@@ -348,7 +348,7 @@ Never assume decode will succeed:
     import logging
 
     try:
-        data = pytoon.decode(toon_str)
+        data = ptoon.decode(toon_str)
     except ValueError as e:
         logging.error(f"Decode error: {e}", extra={
             "toon_string": toon_str[:100],  # First 100 chars
@@ -363,7 +363,7 @@ Never assume decode will succeed:
     def parse_response(text):
         """Multi-level fallback parsing."""
         parsers = [
-            ("TOON", pytoon.decode),
+            ("TOON", ptoon.decode),
             ("JSON", json.loads),
             ("TEXT", lambda x: x)
         ]
@@ -390,7 +390,7 @@ Never assume decode will succeed:
         return True
 
     if validate_data(data):
-        toon_str = pytoon.encode(data)
+        toon_str = ptoon.encode(data)
 
 5. Test Error Paths
 ~~~~~~~~~~~~~~~~~~~
@@ -402,7 +402,7 @@ Never assume decode will succeed:
         invalid_toon = "invalid: {syntax"
         
         try:
-            pytoon.decode(invalid_toon)
+            ptoon.decode(invalid_toon)
             assert False, "Should have raised ValueError"
         except ValueError:
             pass  # Expected

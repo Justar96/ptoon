@@ -1,6 +1,6 @@
 import sys
 
-from pytoon import encode
+from ptoon import encode
 
 
 def test_encodes_safe_strings_without_quotes():

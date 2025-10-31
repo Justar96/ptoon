@@ -6,7 +6,7 @@ This page documents utility functions for token counting and analysis.
 Utility Functions
 -----------------
 
-.. automodule:: pytoon.utils
+.. automodule:: ptoon.utils
    :members:
    :undoc-members:
 
@@ -23,9 +23,9 @@ Or install with benchmark dependencies:
 
 .. code-block:: bash
 
-    pip install pytoon[benchmark]
+    pip install ptoon[benchmark]
 
-If ``tiktoken`` is unavailable, ``pytoon.count_tokens`` raises ``RuntimeError("tiktoken is required for token counting. Install with: pip install tiktoken or pip install pytoon[benchmark]")``.
+If ``tiktoken`` is unavailable, ``ptoon.count_tokens`` raises ``RuntimeError("tiktoken is required for token counting. Install with: pip install tiktoken or pip install ptoon[benchmark]")``.
 
 .. note::
 
@@ -47,14 +47,14 @@ Count Tokens
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     text = "Hello, world!"
-    token_count = pytoon.count_tokens(text)
+    token_count = ptoon.count_tokens(text)
     print(f"Tokens: {token_count}")
 
     # With specific encoding
-    token_count = pytoon.count_tokens(text, encoding="cl100k_base")
+    token_count = ptoon.count_tokens(text, encoding="cl100k_base")
 
 Estimate Savings
 ~~~~~~~~~~~~~~~~
@@ -62,7 +62,7 @@ Estimate Savings
 .. code-block:: python
 
     data = {"users": [{"id": 1, "name": "Alice"}]}
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
 
     print(f"JSON tokens: {result['json_tokens']}")
     print(f"TOON tokens: {result['toon_tokens']}")
@@ -73,7 +73,7 @@ Compare Formats
 
 .. code-block:: python
 
-    print(pytoon.compare_formats(data))
+    print(ptoon.compare_formats(data))
 
     # Output:
     # Format Comparison

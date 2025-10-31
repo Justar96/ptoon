@@ -1,4 +1,4 @@
-"""Tests for pytoon.decoder edge cases and error handling.
+"""Tests for ptoon.decoder edge cases and error handling.
 
 Tests input validation, length marker validation, parsing errors,
 malformed input handling, and complex nested structures.
@@ -6,8 +6,8 @@ malformed input handling, and complex nested structures.
 
 import pytest
 
-from pytoon import decode, encode
-from pytoon.decoder import Decoder
+from ptoon import decode, encode
+from ptoon.decoder import Decoder
 
 
 class TestInputValidation:

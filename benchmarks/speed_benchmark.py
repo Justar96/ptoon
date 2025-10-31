@@ -7,7 +7,7 @@ import timeit
 from pathlib import Path
 from typing import Any
 
-import pytoon
+import ptoon
 
 from .datasets import get_all_datasets
 
@@ -54,7 +54,7 @@ def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
 
     for name, _emoji, _description, data in datasets:
         json_str = json.dumps(data, ensure_ascii=False)
-        toon_str = pytoon.encode(data)
+        toon_str = ptoon.encode(data)
         size_bytes = len(json_str.encode("utf-8")) + len(toon_str.encode("utf-8"))
         iters = adjust_iterations(size_bytes)
 
@@ -62,7 +62,7 @@ def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
         enc_json = _median_timer(
             lambda data=data: json.dumps(data, ensure_ascii=False), number=iters
         )
-        enc_toon = _median_timer(lambda data=data: pytoon.encode(data), number=iters)
+        enc_toon = _median_timer(lambda data=data: ptoon.encode(data), number=iters)
         enc_ratio, enc_desc = calculate_speedup(enc_json, enc_toon)
         results["encoding"].append(
             {
@@ -79,7 +79,7 @@ def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
             lambda json_str=json_str: json.loads(json_str), number=iters
         )
         dec_toon = _median_timer(
-            lambda toon_str=toon_str: pytoon.decode(toon_str), number=iters
+            lambda toon_str=toon_str: ptoon.decode(toon_str), number=iters
         )
         dec_ratio, dec_desc = calculate_speedup(dec_json, dec_toon)
         results["decoding"].append(
@@ -98,7 +98,7 @@ def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
             number=iters,
         )
         rt_toon = _median_timer(
-            lambda data=data: pytoon.decode(pytoon.encode(data)), number=iters
+            lambda data=data: ptoon.decode(ptoon.encode(data)), number=iters
         )
         rt_ratio, rt_desc = calculate_speedup(rt_json, rt_toon)
         results["roundtrip"].append(

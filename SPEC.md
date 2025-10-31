@@ -1,4 +1,4 @@
-# pytoon Specification
+# ptoon Specification
 
 Version: **v0.1.0**  
 Status: Draft (normative where indicated)  
@@ -6,7 +6,7 @@ Audience: Python developers implementing TOON encoders/decoders, tool builders,
 prompt engineers, and QA teams validating interoperability with the canonical
 TypeScript implementation.
 
-`pytoon` is the Python reference port of Token-Oriented Object Notation (TOON),
+`ptoon` is the Python reference port of Token-Oriented Object Notation (TOON),
 optimized for Large Language Model (LLM) token efficiency while remaining human
 readable. It preserves the core TOON semantics defined in
 [johannschopplich/toon](https://github.com/johannschopplich/toon) and documents
@@ -23,7 +23,7 @@ Python-specific normalization and runtime behavior.
   - Documented strict-mode error cases now enforced by the decoder (tab
     indentation, invalid escapes, forbidden leading zeros, incomplete arrays).
   - Clarified option handling (`indent`, `delimiter`, `length_marker`) and cache
-    behavior in `pytoon.__init__`.
+    behavior in `ptoon.__init__`.
 - **v0.0.0 — Initial acknowledgement**
   - Adopted the canonical TOON specification maintained by Johann Schopplich as
     the foundational reference. Immense thanks to the upstream authors and
@@ -71,7 +71,7 @@ Keywords **MUST**, **MUST NOT**, **SHOULD**, **MAY** follow RFC 2119 semantics
 ### 3.1 Primitive Numbers
 
 - `-0.0` MUST encode as `0`.
-- Finite floats MUST render without exponent notation. `pytoon` formats them via
+- Finite floats MUST render without exponent notation. `ptoon` formats them via
   `Decimal(str(value))`, then strips trailing zeros and decimal points.
 - Integers with `abs(value) > 2**53 - 1` MUST encode as quoted decimal strings
   (to preserve precision across JS ecosystems).
@@ -228,14 +228,14 @@ Empty documents (after trimming ignorable blank lines) decode as `{}`.
 
 ## 9. Options and Defaults
 
-`pytoon.encode(value, options=None)` accepts:
+`ptoon.encode(value, options=None)` accepts:
 
 - `indent` (int, default 2) — spaces per indentation level.
 - `delimiter` (str, default `,`) — document delimiter. Tabular and inline arrays
   inherit this unless a header overrides it.
 - `length_marker` (bool, default False) — when true, encoders emit `[#N]`.
 
-`pytoon.decode(source, options=None)` reserves the `options` parameter for
+`ptoon.decode(source, options=None)` reserves the `options` parameter for
 future use; strict mode is enabled by default. The module caches a default
 encoder/decoder for common options to minimize allocations.
 
@@ -252,7 +252,7 @@ An implementation claiming compatibility with this specification MUST:
 
 ## 11. Recommended Test Coverage
 
-Projects embedding `pytoon` SHOULD cover:
+Projects embedding `ptoon` SHOULD cover:
 
 - Primitive quoting heuristics, including delimiter-aware cases.
 - Object key quoting and order preservation.
@@ -269,7 +269,7 @@ treated as part of the normative suite for regression.
 
 ## 12. Compatibility Notes
 
-- Output produced by `pytoon` is designed to roundtrip with the upstream
+- Output produced by `ptoon` is designed to roundtrip with the upstream
   TypeScript decoder in strict mode.
 - Differences are limited to language-specific normalization (e.g.,
   Python datetime string formats with timezone offsets).
@@ -278,7 +278,7 @@ treated as part of the normative suite for regression.
 
 ---
 
-By adhering to this document, maintainers can evolve `pytoon` with confidence
+By adhering to this document, maintainers can evolve `ptoon` with confidence
 that its behavior remains aligned with the broader TOON ecosystem while honoring
 Python-specific guarantees. Contributions building on this specification SHOULD
 update the changelog with explicit normative changes and expand the test matrix

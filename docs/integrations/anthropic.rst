@@ -17,7 +17,7 @@ Prerequisites
 
 .. code-block:: bash
 
-    pip install pytoon anthropic
+    pip install ptoon anthropic
 
 Set your API key:
 
@@ -30,12 +30,12 @@ Basic Example
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import anthropic
 
     # Encode data
     data = {"employees": [...]}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Send to Claude
     client = anthropic.Anthropic()
@@ -84,7 +84,7 @@ Use Anthropic's token counting API:
     # Accurate token count for Claude
     token_count = client.count_tokens(toon_str)
 
-**Note:** ``pytoon.count_tokens()`` uses OpenAI's tokenizer and provides approximations for Claude.
+**Note:** ``ptoon.count_tokens()`` uses OpenAI's tokenizer and provides approximations for Claude.
 
 Supported Models
 ----------------
@@ -98,7 +98,7 @@ Best Practices
 
 Follow general integration patterns from :doc:`overview`:
 
-* Encode data with ``pytoon.encode()``
+* Encode data with ``ptoon.encode()``
 * Include in prompt
 * Handle errors gracefully
 * Measure token savings

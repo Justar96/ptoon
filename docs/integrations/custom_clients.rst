@@ -18,7 +18,7 @@ General Pattern
 
 The pattern is the same for all providers:
 
-1. Encode data: ``toon_str = pytoon.encode(data)``
+1. Encode data: ``toon_str = ptoon.encode(data)``
 2. Construct prompt: ``prompt = f"Data:\n{toon_str}\n\nQuestion: ..."``
 3. Send to model using provider's API
 4. Parse response
@@ -33,12 +33,12 @@ Ollama
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import requests
 
     # Encode data
     data = {"products": [...]}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Send to Ollama
     response = requests.post(
@@ -60,7 +60,7 @@ Use with Python bindings:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     from llama_cpp import Llama
 
     # Load model
@@ -68,7 +68,7 @@ Use with Python bindings:
 
     # Encode data
     data = {...}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Generate
     prompt = f"Data:\n{toon_str}\n\nQuestion: ..."
@@ -81,7 +81,7 @@ Hugging Face Transformers
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     from transformers import AutoTokenizer, AutoModelForCausalLM
 
     # Load model
@@ -91,7 +91,7 @@ Hugging Face Transformers
 
     # Encode data
     data = {...}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Generate
     prompt = f"Data:\n{toon_str}\n\nQuestion: ..."
@@ -108,12 +108,12 @@ REST API
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import requests
 
     # Encode data
     data = {...}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Send to custom API
     response = requests.post(
@@ -133,7 +133,7 @@ gRPC API
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import grpc
     # Assuming you have generated pb2 files from proto definitions
     import your_llm_service_pb2 as pb2
@@ -141,7 +141,7 @@ gRPC API
 
     # Encode data
     data = {...}
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Send to gRPC service
     channel = grpc.insecure_channel('localhost:50051')
@@ -179,12 +179,12 @@ Use the model's own tokenizer for accurate counts:
 For Approximations
 ~~~~~~~~~~~~~~~~~~
 
-Use pytoon's built-in counting (OpenAI-compatible):
+Use ptoon's built-in counting (OpenAI-compatible):
 
 .. code-block:: python
 
     # Approximate count
-    token_count = pytoon.count_tokens(toon_str)
+    token_count = ptoon.count_tokens(toon_str)
 
 Prompt Engineering
 ------------------
@@ -212,14 +212,14 @@ Measure with model's tokenizer:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     import json
 
     data = {...}
 
     # Compare formats
     json_str = json.dumps(data)
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
 
     # Count with model's tokenizer
     json_tokens = len(tokenizer(json_str)["input_ids"])
@@ -238,7 +238,7 @@ Best Practices
 
     # Verify model understands TOON
     test_data = {"items": [{"a": 1}, {"a": 2}]}
-    toon_str = pytoon.encode(test_data)
+    toon_str = ptoon.encode(test_data)
     
     # Send to model and check response
     response = model.generate(f"Parse this:\n{toon_str}")
@@ -250,7 +250,7 @@ Best Practices
 
     def encode_safe(data):
         try:
-            return pytoon.encode(data)
+            return ptoon.encode(data)
         except Exception:
             return json.dumps(data)
 
@@ -263,7 +263,7 @@ Best Practices
 
     # Measure encoding overhead
     start = time.time()
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     encoding_time = time.time() - start
 
     # Measure inference time
@@ -284,7 +284,7 @@ Full script for local model:
     #!/usr/bin/env python3
     """Complete local model + TOON example."""
 
-    import pytoon
+    import ptoon
     import json
     from transformers import AutoTokenizer, AutoModelForCausalLM
 
@@ -304,7 +304,7 @@ Full script for local model:
 
         # Compare formats
         json_str = json.dumps(data)
-        toon_str = pytoon.encode(data)
+        toon_str = ptoon.encode(data)
 
         json_tokens = len(tokenizer(json_str)["input_ids"])
         toon_tokens = len(tokenizer(toon_str)["input_ids"])
@@ -337,7 +337,7 @@ Troubleshooting
 **Token counting is inaccurate**
 
 * Use model's own tokenizer
-* ``pytoon.count_tokens()`` is OpenAI-specific
+* ``ptoon.count_tokens()`` is OpenAI-specific
 
 **Performance issues**
 

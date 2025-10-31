@@ -2,7 +2,7 @@ import types
 from typing import Any, cast
 
 from .constants import DEFAULT_DELIMITER, LIST_ITEM_PREFIX
-from pytoon.logging_config import get_logger
+from ptoon.logging_config import get_logger
 from .normalize import (
     is_array_of_arrays,
     is_array_of_objects,

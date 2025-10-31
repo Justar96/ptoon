@@ -4,18 +4,18 @@ Installation
 Basic Installation
 ------------------
 
-The core pytoon library has no dependencies and can be installed with pip:
+The core ptoon library has no dependencies and can be installed with pip:
 
 .. code-block:: bash
 
-    pip install pytoon
+    pip install ptoon
 
 Python version requirement: **Python 3.10 or higher**
 
 Optional Dependencies
 ---------------------
 
-pytoon provides several optional dependency groups for different use cases:
+ptoon provides several optional dependency groups for different use cases:
 
 Examples
 ~~~~~~~~
@@ -24,7 +24,7 @@ Install with OpenAI integration support:
 
 .. code-block:: bash
 
-    pip install pytoon[examples]
+    pip install ptoon[examples]
 
 Includes:
     * ``openai`` - OpenAI Python SDK
@@ -39,7 +39,7 @@ Install with benchmarking tools:
 
 .. code-block:: bash
 
-    pip install pytoon[benchmark]
+    pip install ptoon[benchmark]
 
 Includes:
     * ``tiktoken`` - Token counting
@@ -55,7 +55,7 @@ Install with LLM accuracy benchmark support:
 
 .. code-block:: bash
 
-    pip install pytoon[llm-benchmark]
+    pip install ptoon[llm-benchmark]
 
 Includes:
     * ``openai`` - OpenAI Python SDK
@@ -72,7 +72,7 @@ Install for development with testing and linting tools:
 
 .. code-block:: bash
 
-    pip install pytoon[dev]
+    pip install ptoon[dev]
 
 Includes:
     * ``pytest`` - Testing framework
@@ -88,7 +88,7 @@ Install all optional dependencies:
 
 .. code-block:: bash
 
-    pip install pytoon[all]
+    pip install ptoon[all]
 
 Development Installation
 ------------------------
@@ -100,7 +100,7 @@ For contributors and developers:
 .. code-block:: bash
 
     git clone https://github.com/Justar96/toon-py.git
-    cd pytoon
+    cd ptoon
 
 2. Install in editable mode with development dependencies:
 
@@ -127,20 +127,20 @@ Test your installation:
 
 .. code-block:: bash
 
-    python -c "import pytoon; print(pytoon.__version__)"
+    python -c "import ptoon; print(ptoon.__version__)"
 
 Quick functionality test:
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
     
     data = {"test": "value"}
-    encoded = pytoon.encode(data)
+    encoded = ptoon.encode(data)
     print(encoded)
     # Output: test: value
     
-    decoded = pytoon.decode(encoded)
+    decoded = ptoon.decode(encoded)
     assert decoded == data
     print("Installation verified!")
 
@@ -164,14 +164,14 @@ Verify installation:
 
 .. code-block:: bash
 
-    pip show pytoon
+    pip show ptoon
 
 If not found, try:
 
 .. code-block:: bash
 
-    pip uninstall pytoon
-    pip install pytoon
+    pip uninstall ptoon
+    pip install ptoon
 
 **Permission errors**
 
@@ -179,7 +179,7 @@ Use ``--user`` flag:
 
 .. code-block:: bash
 
-    pip install --user pytoon
+    pip install --user ptoon
 
 Or use a virtual environment (recommended):
 
@@ -187,7 +187,7 @@ Or use a virtual environment (recommended):
 
     python -m venv venv
     source venv/bin/activate  # On Windows: venv\Scripts\activate
-    pip install pytoon
+    pip install ptoon
 
 Virtual Environment
 ~~~~~~~~~~~~~~~~~~~
@@ -205,8 +205,8 @@ We strongly recommend using a virtual environment:
     # Activate (Windows)
     venv\Scripts\activate
     
-    # Install pytoon
-    pip install pytoon
+    # Install ptoon
+    pip install ptoon
 
 Next Steps
 ----------

@@ -1,7 +1,7 @@
-pytoon: Token-Oriented Object Notation for LLMs
+ptoon: Token-Oriented Object Notation for LLMs
 ================================================
 
-**pytoon** is a Python library for encoding structured data in TOON format, achieving 30-60% token savings compared to JSON for LLM applications.
+**ptoon** is a Python library for encoding structured data in TOON format, achieving 30-60% token savings compared to JSON for LLM applications.
 
 Key Benefits
 ------------
@@ -16,7 +16,7 @@ Quick Example
 
 .. code-block:: python
 
-    import pytoon
+    import ptoon
 
     data = {
         "employees": [
@@ -26,7 +26,7 @@ Quick Example
     }
 
     # Encode to TOON format
-    toon_str = pytoon.encode(data)
+    toon_str = ptoon.encode(data)
     print(toon_str)
     # Output:
     # employees[2]{id, name, role}:
@@ -34,11 +34,11 @@ Quick Example
     #   2, Bob, Designer
 
     # Decode back to Python
-    decoded = pytoon.decode(toon_str)
+    decoded = ptoon.decode(toon_str)
     assert decoded == data
 
     # Compare token efficiency
-    result = pytoon.estimate_savings(data)
+    result = ptoon.estimate_savings(data)
     print(f"Token savings: {result['savings_percent']:.1f}%")
 
 Installation
@@ -47,13 +47,13 @@ Installation
 .. code-block:: bash
 
     # Basic installation
-    pip install pytoon
+    pip install ptoon
 
     # With examples (includes OpenAI integration)
-    pip install pytoon[examples]
+    pip install ptoon[examples]
 
     # With benchmarks
-    pip install pytoon[benchmark]
+    pip install ptoon[benchmark]
 
     # Development installation
     pip install -e ".[dev]"
@@ -119,5 +119,5 @@ Links
 -----
 
 * `GitHub Repository <https://github.com/Justar96/toon-py>`_
-* `PyPI Package <https://pypi.org/project/pytoon/>`_
+* `PyPI Package <https://pypi.org/project/ptoon/>`_
 * `Issue Tracker <https://github.com/Justar96/toon-py/issues>`_
