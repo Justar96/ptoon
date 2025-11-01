@@ -286,31 +286,31 @@ class TestPublicAPI:
     """Test public API exports."""
 
     def test_exports_encode_function(self):
-        """Test pytoon exports encode function."""
-        assert hasattr(pytoon, "encode")
+        """Test ptoon exports encode function."""
+        assert hasattr(ptoon, "encode")
         assert callable(ptoon.encode)
 
     def test_exports_decode_function(self):
-        """Test pytoon exports decode function."""
-        assert hasattr(pytoon, "decode")
+        """Test ptoon exports decode function."""
+        assert hasattr(ptoon, "decode")
         assert callable(ptoon.decode)
 
     def test_exports_utility_functions(self):
-        """Test pytoon exports utility functions."""
-        assert hasattr(pytoon, "count_tokens")
-        assert hasattr(pytoon, "estimate_savings")
-        assert hasattr(pytoon, "compare_formats")
+        """Test ptoon exports utility functions."""
+        assert hasattr(ptoon, "count_tokens")
+        assert hasattr(ptoon, "estimate_savings")
+        assert hasattr(ptoon, "compare_formats")
 
     def test_exports_constants(self):
-        """Test pytoon exports constants."""
-        assert hasattr(pytoon, "DEFAULT_DELIMITER")
-        assert hasattr(pytoon, "DELIMITERS")
+        """Test ptoon exports constants."""
+        assert hasattr(ptoon, "DEFAULT_DELIMITER")
+        assert hasattr(ptoon, "DELIMITERS")
 
     def test_exports_type_definitions(self):
-        """Test pytoon exports type definitions."""
-        assert hasattr(pytoon, "JsonPrimitive")
-        assert hasattr(pytoon, "JsonArray")
-        assert hasattr(pytoon, "JsonObject")
-        assert hasattr(pytoon, "JsonValue")
-        assert hasattr(pytoon, "Delimiter")
-        assert hasattr(pytoon, "EncodeOptions")
+        """Test ptoon exports type definitions."""
+        assert hasattr(ptoon, "JsonPrimitive")
+        assert hasattr(ptoon, "JsonArray")
+        assert hasattr(ptoon, "JsonObject")
+        assert hasattr(ptoon, "JsonValue")
+        assert hasattr(ptoon, "Delimiter")
+        assert hasattr(ptoon, "EncodeOptions")
