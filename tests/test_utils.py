@@ -463,11 +463,11 @@ class TestUtilitiesIntegration:
 
         for text in test_strings:
             # Both implementations should produce identical results
-            pytoon_result = count_tokens(text)
+            ptoon_result = count_tokens(text)
             benchmark_result = benchmark_count_tokens(text)
 
-            assert pytoon_result == benchmark_result, (
+            assert ptoon_result == benchmark_result, (
                 f"Token count mismatch for text: {text!r}\n"
-                f"ptoon.count_tokens: {pytoon_result}\n"
+                f"ptoon.count_tokens: {ptoon_result}\n"
                 f"benchmark.count_tokens: {benchmark_result}"
             )

@@ -1,4 +1,4 @@
-"""Tests for pytoon API validation and error handling.
+"""Tests for ptoon API validation and error handling.
 
 Tests input validation, option validation, and type checking
 in the public encode() and decode() functions.

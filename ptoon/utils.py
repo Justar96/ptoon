@@ -35,7 +35,7 @@ __all__ = ["count_tokens", "estimate_savings", "compare_formats"]
 
 
 _TIKTOKEN_MISSING_MSG = (
-    "tiktoken is required for token counting. Install with: pip install tiktoken or pip install pytoon[benchmark]"
+    "tiktoken is required for token counting. Install with: pip install tiktoken or pip install ptoon[benchmark]"
 )
 
 

@@ -19,7 +19,7 @@ with pyproject_path.open("rb") as f:
     version = pyproject_data["project"]["version"]
     release = version
 
-project = "pytoon"
+project = "ptoon"
 copyright = "2025, TOON Contributors"
 author = "TOON Contributors"
 
@@ -39,8 +39,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 language = "en"
 
 html_theme = "furo"
-html_title = "pytoon Documentation"
-html_short_title = "pytoon"
+html_title = "ptoon Documentation"
+html_short_title = "ptoon"
 html_static_path = ["_static"]
 html_show_sourcelink = True
 
