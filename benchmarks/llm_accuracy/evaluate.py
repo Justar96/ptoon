@@ -89,9 +89,7 @@ def _get_provider(
 
     if cache_key_json not in _provider_cache:
         if provider_type == "openai":
-            _provider_cache[cache_key_json] = OpenAIProvider(
-                api_key=json_config["api_key"]
-            )
+            _provider_cache[cache_key_json] = OpenAIProvider(api_key=json_config["api_key"])
         elif provider_type == "vertex":
             _provider_cache[cache_key_json] = VertexAIProvider(
                 project_id=json_config["project_id"],
@@ -103,9 +101,7 @@ def _get_provider(
 
     if cache_key_toon not in _provider_cache:
         if provider_type == "openai":
-            _provider_cache[cache_key_toon] = OpenAIProvider(
-                api_key=toon_config["api_key"]
-            )
+            _provider_cache[cache_key_toon] = OpenAIProvider(api_key=toon_config["api_key"])
         elif provider_type == "vertex":
             _provider_cache[cache_key_toon] = VertexAIProvider(
                 project_id=toon_config["project_id"],
@@ -250,9 +246,7 @@ async def evaluate_single_question(
 
     # Fallback result on failure
     fallback_latency_ms = (
-        last_latency_ms
-        if last_latency_ms is not None
-        else (time.perf_counter() - overall_start) * 1000
+        last_latency_ms if last_latency_ms is not None else (time.perf_counter() - overall_start) * 1000
     )
 
     return {
@@ -300,9 +294,7 @@ async def evaluate_all_questions(
             json_payload = formatted_datasets["JSON"][dataset_name]
             toon_payload = formatted_datasets["TOON"][dataset_name]
         except KeyError as err:
-            raise KeyError(
-                f"Missing formatted dataset '{dataset_name}' for format evaluation"
-            ) from err
+            raise KeyError(f"Missing formatted dataset '{dataset_name}' for format evaluation") from err
 
         tasks.append(
             lambda q=question, data=json_payload: evaluate_single_question(
@@ -336,9 +328,7 @@ async def evaluate_all_questions(
         completed_total += 1
         if progress is not None:
             progress.update(1)
-            progress.set_postfix(
-                JSON=completed_counts["JSON"], TOON=completed_counts["TOON"]
-            )
+            progress.set_postfix(JSON=completed_counts["JSON"], TOON=completed_counts["TOON"])
         elif completed_total % 10 == 0:
             logger.info(
                 "Progress: %d/%d tasks completed (JSON=%d, TOON=%d)",
@@ -402,9 +392,7 @@ def run_evaluation(
         toon_api_key = os.getenv("OPENAI_API_KEY_TOON")
 
         if not json_api_key or not toon_api_key:
-            raise ValueError(
-                "Missing OPENAI_API_KEY_JSON or OPENAI_API_KEY_TOON environment variables"
-            )
+            raise ValueError("Missing OPENAI_API_KEY_JSON or OPENAI_API_KEY_TOON environment variables")
 
         json_config = {"api_key": json_api_key}
         toon_config = {"api_key": toon_api_key}
@@ -453,13 +441,14 @@ def run_evaluation(
     if provider_type == "vertex":
         # Map the generic model name to Vertex AI model name
         from .providers.vertex_provider import VertexAIProvider
+
         temp_provider = VertexAIProvider(project_id="temp", location="us-central1")
         actual_model = temp_provider._map_model_name(MODEL)
     else:
         actual_model = MODEL
 
     for result in results:
-        result['actual_model'] = actual_model  # type: ignore[typeddict-unknown-key]
+        result["actual_model"] = actual_model  # type: ignore[typeddict-unknown-key]
 
     return results
 
@@ -469,9 +458,7 @@ def _log_summary(results: list[EvaluationResult]) -> None:
         logger.info("No results to summarize.")
         return
 
-    by_format: dict[str, dict[str, float]] = defaultdict(
-        lambda: {"correct": 0, "total": 0}
-    )
+    by_format: dict[str, dict[str, float]] = defaultdict(lambda: {"correct": 0, "total": 0})
     latencies: list[float] = []
 
     for result in results:
@@ -484,9 +471,7 @@ def _log_summary(results: list[EvaluationResult]) -> None:
     summaries = []
     for fmt, stats in by_format.items():
         accuracy = (stats["correct"] / stats["total"] * 100) if stats["total"] else 0.0
-        summaries.append(
-            f"{fmt}: {accuracy:.1f}% ({int(stats['correct'])}/{int(stats['total'])})"
-        )
+        summaries.append(f"{fmt}: {accuracy:.1f}% ({int(stats['correct'])}/{int(stats['total'])})")
 
     avg_latency = sum(latencies) / len(latencies) if latencies else 0.0
     logger.info(

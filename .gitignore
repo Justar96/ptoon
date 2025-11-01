@@ -239,6 +239,9 @@ benchmarks/results/*.json
 benchmarks/**/__pycache__/
 benchmarks/temp/
 benchmarks/*.tmp
+# Large dataset files (download separately if needed)
+benchmarks/data/realworld/*_dataset.json
+benchmarks/data/realworld/recipes_*.json
 
 # Temporary files
 tmp/
@@ -271,3 +274,5 @@ docs/plan/
 toon-ts/
 
 toon-vertex-key.json
+AGENTS.md
+CLAUDE.md

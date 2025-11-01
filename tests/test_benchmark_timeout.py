@@ -8,20 +8,32 @@ import time
 import pytest
 
 
+# Define test functions at module level so they can be pickled for Windows multiprocessing
+def _slow_function(duration: float) -> str:
+    """Sleep for specified duration."""
+    time.sleep(duration)
+    return "completed"
+
+
+def _fast_function(x: int, y: int) -> int:
+    """Simple addition."""
+    return x + y
+
+
+def _failing_function() -> None:
+    """Function that raises an exception."""
+    raise ValueError("Test error")
+
+
 @pytest.mark.skipif(sys.platform != "win32", reason="Windows-specific timeout test")
 def test_windows_timeout_terminates_quickly():
     """Verify that Windows timeout returns promptly and doesn't leave running processes."""
     # Import here to avoid issues if benchmarks aren't available
     from benchmarks.stress_benchmark import measure_with_timeout
 
-    def slow_function(duration: float) -> str:
-        """Sleep for specified duration."""
-        time.sleep(duration)
-        return "completed"
-
     # Test that a 5-second sleep times out after 1 second
     start = time.perf_counter()
-    result, duration, timed_out = measure_with_timeout(slow_function, 1, 5.0)
+    result, duration, timed_out = measure_with_timeout(_slow_function, 1, 5.0)
     elapsed = time.perf_counter() - start
 
     # Assertions
@@ -36,12 +48,8 @@ def test_windows_timeout_success_case():
     """Verify that Windows timeout works correctly for fast functions."""
     from benchmarks.stress_benchmark import measure_with_timeout
 
-    def fast_function(x: int, y: int) -> int:
-        """Simple addition."""
-        return x + y
-
     # Test successful completion within timeout
-    result, duration, timed_out = measure_with_timeout(fast_function, 5, 10, 20)
+    result, duration, timed_out = measure_with_timeout(_fast_function, 5, 10, 20)
 
     # Assertions
     assert timed_out is False, "Function should not have timed out"
@@ -54,14 +62,9 @@ def test_unix_timeout_with_signal():
     """Verify that Unix signal-based timeout works correctly."""
     from benchmarks.stress_benchmark import measure_with_timeout
 
-    def slow_function(duration: float) -> str:
-        """Sleep for specified duration."""
-        time.sleep(duration)
-        return "completed"
-
     # Test that a 5-second sleep times out after 1 second
     start = time.perf_counter()
-    result, duration, timed_out = measure_with_timeout(slow_function, 1, 5.0)
+    result, duration, timed_out = measure_with_timeout(_slow_function, 1, 5.0)
     elapsed = time.perf_counter() - start
 
     # Assertions
@@ -75,10 +78,6 @@ def test_timeout_with_exception():
     """Verify that exceptions in timed functions are properly propagated."""
     from benchmarks.stress_benchmark import measure_with_timeout
 
-    def failing_function() -> None:
-        """Function that raises an exception."""
-        raise ValueError("Test error")
-
     # Test that exceptions are properly raised
     with pytest.raises(ValueError, match="Test error"):
-        measure_with_timeout(failing_function, 5)
+        measure_with_timeout(_failing_function, 5)

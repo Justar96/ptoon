@@ -9,8 +9,9 @@ import statistics
 import sys
 import time
 import tracemalloc
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import ptoon
 
@@ -22,9 +23,7 @@ def _get_faker() -> Any:
     try:
         from faker import Faker  # type: ignore
     except Exception as exc:  # pragma: no cover - optional dep
-        raise RuntimeError(
-            "Dataset generation requires 'faker'. Install with: pip install faker"
-        ) from exc
+        raise RuntimeError("Dataset generation requires 'faker'. Install with: pip install faker") from exc
     Faker.seed(12345)
     return Faker()
 
@@ -49,24 +48,20 @@ def generate_deeply_nested_structure(depth: int, breadth: int = 3) -> dict[str, 
     def build_level(current_depth: int, use_array: bool) -> Any:
         if current_depth >= depth:
             # Leaf nodes: primitive values
-            return fk.random_element([
-                fk.random_int(0, 1000),
-                fk.word(),
-                fk.random.random() < 0.5,
-            ])
+            return fk.random_element(
+                [
+                    fk.random_int(0, 1000),
+                    fk.word(),
+                    fk.random.random() < 0.5,
+                ]
+            )
 
         if use_array:
             # Array level
-            return [
-                build_level(current_depth + 1, False)
-                for _ in range(breadth)
-            ]
+            return [build_level(current_depth + 1, False) for _ in range(breadth)]
         else:
             # Object level
-            return {
-                f"field_{i}": build_level(current_depth + 1, True)
-                for i in range(breadth)
-            }
+            return {f"field_{i}": build_level(current_depth + 1, True) for i in range(breadth)}
 
     return {"root": build_level(0, False)}
 
@@ -86,11 +81,13 @@ def generate_wide_array(size: int, element_type: str = "primitives") -> list[Any
     if element_type == "primitives":
         # Mixed primitive types
         return [
-            fk.random_element([
-                fk.random_int(0, 10000),
-                fk.word(),
-                fk.random.random() < 0.5,
-            ])
+            fk.random_element(
+                [
+                    fk.random_int(0, 10000),
+                    fk.word(),
+                    fk.random.random() < 0.5,
+                ]
+            )
             for _ in range(size)
         ]
     elif element_type == "objects":
@@ -177,7 +174,7 @@ def generate_payload_by_size(target_mb: int, structure_type: str = "tabular") ->
         nested_breadth = 3
 
     # Iteratively adjust to reach target size
-    for iteration in range(max_iterations):
+    for _iteration in range(max_iterations):
         # Generate data with current parameters
         if structure_type == "tabular":
             data = generate_large_tabular_dataset(max(1, rows), columns)
@@ -205,10 +202,7 @@ def generate_payload_by_size(target_mb: int, structure_type: str = "tabular") ->
             return data
 
         # Calculate scale factor for adjustment
-        if actual_bytes > 0:
-            scale_factor = target_bytes / actual_bytes
-        else:
-            scale_factor = 2.0
+        scale_factor = target_bytes / actual_bytes if actual_bytes > 0 else 2.0
 
         # Adjust parameters based on scale factor
         if structure_type == "tabular":
@@ -256,14 +250,15 @@ def generate_payload_by_size(target_mb: int, structure_type: str = "tabular") ->
 # ============================================================================
 
 
-class TimeoutException(Exception):
+class TimeoutError(Exception):
     """Raised when operation times out."""
+
     pass
 
 
 def _timeout_handler(signum: int, frame: Any) -> None:
     """Signal handler for timeout."""
-    raise TimeoutException("Operation timed out")
+    raise TimeoutError("Operation timed out")
 
 
 def _worker_target(result_queue: multiprocessing.Queue, func: Callable[..., Any], args: tuple, kwargs: dict) -> None:
@@ -279,10 +274,7 @@ def _worker_target(result_queue: multiprocessing.Queue, func: Callable[..., Any]
 
 
 def measure_with_timeout(
-    func: Callable[..., Any],
-    timeout_seconds: int,
-    *args: Any,
-    **kwargs: Any
+    func: Callable[..., Any], timeout_seconds: int, *args: Any, **kwargs: Any
 ) -> tuple[Any, float, bool]:
     """Execute function with timeout protection.
 
@@ -314,10 +306,7 @@ def measure_with_timeout(
         result_queue: multiprocessing.Queue = ctx.Queue()
 
         # Create worker process
-        proc = ctx.Process(
-            target=_worker_target,
-            args=(result_queue, func, args, kwargs)
-        )
+        proc = ctx.Process(target=_worker_target, args=(result_queue, func, args, kwargs))
 
         try:
             proc.start()
@@ -371,7 +360,7 @@ def measure_with_timeout(
             result = func(*args, **kwargs)
             signal.alarm(0)  # Cancel alarm
             duration = time.perf_counter() - start
-        except TimeoutException:
+        except TimeoutError:
             duration = time.perf_counter() - start
             timed_out = True
             result = None
@@ -382,10 +371,7 @@ def measure_with_timeout(
 
 
 def measure_latency_percentiles(
-    func: Callable[..., Any],
-    iterations: int,
-    *args: Any,
-    **kwargs: Any
+    func: Callable[..., Any], iterations: int, *args: Any, **kwargs: Any
 ) -> dict[str, float]:
     """Run function multiple times and calculate latency percentiles.
 
@@ -418,11 +404,7 @@ def measure_latency_percentiles(
     }
 
 
-def measure_stress_scenario(
-    data: Any,
-    scenario_name: str,
-    timeout: int = 300
-) -> dict[str, Any]:
+def measure_stress_scenario(data: Any, scenario_name: str, timeout: int = 300) -> dict[str, Any]:
     """Orchestrate measurements for a single stress scenario.
 
     Args:
@@ -447,9 +429,7 @@ def measure_stress_scenario(
 
     try:
         # Encoding with timeout
-        toon_str, encode_time, encode_timeout = measure_with_timeout(
-            ptoon.encode, timeout, data
-        )
+        toon_str, encode_time, encode_timeout = measure_with_timeout(ptoon.encode, timeout, data)
         result["encode_time"] = encode_time
         result["timed_out"] = encode_timeout
 
@@ -468,9 +448,7 @@ def measure_stress_scenario(
             tracemalloc.stop()
 
         # Decoding with timeout
-        decoded, decode_time, decode_timeout = measure_with_timeout(
-            ptoon.decode, timeout, toon_str
-        )
+        decoded, decode_time, decode_timeout = measure_with_timeout(ptoon.decode, timeout, toon_str)
         result["decode_time"] = decode_time
 
         if decode_timeout:
@@ -492,12 +470,8 @@ def measure_stress_scenario(
         data_mb = result["data_size_mb"]
         iterations = 3 if data_mb > 10 else (5 if data_mb > 1 else 10)
 
-        encode_percentiles = measure_latency_percentiles(
-            ptoon.encode, iterations, data
-        )
-        decode_percentiles = measure_latency_percentiles(
-            ptoon.decode, iterations, toon_str
-        )
+        encode_percentiles = measure_latency_percentiles(ptoon.encode, iterations, data)
+        decode_percentiles = measure_latency_percentiles(ptoon.decode, iterations, toon_str)
 
         result["latency_percentiles"] = {
             "encode": encode_percentiles,
@@ -536,15 +510,12 @@ def run_stress_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
         ("Deeply Nested (10 levels)", lambda: generate_deeply_nested_structure(10), 60),
         ("Deeply Nested (12 levels)", lambda: generate_deeply_nested_structure(12), 120),
         ("Deeply Nested (15 levels)", lambda: generate_deeply_nested_structure(15), 300),
-
         ("Wide Array - 100K primitives", lambda: {"array": generate_wide_array(100_000, "primitives")}, 60),
         ("Wide Array - 100K objects", lambda: {"array": generate_wide_array(100_000, "objects")}, 120),
         ("Wide Array - 500K objects", lambda: {"array": generate_wide_array(500_000, "objects")}, 300),
-
         ("Large Tabular - 10K rows", lambda: generate_large_tabular_dataset(10_000), 60),
         ("Large Tabular - 25K rows", lambda: generate_large_tabular_dataset(25_000), 120),
         ("Large Tabular - 50K rows", lambda: generate_large_tabular_dataset(50_000), 300),
-
         ("Payload - 1MB tabular", lambda: generate_payload_by_size(1, "tabular"), 60),
         ("Payload - 10MB tabular", lambda: generate_payload_by_size(10, "tabular"), 180),
         ("Payload - 50MB tabular", lambda: generate_payload_by_size(50, "tabular"), 600),
@@ -572,19 +543,18 @@ def run_stress_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
                 print(f"✓ {format_time(scenario_result['encode_time'] + scenario_result['decode_time'])}")
         except Exception as e:
             print(f"✗ EXCEPTION: {e}")
-            results.append({
-                "scenario": name,
-                "error": str(e),
-                "timed_out": False,
-            })
+            results.append(
+                {
+                    "scenario": name,
+                    "error": str(e),
+                    "timed_out": False,
+                }
+            )
 
     # Calculate summary
     passed = sum(1 for r in results if not r.get("error") and not r.get("timed_out"))
     failed = len(results) - passed
-    max_memory = max(
-        (max(r.get("encode_memory_mb", 0), r.get("decode_memory_mb", 0)) for r in results),
-        default=0.0
-    )
+    max_memory = max((max(r.get("encode_memory_mb", 0), r.get("decode_memory_mb", 0)) for r in results), default=0.0)
 
     summary = {
         "total_scenarios": len(results),
@@ -604,10 +574,7 @@ def run_stress_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
     json_path = out_dir / "stress-benchmark.json"
 
     md_path.write_text(report_md, encoding="utf-8")
-    json_path.write_text(
-        json.dumps({"scenarios": results, "summary": summary}, indent=2),
-        encoding="utf-8"
-    )
+    json_path.write_text(json.dumps({"scenarios": results, "summary": summary}, indent=2), encoding="utf-8")
 
     return {
         "scenarios": results,

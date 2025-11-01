@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import time
 
+
 try:
     from openai import AsyncOpenAI
 except ImportError:  # pragma: no cover
@@ -36,9 +37,7 @@ class OpenAIProvider(LLMProvider):
 
         latency_ms = (time.perf_counter() - start) * 1000
 
-        content = (
-            (response.choices[0].message.content or "") if response.choices else ""
-        )
+        content = (response.choices[0].message.content or "") if response.choices else ""
 
         usage = getattr(response, "usage", None)
         prompt_tokens = getattr(usage, "prompt_tokens", None)

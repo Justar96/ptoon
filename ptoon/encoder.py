@@ -1,8 +1,9 @@
 import types
 from typing import Any, cast
 
-from .constants import DEFAULT_DELIMITER, LIST_ITEM_PREFIX
 from ptoon.logging_config import get_logger
+
+from .constants import DEFAULT_DELIMITER, LIST_ITEM_PREFIX
 from .normalize import (
     is_array_of_arrays,
     is_array_of_objects,
@@ -72,19 +73,11 @@ class Encoder:
         """
         # Input validation
         if isinstance(value, types.ModuleType):
-            raise TypeError(
-                f"Cannot encode {type(value).__name__}: TOON supports dicts, lists, and primitives."
-            )
+            raise TypeError(f"Cannot encode {type(value).__name__}: TOON supports dicts, lists, and primitives.")
         if isinstance(value, type):
-            raise TypeError(
-                f"Cannot encode {type(value).__name__}: TOON supports dicts, lists, and primitives."
-            )
-        if isinstance(
-            value, (types.FunctionType, types.MethodType, types.BuiltinFunctionType)
-        ):
-            raise TypeError(
-                f"Cannot encode {type(value).__name__}: TOON supports dicts, lists, and primitives."
-            )
+            raise TypeError(f"Cannot encode {type(value).__name__}: TOON supports dicts, lists, and primitives.")
+        if isinstance(value, (types.FunctionType, types.MethodType, types.BuiltinFunctionType)):
+            raise TypeError(f"Cannot encode {type(value).__name__}: TOON supports dicts, lists, and primitives.")
 
         try:
             normalized_value = normalize_value(value)
@@ -112,9 +105,7 @@ class Encoder:
         writer = LineWriter(self.indent)
 
         if is_json_array(value):
-            logger.debug(
-                f"Encoding root array: length={len(value)}, type={self._detect_array_type(value)}"
-            )
+            logger.debug(f"Encoding root array: length={len(value)}, type={self._detect_array_type(value)}")
             self._encode_array(None, value, writer, 0)
         elif is_json_object(value):
             logger.debug(f"Encoding root object: {len(value)} keys")
@@ -133,15 +124,11 @@ class Encoder:
         for key, item in value.items():
             self._encode_key_value_pair(key, item, writer, depth)
 
-    def _encode_key_value_pair(
-        self, key: str, value: JsonValue, writer: LineWriter, depth: Depth
-    ):
+    def _encode_key_value_pair(self, key: str, value: JsonValue, writer: LineWriter, depth: Depth):
         encoded_key = encode_key(key)
 
         if is_json_primitive(value):
-            writer.push(
-                depth, f"{encoded_key}: {encode_primitive(value, self.delimiter)}"
-            )
+            writer.push(depth, f"{encoded_key}: {encode_primitive(value, self.delimiter)}")
         elif is_json_array(value):
             self._encode_array(key, value, writer, depth)
         elif is_json_object(value):
@@ -151,13 +138,9 @@ class Encoder:
                 writer.push(depth, f"{encoded_key}:")
                 self._encode_object(value, writer, depth + 1)
 
-    def _encode_array(
-        self, key: str | None, value: JsonArray, writer: LineWriter, depth: Depth
-    ):
+    def _encode_array(self, key: str | None, value: JsonArray, writer: LineWriter, depth: Depth):
         if not value:
-            header = format_header(
-                0, key=key, delimiter=self.delimiter, length_marker=self.length_marker
-            )
+            header = format_header(0, key=key, delimiter=self.delimiter, length_marker=self.length_marker)
             writer.push(depth, header)
             return
 
@@ -168,9 +151,7 @@ class Encoder:
 
         if is_array_of_arrays(value):
             # Check if all nested arrays are primitive arrays
-            all_primitive_arrays = all(
-                is_json_array(arr) and is_array_of_primitives(arr) for arr in value
-            )
+            all_primitive_arrays = all(is_json_array(arr) and is_array_of_primitives(arr) for arr in value)
             if all_primitive_arrays:
                 # Special case for array of primitive arrays: encode each array as a list item
                 self._encode_array_of_arrays_as_list_items(key, value, writer, depth)
@@ -182,22 +163,16 @@ class Encoder:
                 logger.debug(
                     f"Detected tabular array: {len(value)} rows, {len(header_fields)} columns: {header_fields}"
                 )
-                self._encode_array_of_objects_as_tabular(
-                    key, value, header_fields, writer, depth
-                )
+                self._encode_array_of_objects_as_tabular(key, value, header_fields, writer, depth)
             else:
-                logger.debug(
-                    "Array not tabular (mixed types or <2 rows), using list format"
-                )
+                logger.debug("Array not tabular (mixed types or <2 rows), using list format")
                 self._encode_mixed_array_as_list_items(key, value, writer, depth)
             return
 
         logger.debug(f"Encoding mixed array as list items: {len(value)} items")
         self._encode_mixed_array_as_list_items(key, value, writer, depth)
 
-    def _encode_inline_primitive_array(
-        self, prefix: str | None, values: JsonArray, writer: LineWriter, depth: Depth
-    ):
+    def _encode_inline_primitive_array(self, prefix: str | None, values: JsonArray, writer: LineWriter, depth: Depth):
         formatted = self._format_inline_array(values, prefix)
         writer.push(depth, formatted)
 
@@ -209,9 +184,7 @@ class Encoder:
             length_marker=self.length_marker,
         )
         # Cast to JsonPrimitive sequence - values are validated as primitives by caller
-        joined_value = join_encoded_values(
-            cast(list[JsonPrimitive], values), self.delimiter
-        )
+        joined_value = join_encoded_values(cast(list[JsonPrimitive], values), self.delimiter)
         return f"{header} {joined_value}" if values else header
 
     def _encode_array_of_arrays_as_list_items(
@@ -248,9 +221,7 @@ class Encoder:
             return None
         # Use tabular format only when there are at least 2 rows
         if len(rows) < 2:
-            logger.debug(
-                f"Checking if array is tabular: {len(rows)} rows (need at least 2)"
-            )
+            logger.debug(f"Checking if array is tabular: {len(rows)} rows (need at least 2)")
             return None
         first_row = rows[0]
         if not isinstance(first_row, dict) or not first_row:
@@ -266,9 +237,7 @@ class Encoder:
         logger.debug("Not tabular: rows have different keys or non-primitive values")
         return None
 
-    def _is_tabular_array(
-        self, rows: JsonArray, header: list[str], header_len: int
-    ) -> bool:
+    def _is_tabular_array(self, rows: JsonArray, header: list[str], header_len: int) -> bool:
         for row in rows:
             if not isinstance(row, dict):
                 return False
@@ -296,9 +265,7 @@ class Encoder:
         writer.push(depth, header_str)
         self._write_tabular_rows(rows, header, writer, depth + 1)
 
-    def _write_tabular_rows(
-        self, rows: JsonArray, header: list[str], writer: LineWriter, depth: Depth
-    ):
+    def _write_tabular_rows(self, rows: JsonArray, header: list[str], writer: LineWriter, depth: Depth):
         for row in rows:
             # Type guard: rows validated as array of objects with primitive values
             assert is_json_object(row), "Row must be an object in tabular format"
@@ -306,9 +273,7 @@ class Encoder:
             joined_value = join_encoded_values(values, self.delimiter)
             writer.push(depth, joined_value)
 
-    def _encode_mixed_array_as_list_items(
-        self, prefix: str | None, items: JsonArray, writer: LineWriter, depth: Depth
-    ):
+    def _encode_mixed_array_as_list_items(self, prefix: str | None, items: JsonArray, writer: LineWriter, depth: Depth):
         header = format_header(
             len(items),
             key=prefix,
@@ -340,9 +305,7 @@ class Encoder:
                 self._encode_object_as_list_item(item, writer, depth + 1)
             # Other complex nested arrays are intentionally not handled here per TS behavior.
 
-    def _encode_object_as_list_item(
-        self, obj: JsonObject, writer: LineWriter, depth: Depth
-    ):
+    def _encode_object_as_list_item(self, obj: JsonObject, writer: LineWriter, depth: Depth):
         """Encode object as list item with first field on hyphen line.
 
         TOON format places first key-value pair on same line as '- ' prefix,
@@ -385,9 +348,7 @@ class Encoder:
                     )
                     writer.push(depth, f"{LIST_ITEM_PREFIX}{header_str}")
                     # Rows under a list item's first field should be indented two levels
-                    self._write_tabular_rows(
-                        first_value, header_fields, writer, depth + 2
-                    )
+                    self._write_tabular_rows(first_value, header_fields, writer, depth + 2)
                 else:
                     # Complex array of objects (non-tabular): write header and encode each object as list item
                     header = format_header(

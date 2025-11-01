@@ -17,13 +17,13 @@ def test_handles_empty_arrays_with_length_marker():
 
 def test_adds_length_marker_to_tabular_arrays():
     obj = {"rows": [{"a": 1, "b": 2}, {"a": 3, "b": 4}]}
-    expected = "rows[#2]{a,b}:\n" "  1,2\n" "  3,4"
+    expected = "rows[#2]{a,b}:\n  1,2\n  3,4"
     assert encode(obj, {"length_marker": True}) == expected
 
 
 def test_adds_length_marker_to_nested_arrays():
     obj = {"pairs": [[1, 2], [3]]}
-    expected = "pairs[#2]:\n" "  - [#2]: 1,2\n" "  - [#1]: 3"
+    expected = "pairs[#2]:\n  - [#2]: 1,2\n  - [#1]: 3"
     assert encode(obj, {"length_marker": True}) == expected
 
 

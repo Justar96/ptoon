@@ -13,12 +13,11 @@ Coverage targets:
 
 import sys
 from datetime import datetime
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 import pytest
 
 from ptoon import decode, encode
-from ptoon.decoder import Decoder
 from ptoon.encoder import Encoder
 
 
@@ -40,6 +39,7 @@ class TestTypeValidationErrors:
 
     def test_rejects_function_type(self):
         """Test encoding a function raises TypeError."""
+
         def sample_func():
             pass
 
@@ -370,7 +370,7 @@ class TestDecoderEscapeSequences:
         """Test string ending with backslash raises error."""
         # String ending with single backslash inside quotes (unclosed escape)
         # Build string programmatically to avoid Python string escaping confusion
-        toon = 'key: "value' + '\\' + '"'  # Results in: key: "value\"
+        toon = 'key: "value' + "\\" + '"'  # Results in: key: "value\"
         # Unclosed escape sequence at end of string
         with pytest.raises(ValueError, match="Unclosed escape sequence"):
             decode(toon)

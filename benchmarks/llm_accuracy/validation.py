@@ -66,9 +66,7 @@ def validate_answer(
 
     # Determine API key - prefer OPENAI_API_KEY_VALIDATION for separate quota tracking
     if api_key is None:
-        api_key = os.getenv("OPENAI_API_KEY_VALIDATION") or os.getenv(
-            "OPENAI_API_KEY_JSON"
-        )
+        api_key = os.getenv("OPENAI_API_KEY_VALIDATION") or os.getenv("OPENAI_API_KEY_JSON")
 
     # Determine validation model
     if model is None:
@@ -76,25 +74,18 @@ def validate_answer(
 
     # If no API key or no OpenAI library, fall back to string comparison
     if not api_key or openai is None:
-        logger.debug(
-            "No API key available or OpenAI not installed, using string comparison fallback"
-        )
+        logger.debug("No API key available or OpenAI not installed, using string comparison fallback")
         return _fallback_validation(actual, expected)
 
     # Try LLM-as-judge validation
     try:
         return _llm_judge_validation(actual, expected, question, api_key, model)
     except Exception as e:
-        logger.warning(
-            f"LLM validation failed for question '{question}': {e}. "
-            "Falling back to string comparison."
-        )
+        logger.warning(f"LLM validation failed for question '{question}': {e}. Falling back to string comparison.")
         return _fallback_validation(actual, expected)
 
 
-def _llm_judge_validation(
-    actual: str, expected: str, question: str, api_key: str, model: str = "gpt-4o-mini"
-) -> bool:
+def _llm_judge_validation(actual: str, expected: str, question: str, api_key: str, model: str = "gpt-4o-mini") -> bool:
     """Perform LLM-as-judge validation using OpenAI API.
 
     Args:
@@ -152,10 +143,7 @@ Respond with only "YES" or "NO"."""
                 logger.debug(f"LLM validation: FAIL for question '{question}'")
                 return False
             else:
-                logger.warning(
-                    f"Unexpected LLM response '{answer}' for question '{question}', "
-                    "treating as incorrect"
-                )
+                logger.warning(f"Unexpected LLM response '{answer}' for question '{question}', treating as incorrect")
                 return False
 
         except openai.RateLimitError:
@@ -203,13 +191,9 @@ def _fallback_validation(actual: str, expected: str) -> bool:
         match = abs(actual_num - expected_num) < tolerance
 
         if match:
-            logger.debug(
-                f"Fallback validation: PASS (numeric: {actual_num} ≈ {expected_num})"
-            )
+            logger.debug(f"Fallback validation: PASS (numeric: {actual_num} ≈ {expected_num})")
         else:
-            logger.debug(
-                f"Fallback validation: FAIL (numeric: {actual_num} != {expected_num})"
-            )
+            logger.debug(f"Fallback validation: FAIL (numeric: {actual_num} != {expected_num})")
         return match
 
     # Fall back to case-insensitive string comparison
@@ -262,9 +246,7 @@ def _parse_numeric(value: str) -> float | None:
 
 
 # Additional helper for batch validation
-def validate_answers_batch(
-    results: list[tuple[str, str, str]], api_key: str | None = None
-) -> list[bool]:
+def validate_answers_batch(results: list[tuple[str, str, str]], api_key: str | None = None) -> list[bool]:
     """Validate multiple answers in batch.
 
     Args:
@@ -274,7 +256,4 @@ def validate_answers_batch(
     Returns:
         List of boolean validation results, same order as input
     """
-    return [
-        validate_answer(actual, expected, question, api_key)
-        for actual, expected, question in results
-    ]
+    return [validate_answer(actual, expected, question, api_key) for actual, expected, question in results]

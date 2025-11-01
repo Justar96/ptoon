@@ -15,16 +15,12 @@ def _get_faker() -> Any:
     try:
         from faker import Faker  # type: ignore
     except Exception as exc:  # pragma: no cover - optional dep
-        raise RuntimeError(
-            "Dataset generation requires 'faker'. Install with: pip install faker"
-        ) from exc
+        raise RuntimeError("Dataset generation requires 'faker'. Install with: pip install faker") from exc
     Faker.seed(12345)
     return Faker()
 
 
-def generate_analytics_data(
-    days: int, start_date: str = "2025-01-01"
-) -> dict[str, Any]:
+def generate_analytics_data(days: int, start_date: str = "2025-01-01") -> dict[str, Any]:
     """Generate reproducible daily analytics metrics.
 
     Fields per metric:

@@ -272,15 +272,15 @@ class TestPrimitiveValueEdgeCases:
 
     def test_numeric_string_keys(self):
         """Test keys that are numeric strings."""
-        toon = '''"123": value1
-"456": value2'''
+        toon = """"123": value1
+"456": value2"""
         result = decode(toon)
         assert result == {"123": "value1", "456": "value2"}
 
     def test_empty_string_key(self):
         """Test empty string as key."""
-        toon = '''"": empty_key_value
-normal: value'''
+        toon = """"": empty_key_value
+normal: value"""
         result = decode(toon)
         assert result == {"": "empty_key_value", "normal": "value"}
 

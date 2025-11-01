@@ -93,9 +93,7 @@ def load_summary(summary_path: Path) -> dict[str, Any]:
         raise
 
 
-def calculate_comparison_metrics(
-    current: FormatResult, previous: FormatResult
-) -> ComparisonMetrics:
+def calculate_comparison_metrics(current: FormatResult, previous: FormatResult) -> ComparisonMetrics:
     """Calculate delta metrics between two format results.
 
     Args:
@@ -110,39 +108,25 @@ def calculate_comparison_metrics(
 
     # Token delta (percentage change)
     if previous["total_tokens"] > 0:
-        token_delta = (
-            (current["total_tokens"] - previous["total_tokens"])
-            / previous["total_tokens"]
-            * 100
-        )
+        token_delta = (current["total_tokens"] - previous["total_tokens"]) / previous["total_tokens"] * 100
     else:
         token_delta = 0.0
 
     # Latency delta (percentage change)
     if previous["average_latency"] > 0:
-        latency_delta = (
-            (current["average_latency"] - previous["average_latency"])
-            / previous["average_latency"]
-            * 100
-        )
+        latency_delta = (current["average_latency"] - previous["average_latency"]) / previous["average_latency"] * 100
     else:
         latency_delta = 0.0
 
     # Cost delta (percentage change)
     if previous["estimated_cost"] > 0:
-        cost_delta = (
-            (current["estimated_cost"] - previous["estimated_cost"])
-            / previous["estimated_cost"]
-            * 100
-        )
+        cost_delta = (current["estimated_cost"] - previous["estimated_cost"]) / previous["estimated_cost"] * 100
     else:
         cost_delta = 0.0
 
     # Token deltas (absolute change)
     input_token_delta = current["total_input_tokens"] - previous["total_input_tokens"]
-    output_token_delta = (
-        current["total_output_tokens"] - previous["total_output_tokens"]
-    )
+    output_token_delta = current["total_output_tokens"] - previous["total_output_tokens"]
 
     return ComparisonMetrics(
         accuracy_delta=accuracy_delta,
@@ -154,9 +138,7 @@ def calculate_comparison_metrics(
     )
 
 
-def format_delta(
-    value: float, is_percentage: bool = True, inverse: bool = False
-) -> str:
+def format_delta(value: float, is_percentage: bool = True, inverse: bool = False) -> str:
     """Format a delta value with appropriate sign and color indicator.
 
     Args:
@@ -233,10 +215,7 @@ def generate_comparison_report(
     sections.append("|--------|----------|------------|-------------|------|--------|")
 
     for format_name in ["JSON", "TOON"]:
-        if (
-            format_name not in current_by_format
-            or format_name not in previous_by_format
-        ):
+        if format_name not in current_by_format or format_name not in previous_by_format:
             continue
 
         current = current_by_format[format_name]
@@ -268,8 +247,7 @@ def generate_comparison_report(
             status = "🔴 Worse"
 
         sections.append(
-            f"| `{format_name}` | {accuracy_delta} | {token_delta} | "
-            f"{latency_delta} | {cost_delta} | {status} |"
+            f"| `{format_name}` | {accuracy_delta} | {token_delta} | {latency_delta} | {cost_delta} | {status} |"
         )
 
     sections.append("")
@@ -315,10 +293,7 @@ def generate_comparison_report(
     sections.append("")
 
     for format_name in ["JSON", "TOON"]:
-        if (
-            format_name not in current_by_format
-            or format_name not in previous_by_format
-        ):
+        if format_name not in current_by_format or format_name not in previous_by_format:
             continue
 
         current = current_by_format[format_name]
@@ -332,8 +307,8 @@ def generate_comparison_report(
 
         # Accuracy
         sections.append(
-            f"| Accuracy | {previous['accuracy']*100:.1f}% | "
-            f"{current['accuracy']*100:.1f}% | "
+            f"| Accuracy | {previous['accuracy'] * 100:.1f}% | "
+            f"{current['accuracy'] * 100:.1f}% | "
             f"{format_delta(metrics['accuracy_delta'], is_percentage=False)} |"
         )
 
@@ -422,9 +397,7 @@ def compare_and_save(
         previous_timestamp = previous_summary_path.stem.replace("summary-", "")
 
     # Generate comparison report
-    report = generate_comparison_report(
-        current_summary, previous_summary, current_timestamp, previous_timestamp
-    )
+    report = generate_comparison_report(current_summary, previous_summary, current_timestamp, previous_timestamp)
 
     # Save comparison report
     if output_dir is None:

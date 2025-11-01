@@ -5,13 +5,13 @@ on:
     branches: [main, master, develop]
     paths:
       - 'docs/**'
-      - 'pytoon/**'
+      - 'ptoon/**'
       - '.github/workflows/docs.yml'
   pull_request:
     branches: [main, master, develop]
     paths:
       - 'docs/**'
-      - 'pytoon/**'
+      - 'ptoon/**'
       - '.github/workflows/docs.yml'
 
 jobs:

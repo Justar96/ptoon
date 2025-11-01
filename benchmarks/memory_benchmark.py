@@ -62,12 +62,8 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
         )
 
         # encoding memory (repeated measurements, use min peak)
-        _, cur_json, peak_json = measure_memory_repeated(
-            lambda data=data: json.dumps(data, ensure_ascii=False)
-        )
-        _, cur_toon, peak_toon = measure_memory_repeated(
-            lambda data=data: ptoon.encode(data)
-        )
+        _, cur_json, peak_json = measure_memory_repeated(lambda data=data: json.dumps(data, ensure_ascii=False))
+        _, cur_toon, peak_toon = measure_memory_repeated(lambda data=data: ptoon.encode(data))
         results["encoding"].append(
             {
                 "dataset": name,
@@ -78,12 +74,8 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
         )
 
         # decoding memory (repeated measurements, use min peak)
-        _, cur_json_d, peak_json_d = measure_memory_repeated(
-            lambda json_str=json_str: json.loads(json_str)
-        )
-        _, cur_toon_d, peak_toon_d = measure_memory_repeated(
-            lambda toon_str=toon_str: ptoon.decode(toon_str)
-        )
+        _, cur_json_d, peak_json_d = measure_memory_repeated(lambda json_str=json_str: json.loads(json_str))
+        _, cur_toon_d, peak_toon_d = measure_memory_repeated(lambda toon_str=toon_str: ptoon.decode(toon_str))
         results["decoding"].append(
             {
                 "dataset": name,
@@ -125,14 +117,10 @@ def run_memory_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
     md.append("")
 
     (out_dir / "memory-benchmark.md").write_text("\n".join(md), encoding="utf-8")
-    (out_dir / "memory-benchmark.json").write_text(
-        json.dumps(results, indent=2), encoding="utf-8"
-    )
+    (out_dir / "memory-benchmark.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
     return results
 
 
 if __name__ == "__main__":
     res = run_memory_benchmark()
-    print(
-        json.dumps({k: len(v) for k, v in res.items() if isinstance(v, list)}, indent=2)
-    )
+    print(json.dumps({k: len(v) for k, v in res.items() if isinstance(v, list)}, indent=2))

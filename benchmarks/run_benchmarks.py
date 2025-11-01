@@ -44,20 +44,12 @@ def main(argv: list[str] | None = None) -> int:
         help="Run token efficiency benchmark only",
     )
     parser.add_argument("--speed", action="store_true", help="Run speed benchmark only")
+    parser.add_argument("--memory", action="store_true", help="Run memory benchmark only")
+    parser.add_argument("--stress", action="store_true", help="Run stress benchmark with large-scale data")
     parser.add_argument(
-        "--memory", action="store_true", help="Run memory benchmark only"
+        "--realworld", action="store_true", help="Run real-world API response validation and token efficiency benchmark"
     )
-    parser.add_argument(
-        "--stress", action="store_true", help="Run stress benchmark with large-scale data"
-    )
-    parser.add_argument(
-        "--realworld",
-        action="store_true",
-        help="Run real-world API response validation and token efficiency benchmark"
-    )
-    parser.add_argument(
-        "--all", action="store_true", help="Run all benchmarks (default)"
-    )
+    parser.add_argument("--all", action="store_true", help="Run all benchmarks (default)")
     parser.add_argument(
         "--output-dir",
         type=Path,
@@ -93,9 +85,7 @@ def main(argv: list[str] | None = None) -> int:
         if not deps["tiktoken"]:
             print("[skip] token-efficiency: requires tiktoken (pip install tiktoken)")
         elif not deps["faker"]:
-            print(
-                '[skip] token-efficiency: requires faker (pip install faker or pip install -e ".[benchmark]")'
-            )
+            print('[skip] token-efficiency: requires faker (pip install faker or pip install -e ".[benchmark]")')
         else:
             print_banner("Running Token Efficiency Benchmark…")
             start = time.time()
@@ -103,17 +93,13 @@ def main(argv: list[str] | None = None) -> int:
 
             res = run_token_efficiency_benchmark(output_dir=out_dir)
             elapsed = time.time() - start
-            print(
-                f"Total savings: {res['totals']['savings_percent']:.1f}% | wrote: {res['output']} | {elapsed:.2f}s"
-            )
+            print(f"Total savings: {res['totals']['savings_percent']:.1f}% | wrote: {res['output']} | {elapsed:.2f}s")
             combined["token_efficiency"] = res
 
     # Speed
     if args.all or args.speed:
         if not deps["faker"]:
-            print(
-                '[skip] speed: requires faker (pip install faker or pip install -e ".[benchmark]")'
-            )
+            print('[skip] speed: requires faker (pip install faker or pip install -e ".[benchmark]")')
         else:
             print_banner("Running Speed Benchmark…")
             start = time.time()
@@ -131,9 +117,7 @@ def main(argv: list[str] | None = None) -> int:
     # Memory
     if args.all or args.memory:
         if not deps["faker"]:
-            print(
-                '[skip] memory: requires faker (pip install faker or pip install -e ".[benchmark]")'
-            )
+            print('[skip] memory: requires faker (pip install faker or pip install -e ".[benchmark]")')
         else:
             print_banner("Running Memory Benchmark…")
             start = time.time()
@@ -147,9 +131,7 @@ def main(argv: list[str] | None = None) -> int:
     # Stress
     if args.all or args.stress:
         if not deps["faker"]:
-            print(
-                '[skip] stress: requires faker (pip install faker or pip install -e ".[benchmark]")'
-            )
+            print('[skip] stress: requires faker (pip install faker or pip install -e ".[benchmark]")')
         else:
             print_banner("Running Stress Benchmark…")
             start = time.time()
@@ -165,7 +147,7 @@ def main(argv: list[str] | None = None) -> int:
     # Real-world
     if args.all or args.realworld:
         if not deps["tiktoken"]:
-            print('[skip] realworld: requires tiktoken (pip install tiktoken)')
+            print("[skip] realworld: requires tiktoken (pip install tiktoken)")
         else:
             print_banner("Running Real-World API Benchmark…")
             start = time.time()
@@ -173,9 +155,9 @@ def main(argv: list[str] | None = None) -> int:
 
             res = run_realworld_benchmark(output_dir=out_dir)
             elapsed = time.time() - start
-            compatible = res['summary']['compatible']
-            total = res['summary']['total_samples']
-            savings = res['summary']['avg_savings_percent']
+            compatible = res["summary"]["compatible"]
+            total = res["summary"]["total_samples"]
+            savings = res["summary"]["avg_savings_percent"]
 
             if total == 0:
                 print(f"[skip] realworld: no samples found in data/realworld | {elapsed:.2f}s")
@@ -187,9 +169,7 @@ def main(argv: list[str] | None = None) -> int:
 
     # Combined JSON
     if args.json_out:
-        (out_dir / "all-benchmarks.json").write_text(
-            json.dumps(combined, indent=2), encoding="utf-8"
-        )
+        (out_dir / "all-benchmarks.json").write_text(json.dumps(combined, indent=2), encoding="utf-8")
         if args.verbose:
             print("Wrote:", out_dir / "all-benchmarks.json")
 

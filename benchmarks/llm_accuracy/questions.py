@@ -131,9 +131,7 @@ def generate_questions() -> list[Question]:
         for dept in departments[:3]:
             dept_employees = [e for e in tabular if e["department"] == dept]
             if dept_employees:
-                avg_salary = sum(e["salary"] for e in dept_employees) / len(
-                    dept_employees
-                )
+                avg_salary = sum(e["salary"] for e in dept_employees) / len(dept_employees)
                 questions.append(
                     {
                         "id": f"q{id_counter}",
@@ -193,9 +191,7 @@ def generate_questions() -> list[Question]:
 
         # Complex filtering: multi-condition department+salary (4 questions)
         for dept in departments[:4]:
-            count = len(
-                [e for e in tabular if e["department"] == dept and e["salary"] > 80000]
-            )
+            count = len([e for e in tabular if e["department"] == dept and e["salary"] > 80000])
             questions.append(
                 {
                     "id": f"q{id_counter}",
@@ -209,9 +205,7 @@ def generate_questions() -> list[Question]:
 
         # Complex filtering: experience+active status (3 questions)
         for exp in [5, 10, 15]:
-            count = len(
-                [e for e in tabular if e["yearsExperience"] > exp and e["active"]]
-            )
+            count = len([e for e in tabular if e["yearsExperience"] > exp and e["active"]])
             questions.append(
                 {
                     "id": f"q{id_counter}",
@@ -224,9 +218,7 @@ def generate_questions() -> list[Question]:
             id_counter += 1
 
         # Additional filtering questions (3 more to reach 12)
-        high_salary_active = len(
-            [e for e in tabular if e["salary"] > 100000 and e["active"]]
-        )
+        high_salary_active = len([e for e in tabular if e["salary"] > 100000 and e["active"]])
         questions.append(
             {
                 "id": f"q{id_counter}",
@@ -238,9 +230,7 @@ def generate_questions() -> list[Question]:
         )
         id_counter += 1
 
-        senior_inactive = len(
-            [e for e in tabular if e["yearsExperience"] > 10 and not e["active"]]
-        )
+        senior_inactive = len([e for e in tabular if e["yearsExperience"] > 10 and not e["active"]])
         questions.append(
             {
                 "id": f"q{id_counter}",
@@ -373,9 +363,7 @@ def generate_questions() -> list[Question]:
 
         # Filtering: status-based with value threshold (3 questions)
         for status_filter in statuses[: min(3, len(statuses))]:
-            high_value_status = len(
-                [o for o in nested if o["total"] > 300 and o["status"] == status_filter]
-            )
+            high_value_status = len([o for o in nested if o["total"] > 300 and o["status"] == status_filter])
             questions.append(
                 {
                     "id": f"q{id_counter}",
@@ -437,9 +425,7 @@ def generate_questions() -> list[Question]:
         )
         id_counter += 1
 
-        high_quantity_orders = len(
-            [o for o in nested if sum(item["quantity"] for item in o["items"]) > 5]
-        )
+        high_quantity_orders = len([o for o in nested if sum(item["quantity"] for item in o["items"]) > 5])
         questions.append(
             {
                 "id": f"q{id_counter}",
@@ -792,9 +778,7 @@ def generate_questions() -> list[Question]:
     analytics_count = len([q for q in questions if q["dataset"] == "analytics"])
     github_count = len([q for q in questions if q["dataset"] == "github"])
 
-    field_retrieval_count = len(
-        [q for q in questions if q["type"] == "field-retrieval"]
-    )
+    field_retrieval_count = len([q for q in questions if q["type"] == "field-retrieval"])
     aggregation_count = len([q for q in questions if q["type"] == "aggregation"])
     filtering_count = len([q for q in questions if q["type"] == "filtering"])
 

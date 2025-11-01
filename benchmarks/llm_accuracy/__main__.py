@@ -146,8 +146,7 @@ def validate_environment(provider_type: str = "openai") -> dict[str, str]:
 
         if not project_id:
             raise ValueError(
-                "VERTEX_PROJECT_ID is required for Vertex AI provider. "
-                "Set it to your Google Cloud project ID."
+                "VERTEX_PROJECT_ID is required for Vertex AI provider. Set it to your Google Cloud project ID."
             )
 
         config = {
@@ -197,15 +196,11 @@ def _load_existing_results(
     return raw_results, format_results
 
 
-def _resolve_questions_from_results(
-    results: list[dict[str, Any]], use_realworld: bool = False
-) -> list[dict[str, Any]]:
+def _resolve_questions_from_results(results: list[dict[str, Any]], use_realworld: bool = False) -> list[dict[str, Any]]:
     questions = generate_realworld_questions() if use_realworld else generate_questions()
     question_map = {q["id"]: q for q in questions}
     seen_ids = {entry.get("question_id") for entry in results if "question_id" in entry}
-    ordered: list[dict[str, Any]] = [
-        question_map[q["id"]] for q in questions if q["id"] in seen_ids
-    ]
+    ordered: list[dict[str, Any]] = [question_map[q["id"]] for q in questions if q["id"] in seen_ids]
     return ordered
 
 
@@ -245,9 +240,7 @@ def _display_summary(summary: dict[str, Any]) -> None:
         correct = entry.get("correct_count", 0)
         total = entry.get("total_count", 0)
         cost = float(entry.get("estimated_cost", 0.0))
-        print(
-            f"- {fmt} accuracy: {accuracy:.1f}% ({correct}/{total}) | Estimated cost: ${cost:.4f}"
-        )
+        print(f"- {fmt} accuracy: {accuracy:.1f}% ({correct}/{total}) | Estimated cost: ${cost:.4f}")
         if fmt == "JSON":
             json_result = entry
         elif fmt == "TOON":
@@ -336,11 +329,7 @@ def main(argv: list[str] | None = None) -> int:
     output_dir = args.output_dir or _default_output_dir()
 
     # Determine concurrency setting
-    concurrency = (
-        args.concurrency
-        if args.concurrency is not None
-        else int(env_config["CONCURRENCY"])
-    )
+    concurrency = args.concurrency if args.concurrency is not None else int(env_config["CONCURRENCY"])
     os.environ["CONCURRENCY"] = str(concurrency)
 
     # Determine effective dry-run mode
@@ -387,9 +376,7 @@ def main(argv: list[str] | None = None) -> int:
         print_section("Comparison")
         try:
             current_summary_path = Path(summary["summary_path"])
-            comparison_path = compare_and_save(
-                current_summary_path, output_dir=output_dir
-            )
+            comparison_path = compare_and_save(current_summary_path, output_dir=output_dir)
             if comparison_path:
                 print(f"Comparison report generated: {comparison_path.name}")
             else:
@@ -436,9 +423,7 @@ def main(argv: list[str] | None = None) -> int:
     datasets = _build_datasets(use_realworld=args.realworld)
 
     try:
-        results = run_evaluation(
-            questions, provider_type=args.provider, datasets=datasets
-        )
+        results = run_evaluation(questions, provider_type=args.provider, datasets=datasets)
     except Exception as exc:  # noqa: BLE001
         logger.exception("Evaluation failed: %s", exc)
         return 1
@@ -469,9 +454,7 @@ def main(argv: list[str] | None = None) -> int:
         comparison_path = compare_and_save(current_summary_path, output_dir=output_dir)
         if comparison_path:
             print(f"Comparison report generated: {comparison_path.name}")
-            print(
-                "  View the comparison to see improvements/regressions from the previous run."
-            )
+            print("  View the comparison to see improvements/regressions from the previous run.")
         else:
             print("No previous results found for comparison.")
             print("  Run the benchmark again to see improvements over time.")

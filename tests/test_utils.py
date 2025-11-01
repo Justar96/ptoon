@@ -16,9 +16,7 @@ from ptoon import compare_formats, count_tokens, encode, estimate_savings
 
 
 # Marker for tests that require tiktoken to be installed
-requires_tiktoken = pytest.mark.skipif(
-    importlib.util.find_spec("tiktoken") is None, reason="requires tiktoken"
-)
+requires_tiktoken = pytest.mark.skipif(importlib.util.find_spec("tiktoken") is None, reason="requires tiktoken")
 
 
 # Test Fixtures
@@ -240,10 +238,7 @@ class TestEstimateSavings:
     def test_estimate_savings_large_dataset(self):
         """Test savings estimation with larger dataset."""
         # Create larger dataset similar to benchmarks
-        data = [
-            {"id": i, "name": f"User{i}", "age": 20 + i, "active": i % 2 == 0}
-            for i in range(100)
-        ]
+        data = [{"id": i, "name": f"User{i}", "age": 20 + i, "active": i % 2 == 0} for i in range(100)]
 
         result = estimate_savings(data)
         assert_valid_savings_dict(result)
@@ -347,9 +342,7 @@ class TestCompareFormats:
         # Should contain box-drawing characters for visual appeal
         assert "─" in result
 
-    def test_compare_formats_consistency_with_estimate_savings(
-        self, sample_data_for_utils
-    ):
+    def test_compare_formats_consistency_with_estimate_savings(self, sample_data_for_utils):
         """Test that compare_formats shows same numbers as estimate_savings."""
         data = sample_data_for_utils["array_of_objects"]
 
@@ -441,6 +434,7 @@ class TestUtilitiesIntegration:
         table2 = compare_formats(data)
         assert table1 == table2
 
+    @pytest.mark.slow
     def test_consistency_with_benchmark_token_counting(self):
         """Test that ptoon.count_tokens matches benchmarks.token_efficiency.count_tokens.
 
@@ -469,11 +463,11 @@ class TestUtilitiesIntegration:
 
         for text in test_strings:
             # Both implementations should produce identical results
-            pytoon_result = count_tokens(text)
+            ptoon_result = count_tokens(text)
             benchmark_result = benchmark_count_tokens(text)
 
-            assert pytoon_result == benchmark_result, (
+            assert ptoon_result == benchmark_result, (
                 f"Token count mismatch for text: {text!r}\n"
-                f"ptoon.count_tokens: {pytoon_result}\n"
+                f"ptoon.count_tokens: {ptoon_result}\n"
                 f"benchmark.count_tokens: {benchmark_result}"
             )

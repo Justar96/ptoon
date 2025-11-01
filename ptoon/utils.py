@@ -35,14 +35,13 @@ __all__ = ["count_tokens", "estimate_savings", "compare_formats"]
 
 
 _TIKTOKEN_MISSING_MSG = (
-    "tiktoken is required for token counting. Install with: pip install tiktoken or "
-    "pip install pytoon[benchmark]"
+    "tiktoken is required for token counting. Install with: pip install tiktoken or pip install ptoon[benchmark]"
 )
 
 
 def _require_tiktoken():
     try:
-        import tiktoken  # type: ignore
+        import tiktoken
     except ImportError as exc:  # pragma: no cover - exercised via count_tokens
         raise RuntimeError(_TIKTOKEN_MISSING_MSG) from exc
     return tiktoken
