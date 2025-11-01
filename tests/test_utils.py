@@ -434,6 +434,7 @@ class TestUtilitiesIntegration:
         table2 = compare_formats(data)
         assert table1 == table2
 
+    @pytest.mark.slow
     def test_consistency_with_benchmark_token_counting(self):
         """Test that ptoon.count_tokens matches benchmarks.token_efficiency.count_tokens.
 
