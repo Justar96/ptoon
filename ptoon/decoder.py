@@ -72,7 +72,7 @@ class Decoder:
     - Objects: key: value pairs
     - Inline arrays: [N]: val1, val2, val3
     - Tabular arrays: [N]{field1, field2} with aligned rows
-    - List arrays: items prefixed with ``-`` on separate lines
+    - List arrays: items prefixed with ``"-"`` on separate lines
     - Nested structures with proper indentation
 
     Examples:
