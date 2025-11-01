@@ -157,6 +157,7 @@ class TestEncoderTypeValidationPaths:
 
     def test_encode_function_directly(self):
         """Test encoding function raises TypeError."""
+
         # Targets line 83
         def func():
             pass
@@ -240,7 +241,6 @@ class TestErrorMessageFormatting:
     def test_error_with_empty_line_snippet(self):
         """Test error formatting when snippet is empty."""
         # Targets line 363 (empty snippet formatting)
-        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         # Error with empty line
@@ -254,7 +254,6 @@ class TestInlineObjectParsingWithBracket:
     def test_looks_header_token_with_escape(self):
         """Test header token detection with escapes."""
         # Targets line 507 (found '{' before ']')
-        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         # String that looks like header but has '{' before ']'
@@ -269,7 +268,6 @@ class TestSplitValuesEmptyString:
     def test_split_empty_string(self):
         """Test _split_values with empty string."""
         # Targets line 966 (empty string check)
-        from ptoon.decoder import Decoder
 
         decoder = Decoder()
         result = decoder._split_values("", ",")

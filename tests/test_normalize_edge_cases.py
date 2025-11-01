@@ -10,8 +10,6 @@ import math
 from collections import OrderedDict, UserDict
 from collections.abc import Mapping
 
-import pytest
-
 from ptoon import encode
 from ptoon.normalize import normalize_value
 
@@ -175,11 +173,13 @@ class TestMappingConversion:
 
     def test_mapping_with_complex_values(self):
         """Test mapping with nested complex values."""
-        ordered = OrderedDict({
-            "list": [1, 2, 3],
-            "dict": {"nested": "value"},
-            "set": {4, 5},
-        })
+        ordered = OrderedDict(
+            {
+                "list": [1, 2, 3],
+                "dict": {"nested": "value"},
+                "set": {4, 5},
+            }
+        )
         result = normalize_value(ordered)
         assert result["list"] == [1, 2, 3]
         assert result["dict"] == {"nested": "value"}
@@ -300,13 +300,7 @@ class TestRecursiveNormalization:
 
     def test_deeply_nested_dict(self):
         """Test deeply nested dictionary normalization."""
-        data = {
-            "level1": {
-                "level2": {
-                    "level3": {"datetime": datetime.datetime(2024, 1, 1), "set": {1, 2}}
-                }
-            }
-        }
+        data = {"level1": {"level2": {"level3": {"datetime": datetime.datetime(2024, 1, 1), "set": {1, 2}}}}}
         result = normalize_value(data)
         assert isinstance(result["level1"]["level2"]["level3"]["datetime"], str)
         assert isinstance(result["level1"]["level2"]["level3"]["set"], list)

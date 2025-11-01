@@ -31,10 +31,10 @@ Usage:
     # Copy and configure .env
     cp examples/.env.example examples/.env
     # Edit examples/.env to set your OPENAI_API_KEY
-    
+
     # Run with guardrails (dry run, small data)
     python examples/openai_integration.py
-    
+
     # Run with full data (incurs higher API costs)
     SMALL_DATA=0 DRY_RUN=false python examples/openai_integration.py
 """
@@ -160,9 +160,7 @@ def example_basic_pattern() -> None:
     answer = (response.choices[0].message.content or "").strip()
     print(f"\nLLM Answer: {answer}")
 
-    print(
-        "\nNote: If the LLM returns structured data in TOON format, use toon.decode() to parse it."
-    )
+    print("\nNote: If the LLM returns structured data in TOON format, use toon.decode() to parse it.")
 
     usage = getattr(response, "usage", None)
     if usage:
@@ -183,10 +181,7 @@ def example_token_comparison() -> None:
         return
     if SMALL_DATA:
         data["employees"] = data["employees"][:DATASET_LIMIT]
-    print(
-        f"Generated dataset: {len(data['employees'])} employee records "
-        f"({'SMALL_DATA=1' if SMALL_DATA else 'full'})"
-    )
+    print(f"Generated dataset: {len(data['employees'])} employee records ({'SMALL_DATA=1' if SMALL_DATA else 'full'})")
 
     comparison = compare_token_counts(data)
 
@@ -203,9 +198,7 @@ def example_token_comparison() -> None:
     print("\nCost Comparison (input tokens only):")
     print(f"JSON:   ${json_cost:0.6f}")
     print(f"TOON:   ${toon_cost:0.6f}")
-    print(
-        f"Savings: ${cost_savings:0.6f} per request ({comparison['savings_percent']:.1f}%)"
-    )
+    print(f"Savings: ${cost_savings:0.6f} per request ({comparison['savings_percent']:.1f}%)")
 
     daily = cost_savings * 1_000
     monthly = daily * 30
@@ -219,9 +212,7 @@ def example_token_comparison() -> None:
     print(format_data_json(data)[:500])
     print("\nTOON format (first 500 chars):")
     print(format_data_toon(data)[:500])
-    print(
-        "\nNotice: TOON uses tabular format for uniform arrays, eliminating repeated keys."
-    )
+    print("\nNotice: TOON uses tabular format for uniform arrays, eliminating repeated keys.")
 
 
 def example_rag_retrieval() -> None:
@@ -235,10 +226,7 @@ def example_rag_retrieval() -> None:
         return
     if SMALL_DATA:
         data["employees"] = data["employees"][:DATASET_LIMIT]
-    print(
-        f"Dataset: {len(data['employees'])} employee records "
-        f"({'SMALL_DATA=1' if SMALL_DATA else 'full'})"
-    )
+    print(f"Dataset: {len(data['employees'])} employee records ({'SMALL_DATA=1' if SMALL_DATA else 'full'})")
 
     questions = [
         "How many employees have a salary greater than 100000?",
@@ -336,13 +324,7 @@ def example_error_handling() -> None:
     print("\n=== EXAMPLE 4: Error Handling ===")
 
     print("\n--- Scenario 1: Malformed TOON Response ---")
-    malformed_toon = (
-        "employees[3]:\n"
-        "  - id: 1\n"
-        "    name: Ada\n"
-        "  - id: 2\n"
-        "    # Missing closing bracket\n"
-    )
+    malformed_toon = "employees[3]:\n  - id: 1\n    name: Ada\n  - id: 2\n    # Missing closing bracket\n"
     try:
         result = ptoon.decode(malformed_toon)
         print("Decoded successfully:", result)
@@ -381,9 +363,7 @@ def example_error_handling() -> None:
     print("Best practice: Always have fallback parsing strategies")
 
     print("\n--- Scenario 4: Validation with Retry ---")
-    print(
-        "Example pattern: attempt to decode TOON, on failure retry with stricter instructions."
-    )
+    print("Example pattern: attempt to decode TOON, on failure retry with stricter instructions.")
     max_retries = 3
     for attempt in range(max_retries):
         # Placeholder for real LLM call
@@ -408,13 +388,10 @@ def main() -> None:
         "\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n"
     )
     print(banner)
-    
+
     # Display cost guardrail status
-    print(f"\nCost Guardrails:")
-    print(
-        f"  Dataset Size: {DATASET_LIMIT} records "
-        f"({'SMALL' if SMALL_DATA else 'FULL'})"
-    )
+    print("\nCost Guardrails:")
+    print(f"  Dataset Size: {DATASET_LIMIT} records ({'SMALL' if SMALL_DATA else 'FULL'})")
     print(f"  Mode: {'DRY RUN (no API calls)' if DRY_RUN else 'LIVE (API calls enabled)'}")
     if DRY_RUN:
         print("  \u26a0\ufe0f  DRY RUN mode: Token counts shown, no API calls made")
@@ -424,10 +401,7 @@ def main() -> None:
 
     if not OPENAI_API_KEY:
         if DRY_RUN:
-            print(
-                "Info: OPENAI_API_KEY not set (OK for DRY_RUN=true). "
-                "Set it before running live API calls."
-            )
+            print("Info: OPENAI_API_KEY not set (OK for DRY_RUN=true). Set it before running live API calls.")
         else:
             print("Error: OPENAI_API_KEY not set")
             print("Copy examples/.env.example to examples/.env and set your API key")

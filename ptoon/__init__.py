@@ -40,6 +40,7 @@ from typing import Any
 
 from .constants import DEFAULT_DELIMITER, DELIMITERS
 
+
 # Version info
 __version__ = "0.0.2-dev"
 from .decoder import Decoder
@@ -108,13 +109,9 @@ def encode(input: Any, options: EncodeOptions | dict | None = None) -> str:
     """
     # Input validation
     if isinstance(input, stdlib_types.ModuleType):
-        raise TypeError(
-            f"Cannot encode {type(input).__name__}: TOON supports dicts, lists, and primitives."
-        )
+        raise TypeError(f"Cannot encode {type(input).__name__}: TOON supports dicts, lists, and primitives.")
     if isinstance(input, type):
-        raise TypeError(
-            f"Cannot encode {type(input).__name__}: TOON supports dicts, lists, and primitives."
-        )
+        raise TypeError(f"Cannot encode {type(input).__name__}: TOON supports dicts, lists, and primitives.")
     if isinstance(
         input,
         (
@@ -123,9 +120,7 @@ def encode(input: Any, options: EncodeOptions | dict | None = None) -> str:
             stdlib_types.BuiltinFunctionType,
         ),
     ):
-        raise TypeError(
-            f"Cannot encode {type(input).__name__}: TOON supports dicts, lists, and primitives."
-        )
+        raise TypeError(f"Cannot encode {type(input).__name__}: TOON supports dicts, lists, and primitives.")
 
     if options is not None and not isinstance(options, dict):
         raise TypeError(f"options must be a dict, got {type(options).__name__}")
@@ -135,30 +130,20 @@ def encode(input: Any, options: EncodeOptions | dict | None = None) -> str:
         invalid = set(options.keys()) - valid_keys
         if invalid:
             raise ValueError(
-                "options contains unsupported keys; allowed: "
-                f"{sorted(valid_keys)}; got: {sorted(invalid)}"
+                f"options contains unsupported keys; allowed: {sorted(valid_keys)}; got: {sorted(invalid)}"
             )
         if "delimiter" in options:
             delimiter_option = options["delimiter"]
             accepted = [DEFAULT_DELIMITER, "|", "\t"]
             if delimiter_option not in accepted:
-                raise ValueError(
-                    "delimiter must be one of ',', '|' or '\\t'; "
-                    f"got: {repr(delimiter_option)}"
-                )
+                raise ValueError(f"delimiter must be one of ',', '|' or '\\t'; got: {repr(delimiter_option)}")
 
     opts = options or {}
 
     # Validate and extract indent
     indent_val = opts.get("indent", 2)
-    if (
-        isinstance(indent_val, bool)
-        or not isinstance(indent_val, int)
-        or indent_val < 0
-    ):
-        raise ValueError(
-            f"indent must be a non-negative int; got: {indent_val!r}"
-        )
+    if isinstance(indent_val, bool) or not isinstance(indent_val, int) or indent_val < 0:
+        raise ValueError(f"indent must be a non-negative int; got: {indent_val!r}")
     indent = indent_val
 
     delimiter = opts.get("delimiter", DEFAULT_DELIMITER)
@@ -166,18 +151,12 @@ def encode(input: Any, options: EncodeOptions | dict | None = None) -> str:
     # Validate and extract length_marker
     length_marker_val = opts.get("length_marker", False)
     if not isinstance(length_marker_val, bool):
-        raise ValueError(
-            f"length_marker must be a bool; got: {length_marker_val!r}"
-        )
+        raise ValueError(f"length_marker must be a bool; got: {length_marker_val!r}")
     length_marker = length_marker_val
-    if options is None or (
-        indent == 2 and delimiter == DEFAULT_DELIMITER and not length_marker
-    ):
+    if options is None or (indent == 2 and delimiter == DEFAULT_DELIMITER and not length_marker):
         global _default_encoder
         if _default_encoder is None:
-            _default_encoder = Encoder(
-                indent=2, delimiter=DEFAULT_DELIMITER, length_marker=False
-            )
+            _default_encoder = Encoder(indent=2, delimiter=DEFAULT_DELIMITER, length_marker=False)
         return _default_encoder.encode(input)
     encoder = Encoder(indent=indent, delimiter=delimiter, length_marker=length_marker)
     return encoder.encode(input)

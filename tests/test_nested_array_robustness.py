@@ -231,9 +231,7 @@ class TestPerformanceNestedArrays:
 
     def test_wide_nested_arrays(self):
         """Test arrays with many nested elements."""
-        data = [
-            {"items": [i for i in range(100)], "id": j} for j in range(10)
-        ]
+        data = [{"items": list(range(100)), "id": j} for j in range(10)]
         encoded = encode(data)
         decoded = decode(encoded)
         assert len(decoded) == 10

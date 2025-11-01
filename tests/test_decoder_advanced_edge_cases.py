@@ -57,9 +57,7 @@ class TestAdvancedObjectParsing:
   multiline:
     key: data"""
         result = decode(toon)
-        assert result == {
-            "root": {"inline": {"nested": "value"}, "multiline": {"key": "data"}}
-        }
+        assert result == {"root": {"inline": {"nested": "value"}, "multiline": {"key": "data"}}}
 
     def test_deeply_nested_object_then_sibling(self):
         """Test deeply nested object followed by sibling key."""

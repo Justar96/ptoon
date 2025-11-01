@@ -15,6 +15,7 @@ import logging
 import os
 from typing import TypedDict
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -187,9 +188,7 @@ def get_model_pricing(
         ValueError: If provider is unknown or model pricing not found
     """
     if provider not in PRICING_TABLE:
-        raise ValueError(
-            f"Unknown provider: {provider}. Supported providers: {list(PRICING_TABLE.keys())}"
-        )
+        raise ValueError(f"Unknown provider: {provider}. Supported providers: {list(PRICING_TABLE.keys())}")
 
     # Check environment variable overrides first
     if use_env_override:
@@ -199,8 +198,7 @@ def get_model_pricing(
 
         if env_input and env_output:
             logger.info(
-                "Using custom pricing from environment variables: "
-                f"input=${env_input}/1M, output=${env_output}/1M"
+                f"Using custom pricing from environment variables: input=${env_input}/1M, output=${env_output}/1M"
             )
             return {
                 "input": float(env_input),
@@ -228,9 +226,7 @@ def get_model_pricing(
         return provider_pricing.get("gpt-5", {"input": 1.25, "output": 10.00, "cached_input": 0.125})
     elif provider == "vertex":
         # Default to Gemini 2.5 Pro pricing
-        return provider_pricing.get(
-            "gemini-2.5-pro", {"input": 1.25, "output": 10.00, "cached_input": 0.125}
-        )
+        return provider_pricing.get("gemini-2.5-pro", {"input": 1.25, "output": 10.00, "cached_input": 0.125})
 
     # Ultimate fallback (should never reach here)
     return {"input": 1.25, "output": 10.00, "cached_input": 0.125}
@@ -298,4 +294,3 @@ __all__ = [
     "format_pricing_info",
     "normalize_model_name",
 ]
-

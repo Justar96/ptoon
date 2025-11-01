@@ -102,7 +102,7 @@ def test_does_not_quote_commas_with_non_comma_delimiter(delimiter, expected):
 
 def test_quotes_tabular_values_containing_the_delimiter():
     obj = {"rows": [{"a": "x|y", "b": "m"}, {"a": "n", "b": "o"}]}
-    expected = "rows[2|]{a|b}:\n" '  "x|y"|m\n' "  n|o"
+    expected = 'rows[2|]{a|b}:\n  "x|y"|m\n  n|o'
     assert encode(obj, {"delimiter": "|"}) == expected
 
 
@@ -129,7 +129,7 @@ def test_switching_delimiter_handles_comma_heavy_values_without_quotes():
 
 def test_quotes_nested_array_values_containing_the_delimiter():
     obj = {"pairs": [["a|b", "c"], ["d", "e"]]}
-    expected = "pairs[2|]:\n" '  - [2|]: "a|b"|c\n' "  - [2|]: d|e"
+    expected = 'pairs[2|]:\n  - [2|]: "a|b"|c\n  - [2|]: d|e'
     assert encode(obj, {"delimiter": "|"}) == expected
 
 

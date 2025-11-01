@@ -24,6 +24,8 @@ import re
 from collections.abc import Sequence
 from decimal import Decimal
 
+from ptoon.logging_config import get_logger
+
 from .constants import (
     BACKSLASH,
     COMMA,
@@ -40,7 +42,6 @@ from .constants import (
     TRUE_LITERAL,
     VALID_KEY_REGEX,
 )
-from ptoon.logging_config import get_logger
 from .types import Delimiter, JsonPrimitive
 
 
@@ -117,14 +118,10 @@ def encode_string_literal(value: str, delimiter: Delimiter = COMMA) -> str:
     if is_safe_unquoted(value, delimiter):
         return value
     logger.debug("Quoting string literal for delimiter %r: %r", delimiter, value)
-    return (
-        f"{DOUBLE_QUOTE}{escape_string(value, delimiter, for_key=False)}{DOUBLE_QUOTE}"
-    )
+    return f"{DOUBLE_QUOTE}{escape_string(value, delimiter, for_key=False)}{DOUBLE_QUOTE}"
 
 
-def escape_string(
-    value: str, delimiter: Delimiter = COMMA, for_key: bool = False
-) -> str:
+def escape_string(value: str, delimiter: Delimiter = COMMA, for_key: bool = False) -> str:
     """Escape special characters in a string.
 
     Escapes backslash, double quote, newline, carriage return, and
@@ -235,9 +232,7 @@ def is_numeric_like(value: str) -> bool:
         False
     """
     # Octal-like strings such as 05 should be quoted
-    return bool(_OCTAL_PATTERN.fullmatch(value)) or bool(
-        _NUMERIC_PATTERN.fullmatch(value)
-    )
+    return bool(_OCTAL_PATTERN.fullmatch(value)) or bool(_NUMERIC_PATTERN.fullmatch(value))
 
 
 def _format_float(value: float) -> str:
@@ -324,9 +319,7 @@ def is_valid_unquoted_key(key: str) -> bool:
     return bool(_VALID_KEY_PATTERN.fullmatch(key))
 
 
-def join_encoded_values(
-    values: Sequence[JsonPrimitive], delimiter: Delimiter = COMMA
-) -> str:
+def join_encoded_values(values: Sequence[JsonPrimitive], delimiter: Delimiter = COMMA) -> str:
     """Join multiple primitive values with delimiter.
 
     Encodes each value and joins with the specified delimiter.

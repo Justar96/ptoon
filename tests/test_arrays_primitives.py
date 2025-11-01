@@ -43,14 +43,8 @@ def test_quotes_array_strings_with_special_characters():
 
 
 def test_quotes_strings_that_look_like_booleans_numbers_in_arrays():
-    assert (
-        encode({"items": ["x", "true", "42", "-3.14"]})
-        == 'items[4]: x,"true","42","-3.14"'
-    )
+    assert encode({"items": ["x", "true", "42", "-3.14"]}) == 'items[4]: x,"true","42","-3.14"'
 
 
 def test_quotes_strings_with_structural_meanings_in_arrays():
-    assert (
-        encode({"items": ["[5]", "- item", "{key}"]})
-        == 'items[3]: "[5]","- item","{key}"'
-    )
+    assert encode({"items": ["[5]", "- item", "{key}"]}) == 'items[3]: "[5]","- item","{key}"'

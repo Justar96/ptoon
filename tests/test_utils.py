@@ -16,9 +16,7 @@ from ptoon import compare_formats, count_tokens, encode, estimate_savings
 
 
 # Marker for tests that require tiktoken to be installed
-requires_tiktoken = pytest.mark.skipif(
-    importlib.util.find_spec("tiktoken") is None, reason="requires tiktoken"
-)
+requires_tiktoken = pytest.mark.skipif(importlib.util.find_spec("tiktoken") is None, reason="requires tiktoken")
 
 
 # Test Fixtures
@@ -240,10 +238,7 @@ class TestEstimateSavings:
     def test_estimate_savings_large_dataset(self):
         """Test savings estimation with larger dataset."""
         # Create larger dataset similar to benchmarks
-        data = [
-            {"id": i, "name": f"User{i}", "age": 20 + i, "active": i % 2 == 0}
-            for i in range(100)
-        ]
+        data = [{"id": i, "name": f"User{i}", "age": 20 + i, "active": i % 2 == 0} for i in range(100)]
 
         result = estimate_savings(data)
         assert_valid_savings_dict(result)
@@ -347,9 +342,7 @@ class TestCompareFormats:
         # Should contain box-drawing characters for visual appeal
         assert "─" in result
 
-    def test_compare_formats_consistency_with_estimate_savings(
-        self, sample_data_for_utils
-    ):
+    def test_compare_formats_consistency_with_estimate_savings(self, sample_data_for_utils):
         """Test that compare_formats shows same numbers as estimate_savings."""
         data = sample_data_for_utils["array_of_objects"]
 

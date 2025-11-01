@@ -108,9 +108,7 @@ def generate_markdown_report(
     lines.append("## Details")
     for r in results:
         lines.append("")
-        lines.append(
-            f"<details><summary>{r.emoji} {r.name} — {r.savings_percent:.1f}% saved</summary>"
-        )
+        lines.append(f"<details><summary>{r.emoji} {r.name} — {r.savings_percent:.1f}% saved</summary>")
         lines.append("")
         lines.append(r.description)
         lines.append("")
@@ -162,9 +160,7 @@ def run_token_efficiency_benchmark(output_dir: Path | None = None) -> dict[str, 
         "json_tokens": total_json,
         "toon_tokens": total_toon,
         "savings": max(0, total_json - total_toon),
-        "savings_percent": (
-            ((total_json - total_toon) / total_json * 100.0) if total_json > 0 else 0.0
-        ),
+        "savings_percent": (((total_json - total_toon) / total_json * 100.0) if total_json > 0 else 0.0),
     }
 
     report = generate_markdown_report(results, totals, examples)

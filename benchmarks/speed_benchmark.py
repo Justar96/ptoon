@@ -17,7 +17,7 @@ def calculate_speedup(baseline: float, comparison: float) -> tuple[float, str]:
     if comparison == 0:
         return float("inf"), "∞x faster"
     ratio = baseline / comparison
-    desc = f"{ratio:.2f}x faster" if ratio >= 1.0 else f"{(1/ratio):.2f}x slower"
+    desc = f"{ratio:.2f}x faster" if ratio >= 1.0 else f"{(1 / ratio):.2f}x slower"
     return ratio, desc
 
 
@@ -53,9 +53,7 @@ def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
         iters = adjust_iterations(size_bytes)
 
         # encoding
-        enc_json = _median_timer(
-            lambda data=data: json.dumps(data, ensure_ascii=False), number=iters
-        )
+        enc_json = _median_timer(lambda data=data: json.dumps(data, ensure_ascii=False), number=iters)
         enc_toon = _median_timer(lambda data=data: ptoon.encode(data), number=iters)
         enc_ratio, enc_desc = calculate_speedup(enc_json, enc_toon)
         results["encoding"].append(
@@ -69,12 +67,8 @@ def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
         )
 
         # decoding
-        dec_json = _median_timer(
-            lambda json_str=json_str: json.loads(json_str), number=iters
-        )
-        dec_toon = _median_timer(
-            lambda toon_str=toon_str: ptoon.decode(toon_str), number=iters
-        )
+        dec_json = _median_timer(lambda json_str=json_str: json.loads(json_str), number=iters)
+        dec_toon = _median_timer(lambda toon_str=toon_str: ptoon.decode(toon_str), number=iters)
         dec_ratio, dec_desc = calculate_speedup(dec_json, dec_toon)
         results["decoding"].append(
             {
@@ -91,9 +85,7 @@ def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
             lambda data=data: json.loads(json.dumps(data, ensure_ascii=False)),
             number=iters,
         )
-        rt_toon = _median_timer(
-            lambda data=data: ptoon.decode(ptoon.encode(data)), number=iters
-        )
+        rt_toon = _median_timer(lambda data=data: ptoon.decode(ptoon.encode(data)), number=iters)
         rt_ratio, rt_desc = calculate_speedup(rt_json, rt_toon)
         results["roundtrip"].append(
             {
@@ -144,9 +136,7 @@ def run_speed_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
         md.append("")
 
     (out_dir / "speed-benchmark.md").write_text("\n".join(md), encoding="utf-8")
-    (out_dir / "speed-benchmark.json").write_text(
-        json.dumps(results, indent=2), encoding="utf-8"
-    )
+    (out_dir / "speed-benchmark.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
     return results
 
 

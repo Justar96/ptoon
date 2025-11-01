@@ -5,13 +5,14 @@ This script tests all public APIs and common use cases.
 """
 
 import sys
+
 import ptoon
 
 
 def test_version():
     """Test version attribute."""
     print("[✓] Version:", ptoon.__version__)
-    assert hasattr(ptoon, '__version__')
+    assert hasattr(ptoon, "__version__")
     assert isinstance(ptoon.__version__, str)
 
 
@@ -65,14 +66,7 @@ def test_nested_structures():
     """Test nested objects and arrays."""
     print("\n[Test] Nested structures")
 
-    data = {
-        "project": "ptoon",
-        "metadata": {
-            "version": "0.0.1",
-            "author": "TOON Contributors"
-        },
-        "stats": [10, 20, 30]
-    }
+    data = {"project": "ptoon", "metadata": {"version": "0.0.1", "author": "TOON Contributors"}, "stats": [10, 20, 30]}
 
     encoded = ptoon.encode(data)
     decoded = ptoon.decode(encoded)
@@ -118,7 +112,7 @@ def test_special_values():
         "int_value": 42,
         "float_value": 3.14,
         "zero": 0,
-        "negative": -10
+        "negative": -10,
     }
 
     encoded = ptoon.encode(data)
@@ -132,11 +126,7 @@ def test_empty_collections():
     """Test empty arrays and objects."""
     print("\n[Test] Empty collections")
 
-    data = {
-        "empty_array": [],
-        "empty_object": {},
-        "name": "test"
-    }
+    data = {"empty_array": [], "empty_object": {}, "name": "test"}
 
     encoded = ptoon.encode(data)
     decoded = ptoon.decode(encoded)
@@ -156,9 +146,9 @@ def test_utility_functions():
         savings = ptoon.estimate_savings(data)
         print(f"Token savings: {savings['savings']} tokens ({savings['savings_percent']:.1f}%)")
         assert isinstance(savings, dict), "estimate_savings should return dict"
-        assert 'json_tokens' in savings, "Missing json_tokens in savings"
-        assert 'toon_tokens' in savings, "Missing toon_tokens in savings"
-        assert 'savings' in savings, "Missing savings in savings"
+        assert "json_tokens" in savings, "Missing json_tokens in savings"
+        assert "toon_tokens" in savings, "Missing toon_tokens in savings"
+        assert "savings" in savings, "Missing savings in savings"
         print("[✓] Utility functions work (with tiktoken)")
     except RuntimeError as e:
         if "tiktoken is required" in str(e):
@@ -172,20 +162,20 @@ def test_type_exports():
     print("\n[Test] Type exports")
 
     expected_exports = [
-        '__version__',
-        'encode',
-        'decode',
-        'DEFAULT_DELIMITER',
-        'DELIMITERS',
-        'JsonPrimitive',
-        'JsonArray',
-        'JsonObject',
-        'JsonValue',
-        'Delimiter',
-        'EncodeOptions',
-        'count_tokens',
-        'estimate_savings',
-        'compare_formats',
+        "__version__",
+        "encode",
+        "decode",
+        "DEFAULT_DELIMITER",
+        "DELIMITERS",
+        "JsonPrimitive",
+        "JsonArray",
+        "JsonObject",
+        "JsonValue",
+        "Delimiter",
+        "EncodeOptions",
+        "count_tokens",
+        "estimate_savings",
+        "compare_formats",
     ]
 
     for name in expected_exports:
@@ -201,7 +191,7 @@ def test_error_handling():
     # Test decode with non-string
     try:
         ptoon.decode(123)  # type: ignore
-        assert False, "Should raise TypeError"
+        raise AssertionError("Should raise TypeError")
     except TypeError as e:
         assert "expects a string" in str(e)
         print("[✓] Decode rejects non-string input")
@@ -209,7 +199,7 @@ def test_error_handling():
     # Test encode with invalid options
     try:
         ptoon.encode({"a": 1}, {"invalid_option": True})  # type: ignore
-        assert False, "Should raise ValueError"
+        raise AssertionError("Should raise ValueError")
     except ValueError as e:
         assert "unsupported keys" in str(e)
         print("[✓] Encode rejects invalid options")
@@ -217,7 +207,7 @@ def test_error_handling():
     # Test invalid delimiter
     try:
         ptoon.encode({"a": 1}, {"delimiter": ";"})
-        assert False, "Should raise ValueError"
+        raise AssertionError("Should raise ValueError")
     except ValueError as e:
         assert "delimiter must be" in str(e)
         print("[✓] Encode rejects invalid delimiter")
@@ -228,8 +218,9 @@ def test_py_typed_marker():
     print("\n[Test] py.typed marker")
 
     import os
+
     module_dir = os.path.dirname(ptoon.__file__)
-    py_typed = os.path.join(module_dir, 'py.typed')
+    py_typed = os.path.join(module_dir, "py.typed")
 
     assert os.path.exists(py_typed), "py.typed marker file missing"
     print(f"[✓] py.typed marker exists at: {py_typed}")
@@ -269,6 +260,7 @@ def main():
         except Exception as e:
             print(f"\n[✗] {test.__name__} ERROR: {e}")
             import traceback
+
             traceback.print_exc()
             failed += 1
 

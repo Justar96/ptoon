@@ -3,6 +3,8 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, Any
 
+from ptoon.logging_config import get_logger
+
 # Precompiled regex patterns
 from .constants import (
     BACKSLASH,
@@ -25,7 +27,6 @@ from .constants import (
     TRUE_LITERAL,
     UNESCAPE_SEQUENCES,
 )
-from ptoon.logging_config import get_logger
 
 
 if TYPE_CHECKING:
@@ -110,9 +111,7 @@ class Decoder:
             return {}
 
         lines = text.splitlines()
-        logger.debug(
-            f"Decoding TOON string: {len(toon_string)} characters, {len(lines)} lines"
-        )
+        logger.debug(f"Decoding TOON string: {len(toon_string)} characters, {len(lines)} lines")
         indent_size = self._detect_indent_size(lines)
 
         stack: list[_Ctx] = []
@@ -158,8 +157,7 @@ class Decoder:
                 top = stack[-1]
                 if top.arr is not None and top.expected is not None:
                     if len(top.arr) < top.expected and not (
-                        content.startswith(LIST_ITEM_PREFIX)
-                        or content.startswith(LIST_ITEM_MARKER)
+                        content.startswith(LIST_ITEM_PREFIX) or content.startswith(LIST_ITEM_MARKER)
                     ):
                         # Array not complete yet, but next token is not a list item
                         raise self._err(
@@ -172,8 +170,7 @@ class Decoder:
                             "Add missing '- ' items or update the declared length marker.",
                         )
                     if len(top.arr) == top.expected and not (
-                        content.startswith(LIST_ITEM_PREFIX)
-                        or content.startswith(LIST_ITEM_MARKER)
+                        content.startswith(LIST_ITEM_PREFIX) or content.startswith(LIST_ITEM_MARKER)
                     ):
                         stack.pop()
                         continue
@@ -199,9 +196,7 @@ class Decoder:
                         stack.append(ctx)
                         continue
                     if after:
-                        arr = self._parse_inline_array(
-                            h, after, line_num, raw
-                        )
+                        arr = self._parse_inline_array(h, after, line_num, raw)
                         root = arr
                     else:
                         ctx = _Ctx("array_list", depth)
@@ -219,9 +214,7 @@ class Decoder:
                     ctx.obj = root  # type: ignore
                     ctx.content_depth = depth  # root object keys are at the same depth
                     stack.append(ctx)
-                    self._parse_object_line_into(
-                        ctx, content, depth, stack, line_num, raw
-                    )
+                    self._parse_object_line_into(ctx, content, depth, stack, line_num, raw)
                     continue
 
                 # Primitive root
@@ -233,23 +226,17 @@ class Decoder:
             top = stack[-1]
             if top.kind == "object" and depth == top.content_depth:
                 logger.debug(f"Parsing object line: {content[:50]}")
-                self._parse_object_line_into(
-                    top, content, depth, stack, line_num, raw
-                )
+                self._parse_object_line_into(top, content, depth, stack, line_num, raw)
                 continue
 
             if top.kind == "array_list" and depth == top.content_depth:
                 logger.debug(f"Parsing list item: {content[:50]}")
-                self._parse_list_item_into(
-                    top, content, depth, stack, line_num, raw
-                )
+                self._parse_list_item_into(top, content, depth, stack, line_num, raw)
                 # If list reached expected and next constructs are not items, we'll close on dedent later
                 continue
 
             if top.kind == "array_tabular" and depth == top.content_depth:
-                logger.debug(
-                    f"Parsing tabular row: {len(self._split_values(content, top.delimiter))} fields"
-                )
+                logger.debug(f"Parsing tabular row: {len(self._split_values(content, top.delimiter))} fields")
                 self._parse_tabular_row_into(top, content, line_num, raw)
                 self._pop_completed_tabular(stack)
                 continue
@@ -277,14 +264,10 @@ class Decoder:
             if stack:
                 top = stack[-1]
                 if top.kind == "object" and depth == top.content_depth:
-                    self._parse_object_line_into(
-                        top, content, depth, stack, line_num, raw
-                    )
+                    self._parse_object_line_into(top, content, depth, stack, line_num, raw)
                     continue
                 if top.kind == "array_list" and depth == top.content_depth:
-                    self._parse_list_item_into(
-                        top, content, depth, stack, line_num, raw
-                    )
+                    self._parse_list_item_into(top, content, depth, stack, line_num, raw)
                     continue
                 if top.kind == "array_tabular" and depth == top.content_depth:
                     self._parse_tabular_row_into(top, content, line_num, raw)
@@ -370,9 +353,7 @@ class Decoder:
         if hint:
             message = f"{message} Hint: {hint}"
         else:
-            message = (
-                f"{message} Hint: Check TOON syntax and indentation near this line."
-            )
+            message = f"{message} Hint: Check TOON syntax and indentation near this line."
         return ValueError(message)
 
     # Helpers
@@ -401,17 +382,12 @@ class Decoder:
         logger.debug(f"Detected indent size: {detected} spaces")
         return detected
 
-    def _calc_depth_and_content(
-        self, line: str, indent_size: int, line_num: int
-    ) -> tuple[int, str]:
+    def _calc_depth_and_content(self, line: str, indent_size: int, line_num: int) -> tuple[int, str]:
         leading = self._count_leading_spaces(line, line_num)
         if leading % max(indent_size, 1) != 0:
             raise self._err(
                 line_num,
-                (
-                    f"invalid indentation; expected a multiple of {indent_size} spaces "
-                    f"but found {leading}"
-                ),
+                (f"invalid indentation; expected a multiple of {indent_size} spaces but found {leading}"),
                 line,
                 "Adjust indentation to consistent space multiples (2 or 4 spaces).",
             )
@@ -569,10 +545,7 @@ class Decoder:
         if not m:
             raise self._err(
                 line_num,
-                (
-                    "invalid array header length block; expected N or #N with optional "
-                    "delimiter (, |, \\t)"
-                ),
+                ("invalid array header length block; expected N or #N with optional delimiter (, |, \\t)"),
                 line,
                 "Declare the array length as [3], [#3], [3|], or [3\\t].",
             )
@@ -625,19 +598,14 @@ class Decoder:
         )
         return result
 
-    def _parse_inline_array(
-        self, header: dict, values_str: str, line_num: int, line: str
-    ) -> JsonArray:
+    def _parse_inline_array(self, header: dict, values_str: str, line_num: int, line: str) -> JsonArray:
         if not values_str.strip():
             if header["length"] == 0:
                 return []
             else:
                 raise self._err(
                     line_num,
-                    (
-                        "inline array length mismatch; expected "
-                        f"{header['length']} values but found 0"
-                    ),
+                    (f"inline array length mismatch; expected {header['length']} values but found 0"),
                     line,
                     "Add the missing comma-separated values after the colon.",
                 )
@@ -648,10 +616,7 @@ class Decoder:
         if header["length"] != len(arr):
             raise self._err(
                 line_num,
-                (
-                    "inline array length mismatch; expected "
-                    f"{header['length']} values but found {len(arr)}"
-                ),
+                (f"inline array length mismatch; expected {header['length']} values but found {len(arr)}"),
                 line,
                 "Update the header count or add the missing values.",
             )
@@ -697,9 +662,7 @@ class Decoder:
                 return
             # list or inline primitive array
             if right:
-                ctx.obj[key] = self._parse_inline_array(
-                    h, right, line_num, raw_line
-                )
+                ctx.obj[key] = self._parse_inline_array(h, right, line_num, raw_line)
                 return
             ctx.obj[key] = []
             arr_ctx = _Ctx("array_list", depth)
@@ -744,20 +707,14 @@ class Decoder:
             child.obj = obj
             # Nested objects on hyphen line (first field of list item) indent by two levels
             # All other nested objects indent by one level
-            child.content_depth = (
-                (depth + 2)
-                if (ctx.from_list_item and depth == ctx.depth)
-                else (depth + 1)
-            )
+            child.content_depth = (depth + 2) if (ctx.from_list_item and depth == ctx.depth) else (depth + 1)
             child.from_list_item = False  # Don't propagate flag to child contexts
             stack.append(child)
             return
         if value.startswith(OPEN_BRACKET):
             header, after = self._split_first_colon(value)
             h = self._parse_header(header, line_num, raw_line)
-            ctx.obj[key] = self._parse_inline_array(
-                h, after, line_num, raw_line
-            )
+            ctx.obj[key] = self._parse_inline_array(h, after, line_num, raw_line)
             return
 
         if self._find_colon_index(value) != -1 and value[0] != DOUBLE_QUOTE:
@@ -769,9 +726,7 @@ class Decoder:
             nested_ctx.from_list_item = False
             ctx.obj[key] = nested_obj
             stack.append(nested_ctx)
-            self._parse_object_line_into(
-                nested_ctx, value, depth + 1, stack, line_num, value
-            )
+            self._parse_object_line_into(nested_ctx, value, depth + 1, stack, line_num, value)
             return
         ctx.obj[key] = self._parse_primitive(value, line_num, value)
 
@@ -816,30 +771,19 @@ class Decoder:
             obj_ctx.content_depth = depth + 1
             obj_ctx.from_list_item = True
             stack.append(obj_ctx)
-            self._parse_object_line_into(
-                obj_ctx, rest, depth, stack, line_num, rest
-            )
+            self._parse_object_line_into(obj_ctx, rest, depth, stack, line_num, rest)
             return
 
         # Primitive item
         ctx.arr.append(self._parse_primitive(rest, line_num, rest))
 
-    def _parse_tabular_row_into(
-        self, ctx: _Ctx, content: str, line_num: int, raw_line: str
-    ):
-        assert (
-            ctx.kind == "array_tabular"
-            and ctx.arr is not None
-            and ctx.fields is not None
-        )
+    def _parse_tabular_row_into(self, ctx: _Ctx, content: str, line_num: int, raw_line: str):
+        assert ctx.kind == "array_tabular" and ctx.arr is not None and ctx.fields is not None
         parts = self._split_values(content, ctx.delimiter)
         if len(parts) != len(ctx.fields):
             raise self._err(
                 line_num,
-                (
-                    "tabular row field count mismatch; expected "
-                    f"{len(ctx.fields)} fields but found {len(parts)}"
-                ),
+                (f"tabular row field count mismatch; expected {len(ctx.fields)} fields but found {len(parts)}"),
                 raw_line,
                 "Check delimiter usage and ensure each row has values for all fields.",
             )
@@ -1015,14 +959,10 @@ class Decoder:
                 parts: list[str] = []
                 if ctx.arr is not None:
                     if ctx.expected is not None:
-                        parts.append(
-                            f"array has {len(ctx.arr)}/{ctx.expected} items"
-                        )
+                        parts.append(f"array has {len(ctx.arr)}/{ctx.expected} items")
                     else:
                         parts.append(f"array has {len(ctx.arr)} items")
-                detail = (
-                    f"Blank line encountered within array contents at depth {depth}"
-                )
+                detail = f"Blank line encountered within array contents at depth {depth}"
                 if parts:
                     detail = f"{detail}; {'; '.join(parts)}"
                 raise self._err(

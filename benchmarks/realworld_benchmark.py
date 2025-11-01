@@ -22,8 +22,6 @@ from typing import Any
 import ptoon
 from ptoon.utils import count_tokens
 
-from .utils import format_bytes
-
 
 # Directory for real-world API response samples
 DATA_DIR = Path(__file__).resolve().parent / "data" / "realworld"
@@ -224,9 +222,7 @@ def measure_token_efficiency(data: Any, sample_name: str, toon_str: str | None =
         # Calculate savings
         result["savings"] = result["json_tokens"] - result["toon_tokens"]
         if result["json_tokens"] > 0:
-            result["savings_percent"] = (
-                result["savings"] / result["json_tokens"] * 100.0
-            )
+            result["savings_percent"] = result["savings"] / result["json_tokens"] * 100.0
 
     except Exception as e:
         print(f"Warning: Failed to measure tokens for {sample_name}: {e}")
@@ -336,9 +332,7 @@ def run_realworld_benchmark(output_dir: Path | None = None) -> dict[str, Any]:
 
     md_path.write_text(report_md, encoding="utf-8")
     json_path.write_text(
-        json.dumps(
-            {"samples": results, "by_pattern": by_pattern, "summary": summary}, indent=2
-        ),
+        json.dumps({"samples": results, "by_pattern": by_pattern, "summary": summary}, indent=2),
         encoding="utf-8",
     )
 
@@ -383,9 +377,7 @@ def _generate_realworld_report(
     # Overview table
     lines.append("## Overview")
     lines.append("")
-    lines.append(
-        "| Sample | Pattern | Compatible | JSON Tokens | TOON Tokens | Savings % | Status |"
-    )
+    lines.append("| Sample | Pattern | Compatible | JSON Tokens | TOON Tokens | Savings % | Status |")
     lines.append("|---|---|---|---:|---:|---:|---|")
 
     for r in results:
@@ -414,26 +406,18 @@ def _generate_realworld_report(
         # Calculate pattern statistics
         pattern_compatible = sum(1 for r in pattern_results if r["compatible"])
         pattern_total = len(pattern_results)
-        pattern_compat_rate = (
-            pattern_compatible / pattern_total * 100.0 if pattern_total > 0 else 0.0
-        )
+        pattern_compat_rate = pattern_compatible / pattern_total * 100.0 if pattern_total > 0 else 0.0
         pattern_avg_savings = (
-            sum(r["savings_percent"] for r in pattern_results) / pattern_total
-            if pattern_total > 0
-            else 0.0
+            sum(r["savings_percent"] for r in pattern_results) / pattern_total if pattern_total > 0 else 0.0
         )
 
         # Find best performer
         best_result = max(pattern_results, key=lambda r: r["savings_percent"])
 
         lines.append(f"- Samples: {pattern_total}")
-        lines.append(
-            f"- Compatibility: {pattern_compatible}/{pattern_total} ({pattern_compat_rate:.1f}%)"
-        )
+        lines.append(f"- Compatibility: {pattern_compatible}/{pattern_total} ({pattern_compat_rate:.1f}%)")
         lines.append(f"- Avg token savings: {pattern_avg_savings:.1f}%")
-        lines.append(
-            f"- Best performer: {best_result['sample']} ({best_result['savings_percent']:.1f}% savings)"
-        )
+        lines.append(f"- Best performer: {best_result['sample']} ({best_result['savings_percent']:.1f}% savings)")
         lines.append("")
 
         lines.append("**Individual Results:**")
@@ -465,9 +449,7 @@ def _generate_realworld_report(
 
     for pattern_name, pattern_results in sorted(by_pattern.items()):
         pattern_avg_savings = (
-            sum(r["savings_percent"] for r in pattern_results) / len(pattern_results)
-            if pattern_results
-            else 0.0
+            sum(r["savings_percent"] for r in pattern_results) / len(pattern_results) if pattern_results else 0.0
         )
         bar = _generate_bar_chart(pattern_avg_savings)
         lines.append(f"- {pattern_name}: {bar}")

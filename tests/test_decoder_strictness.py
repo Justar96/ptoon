@@ -30,9 +30,7 @@ def test_rejects_invalid_escape_sequence():
 
 
 def test_rejects_blank_line_inside_array():
-    with pytest.raises(
-        ValueError, match="Blank line encountered within array contents at depth 1"
-    ):
+    with pytest.raises(ValueError, match="Blank line encountered within array contents at depth 1"):
         decode(_FIXTURES["blankLineInArray"])
 
 

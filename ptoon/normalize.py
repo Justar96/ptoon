@@ -21,6 +21,7 @@ from collections.abc import Mapping
 from typing import Any, TypeGuard
 
 from ptoon.logging_config import get_logger
+
 from .types import JsonArray, JsonObject, JsonPrimitive, JsonValue
 
 
@@ -155,9 +156,7 @@ def normalize_value(value: Any) -> JsonValue:
     if isinstance(value, int):
         # Convert very large integers (beyond JS safe integer range) to string
         if abs(value) > _MAX_SAFE_INTEGER:
-            logger.debug(
-                f"Converting large integer to string: {value} (exceeds 2^53-1)"
-            )
+            logger.debug(f"Converting large integer to string: {value} (exceeds 2^53-1)")
             return str(value)
         return value
 
@@ -191,9 +190,7 @@ def normalize_value(value: Any) -> JsonValue:
         except TypeError:
             # Fall back to stable conversion for heterogeneous sets
             logger.debug("Set contains heterogeneous types, using repr() for sorting")
-            return [
-                normalize_value(item) for item in sorted(value, key=lambda x: repr(x))
-            ]
+            return [normalize_value(item) for item in sorted(value, key=lambda x: repr(x))]
 
     # Handle generic mapping types (Map-like) and dicts
     if isinstance(value, Mapping):
@@ -206,9 +203,7 @@ def normalize_value(value: Any) -> JsonValue:
             ) from e
 
     # Fallback for other types
-    logger.warning(
-        f"Unsupported type {type(value).__name__}, converting to null. Value: {str(value)[:50]}"
-    )
+    logger.warning(f"Unsupported type {type(value).__name__}, converting to null. Value: {str(value)[:50]}")
     return None
 
 

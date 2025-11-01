@@ -5,9 +5,7 @@ import pytest
 from ptoon import count_tokens, decode, encode
 
 
-requires_tiktoken = pytest.mark.skipif(
-    importlib.util.find_spec("tiktoken") is None, reason="requires tiktoken"
-)
+requires_tiktoken = pytest.mark.skipif(importlib.util.find_spec("tiktoken") is None, reason="requires tiktoken")
 
 
 def test_produces_no_trailing_spaces_at_end_of_lines():

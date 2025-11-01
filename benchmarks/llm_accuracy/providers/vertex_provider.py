@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import asyncio
-import os
 import time
 from functools import partial
 from pathlib import Path
+
 
 try:
     import vertexai
@@ -57,9 +57,7 @@ class VertexAIProvider(LLMProvider):
                     f"Credentials file not found: {credentials_path}\n"
                     f"Make sure the JSON key file exists at the specified path."
                 )
-            credentials = service_account.Credentials.from_service_account_file(
-                str(creds_file)
-            )
+            credentials = service_account.Credentials.from_service_account_file(str(creds_file))
 
         # Initialize Vertex AI with credentials or ADC
         vertexai.init(project=project_id, location=location, credentials=credentials)
@@ -70,9 +68,7 @@ class VertexAIProvider(LLMProvider):
 
         # Vertex AI uses synchronous API, run in executor to avoid blocking
         loop = asyncio.get_event_loop()
-        response = await loop.run_in_executor(
-            None, partial(self._sync_complete, prompt, model)
-        )
+        response = await loop.run_in_executor(None, partial(self._sync_complete, prompt, model))
 
         latency_ms = (time.perf_counter() - start) * 1000
         return CompletionResult(
@@ -114,35 +110,36 @@ class VertexAIProvider(LLMProvider):
                 if "429" in error_msg or "Resource exhausted" in error_msg:
                     if attempt < max_retries - 1:
                         # Exponential backoff
-                        wait_time = retry_delay * (2 ** attempt)
+                        wait_time = retry_delay * (2**attempt)
                         time.sleep(wait_time)
                         continue
                 # Re-raise if not rate limit or max retries exceeded
                 raise
 
         # Extract usage metadata (available in latest API)
-        usage_metadata = response.usage_metadata if hasattr(response, 'usage_metadata') else None
-        input_tokens = getattr(usage_metadata, 'prompt_token_count', 0) if usage_metadata else 0
-        output_tokens = getattr(usage_metadata, 'candidates_token_count', 0) if usage_metadata else 0
+        usage_metadata = response.usage_metadata if hasattr(response, "usage_metadata") else None
+        input_tokens = getattr(usage_metadata, "prompt_token_count", 0) if usage_metadata else 0
+        output_tokens = getattr(usage_metadata, "candidates_token_count", 0) if usage_metadata else 0
 
         # Extract text content safely
         content = ""
         try:
-            if hasattr(response, 'text'):
+            if hasattr(response, "text"):
                 content = response.text
         except (ValueError, AttributeError) as e:
             # Handle cases where response.text raises an error (e.g., safety filters, MAX_TOKENS)
             # Try to extract from candidates directly
-            if hasattr(response, 'candidates') and response.candidates:
+            if hasattr(response, "candidates") and response.candidates:
                 candidate = response.candidates[0]
-                if hasattr(candidate, 'content') and hasattr(candidate.content, 'parts'):
+                if hasattr(candidate, "content") and hasattr(candidate.content, "parts"):
                     parts = candidate.content.parts
                     if parts:
-                        content = "".join(part.text for part in parts if hasattr(part, 'text'))
+                        content = "".join(part.text for part in parts if hasattr(part, "text"))
 
             # If still empty, log the error
             if not content:
                 import logging
+
                 logger = logging.getLogger(__name__)
                 logger.warning(f"Could not extract text from response: {e}")
 
@@ -164,12 +161,12 @@ class VertexAIProvider(LLMProvider):
         # Mappings to latest stable Gemini 2.5 models (Oct 2025)
         model_map = {
             # Latest Flash models - optimized for speed and cost
-            "gpt-5-mini": "gemini-2.5-flash",       # Latest Flash - best price/performance
+            "gpt-5-mini": "gemini-2.5-flash",  # Latest Flash - best price/performance
             "gpt-4o-mini": "gemini-2.5-flash",
             "gpt-3.5-turbo": "gemini-2.5-flash",
             "gpt-4-turbo": "gemini-2.5-flash",
             # Latest Pro models - optimized for quality
-            "gpt-5": "gemini-2.5-pro",              # Latest Pro - best quality
+            "gpt-5": "gemini-2.5-pro",  # Latest Pro - best quality
             "gpt-4": "gemini-2.5-pro",
             "gpt-4o": "gemini-2.5-pro",
             # Legacy 1.5 models (still available but deprecated)

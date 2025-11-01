@@ -17,9 +17,7 @@ class TestEncodeTypeValidation:
 
     def test_rejects_module_type(self):
         """Test encode() raises TypeError for module objects."""
-        with pytest.raises(
-            TypeError, match="Cannot encode module: TOON supports dicts, lists, and primitives"
-        ):
+        with pytest.raises(TypeError, match="Cannot encode module: TOON supports dicts, lists, and primitives"):
             encode(types)
 
     def test_rejects_class_type(self):
@@ -28,9 +26,7 @@ class TestEncodeTypeValidation:
         class MyClass:
             pass
 
-        with pytest.raises(
-            TypeError, match="Cannot encode type: TOON supports dicts, lists, and primitives"
-        ):
+        with pytest.raises(TypeError, match="Cannot encode type: TOON supports dicts, lists, and primitives"):
             encode(MyClass)
 
     def test_rejects_function_type(self):
@@ -39,16 +35,12 @@ class TestEncodeTypeValidation:
         def my_function():
             pass
 
-        with pytest.raises(
-            TypeError, match="Cannot encode function: TOON supports dicts, lists, and primitives"
-        ):
+        with pytest.raises(TypeError, match="Cannot encode function: TOON supports dicts, lists, and primitives"):
             encode(my_function)
 
     def test_rejects_lambda_function(self):
         """Test encode() raises TypeError for lambda functions."""
-        with pytest.raises(
-            TypeError, match="Cannot encode function: TOON supports dicts, lists, and primitives"
-        ):
+        with pytest.raises(TypeError, match="Cannot encode function: TOON supports dicts, lists, and primitives"):
             encode(lambda x: x)
 
     def test_rejects_method_type(self):
@@ -59,9 +51,7 @@ class TestEncodeTypeValidation:
                 pass
 
         obj = MyClass()
-        with pytest.raises(
-            TypeError, match="Cannot encode method: TOON supports dicts, lists, and primitives"
-        ):
+        with pytest.raises(TypeError, match="Cannot encode method: TOON supports dicts, lists, and primitives"):
             encode(obj.my_method)
 
     def test_rejects_builtin_function(self):
@@ -123,33 +113,23 @@ class TestEncodeOptionsValidation:
 
     def test_rejects_negative_indent(self):
         """Test encode() raises ValueError for negative indent."""
-        with pytest.raises(
-            ValueError, match="indent must be a non-negative int; got: -1"
-        ):
+        with pytest.raises(ValueError, match="indent must be a non-negative int; got: -1"):
             encode({"key": "value"}, options={"indent": -1})
 
     def test_rejects_non_int_indent(self):
         """Test encode() raises ValueError for non-integer indent."""
-        with pytest.raises(
-            ValueError, match="indent must be a non-negative int; got: 'two'"
-        ):
+        with pytest.raises(ValueError, match="indent must be a non-negative int; got: 'two'"):
             encode({"key": "value"}, options={"indent": "two"})
 
-        with pytest.raises(
-            ValueError, match="indent must be a non-negative int; got: 2.5"
-        ):
+        with pytest.raises(ValueError, match="indent must be a non-negative int; got: 2.5"):
             encode({"key": "value"}, options={"indent": 2.5})
 
     def test_rejects_bool_indent(self):
         """Test encode() raises ValueError for boolean indent."""
-        with pytest.raises(
-            ValueError, match="indent must be a non-negative int; got: True"
-        ):
+        with pytest.raises(ValueError, match="indent must be a non-negative int; got: True"):
             encode({"key": "value"}, options={"indent": True})
 
-        with pytest.raises(
-            ValueError, match="indent must be a non-negative int; got: False"
-        ):
+        with pytest.raises(ValueError, match="indent must be a non-negative int; got: False"):
             encode({"key": "value"}, options={"indent": False})
 
     def test_accepts_zero_indent(self):
@@ -167,9 +147,7 @@ class TestEncodeOptionsValidation:
 
     def test_rejects_non_bool_length_marker(self):
         """Test encode() raises ValueError for non-boolean length_marker."""
-        with pytest.raises(
-            ValueError, match="length_marker must be a bool; got: 'yes'"
-        ):
+        with pytest.raises(ValueError, match="length_marker must be a bool; got: 'yes'"):
             encode([1, 2, 3], options={"length_marker": "yes"})
 
         with pytest.raises(ValueError, match="length_marker must be a bool; got: 1"):
