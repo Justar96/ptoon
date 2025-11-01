@@ -211,7 +211,7 @@ class Decoder:
                     logger.debug("Parsing root object")
                     root = {}
                     ctx = _Ctx("object", depth)
-                    ctx.obj = root  # type: ignore
+                    ctx.obj = root
                     ctx.content_depth = depth  # root object keys are at the same depth
                     stack.append(ctx)
                     self._parse_object_line_into(ctx, content, depth, stack, line_num, raw)
@@ -815,6 +815,7 @@ class Decoder:
             Any: Parsed primitive value.
         """
         t = s.strip()
+        result: Any
         try:
             if t == NULL_LITERAL:
                 result = None

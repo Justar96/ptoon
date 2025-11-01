@@ -41,7 +41,7 @@ _TIKTOKEN_MISSING_MSG = (
 
 def _require_tiktoken():
     try:
-        import tiktoken  # type: ignore
+        import tiktoken
     except ImportError as exc:  # pragma: no cover - exercised via count_tokens
         raise RuntimeError(_TIKTOKEN_MISSING_MSG) from exc
     return tiktoken
