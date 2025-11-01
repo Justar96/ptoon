@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ptoon"
-version = "0.0.1"
+version = "0.0.2-dev"
 description = "Token-Oriented Object Notation - A Python implementation optimized for LLM token efficiency."
 requires-python = ">=3.10"
 readme = "README.md"
@@ -33,9 +33,8 @@ Repository = "https://github.com/Justar96/ptoon"
 "Bug Tracker" = "https://github.com/Justar96/ptoon/issues"
 Changelog = "https://github.com/Justar96/ptoon/blob/main/docs/changelog.rst"
 
-[project.scripts]
-toon-benchmark = "benchmarks.run_benchmarks:main"
-toon-llm-benchmark = "benchmarks.llm_accuracy.__main__:main"
+# Note: CLI scripts removed in v0.0.2 - benchmarks are dev tools, run from source
+# To run benchmarks: git clone repo and run `uv run python -m benchmarks`
 
 [project.optional-dependencies]
 # Development dependencies (testing, linting, type checking)
