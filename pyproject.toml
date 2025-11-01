@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ptoon"
-version = "0.0.2-dev"
+version = "0.0.2"
 description = "Token-Oriented Object Notation - A Python implementation optimized for LLM token efficiency."
 requires-python = ">=3.10"
 readme = "README.md"
@@ -101,7 +101,9 @@ all = [
 ]
 
 [tool.hatchling.build.targets.wheel]
-packages = ["ptoon", "benchmarks"]
+packages = ["ptoon"]
+# Note: benchmarks are development tools and should be run from source
+# To run benchmarks: git clone repo and run `uv run python -m benchmarks`
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -42,7 +42,7 @@ from .constants import DEFAULT_DELIMITER, DELIMITERS
 
 
 # Version info
-__version__ = "0.0.2-dev"
+__version__ = "0.0.2"
 from .decoder import Decoder
 from .encoder import Encoder
 from .types import (

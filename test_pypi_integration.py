@@ -226,6 +226,40 @@ def test_py_typed_marker():
     print(f"[✓] py.typed marker exists at: {py_typed}")
 
 
+def test_no_cli_entry_points():
+    """Test that CLI entry points are not present in v0.0.2+."""
+    print("\n[Test] No CLI entry points")
+
+    import subprocess
+
+    from packaging import version
+
+    # Check version
+    current_version = version.parse(ptoon.__version__)
+    if current_version < version.parse("0.0.2"):
+        print("[⚠] Skipping test (version < 0.0.2)")
+        return
+
+    # Check if CLI commands exist
+    try:
+        result = subprocess.run(
+            ["pip", "show", "-f", "ptoon"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+
+        # Should not contain CLI entry points
+        if "toon-benchmark" in result.stdout or "toon-llm-benchmark" in result.stdout:
+            raise AssertionError("CLI entry points should not be present in v0.0.2+")
+
+        print("[✓] No CLI entry points found (as expected for v0.0.2+)")
+    except subprocess.CalledProcessError:
+        print("[⚠] Could not verify CLI entry points (pip show failed)")
+    except FileNotFoundError:
+        print("[⚠] Could not verify CLI entry points (pip not found)")
+
+
 def main():
     """Run all tests."""
     print("=" * 70)
@@ -245,6 +279,7 @@ def main():
         test_type_exports,
         test_error_handling,
         test_py_typed_marker,
+        test_no_cli_entry_points,
     ]
 
     passed = 0

@@ -2,14 +2,27 @@
 
 This directory contains comprehensive benchmarks for measuring ptoon's token efficiency, speed performance, memory usage, and LLM accuracy compared to JSON.
 
+## Important Note
+
+**Benchmarks are development tools** and are **not included in the PyPI package**. To run benchmarks, you must clone the repository and install from source.
+
 ## Quick Start
 
-### Installing Benchmark Dependencies
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Justar96/ptoon
+cd ptoon
+```
+
+### 2. Install Benchmark Dependencies
 
 Install benchmark dependencies using the `[benchmark]` extra:
 
 ```bash
 pip install -e ".[benchmark]"
+# or using uv (recommended)
+uv sync --extra benchmark
 ```
 
 This installs:
@@ -23,13 +36,13 @@ For LLM accuracy benchmarks, install additional dependencies:
 pip install -e ".[llm-benchmark]"
 ```
 
-### Running Benchmarks
+### 3. Run Benchmarks
 
 **All benchmarks:**
 ```bash
 python -m benchmarks
-# or
-toon-benchmark
+# or using uv
+uv run python -m benchmarks
 ```
 
 **Specific benchmarks:**
@@ -183,22 +196,25 @@ For detailed Vertex AI setup instructions, see [`../docs/vertex-ai-setup.md`](..
 
 ```bash
 # Full benchmark with OpenAI (default)
-uv run toon-llm-benchmark
+python -m benchmarks.llm_accuracy
 
 # Full benchmark with Vertex AI
-uv run toon-llm-benchmark --provider vertex
+python -m benchmarks.llm_accuracy --provider vertex
 
 # Dry run (limited questions for cost control)
-uv run toon-llm-benchmark --provider vertex --dry-run
+python -m benchmarks.llm_accuracy --provider vertex --dry-run
 
 # Custom concurrency (default: 20)
-uv run toon-llm-benchmark --provider vertex --concurrency 10
+python -m benchmarks.llm_accuracy --provider vertex --concurrency 10
 
 # Verbose output
-uv run toon-llm-benchmark --provider vertex --verbose
+python -m benchmarks.llm_accuracy --provider vertex --verbose
 
 # Regenerate report from existing results
-uv run toon-llm-benchmark --regenerate-report
+python -m benchmarks.llm_accuracy --regenerate-report
+
+# Or using uv
+uv run python -m benchmarks.llm_accuracy --provider vertex
 ```
 
 **Environment variables:**

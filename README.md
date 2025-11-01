@@ -1,5 +1,11 @@
 # ptoon
 
+[![PyPI version](https://badge.fury.io/py/ptoon.svg)](https://pypi.org/project/ptoon/)
+[![Python versions](https://img.shields.io/pypi/pyversions/ptoon.svg)](https://pypi.org/project/ptoon/)
+[![License](https://img.shields.io/pypi/l/ptoon.svg)](https://github.com/Justar96/ptoon/blob/main/LICENSE)
+[![Downloads](https://static.pepy.tech/badge/ptoon)](https://pepy.tech/project/ptoon)
+[![Tests](https://github.com/Justar96/ptoon/workflows/Tests/badge.svg)](https://github.com/Justar96/ptoon/actions)
+
 A Python implementation of [TOON](https://github.com/johannschopplich/toon) (Token-Oriented Object Notation), a text format optimized for LLM token efficiency.
 
 ## What is TOON?
@@ -207,6 +213,19 @@ xdg-open _build/html/index.html  # Linux
 # or
 start _build/html/index.html  # Windows
 ```
+
+## Benchmarks
+
+Benchmarks are development tools and are not included in the PyPI package. To run benchmarks, clone the repository:
+
+```bash
+git clone https://github.com/Justar96/ptoon
+cd ptoon
+pip install -e ".[benchmark]"  # or use uv sync --extra benchmark
+python -m benchmarks
+```
+
+For detailed benchmark documentation and results, see [benchmarks/README.md](benchmarks/README.md).
 
 The built documentation will be in `docs/_build/html/`.
 
