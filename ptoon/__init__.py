@@ -39,6 +39,9 @@ import types as stdlib_types
 from typing import Any
 
 from .constants import DEFAULT_DELIMITER, DELIMITERS
+
+# Version info
+__version__ = "0.0.1"
 from .decoder import Decoder
 from .encoder import Encoder
 from .types import (
@@ -254,6 +257,8 @@ from .utils import compare_formats, count_tokens, estimate_savings  # noqa: E402
 
 
 __all__ = [
+    # Version
+    "__version__",
     # API
     "encode",
     "decode",

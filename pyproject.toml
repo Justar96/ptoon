@@ -9,7 +9,7 @@ description = "Token-Oriented Object Notation - A Python implementation optimize
 requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT" }
-authors = [{ name = "TOON Contributors" }]
+authors = [{ name = "TOON Contributors", email = "nalongkon1996@gmail.com" }]
 keywords = ["llm", "token", "serialization", "encoding", "ai", "optimization"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -26,6 +26,17 @@ classifiers = [
 # Core library has no runtime dependencies - pure Python stdlib
 dependencies = []
 
+[project.urls]
+Homepage = "https://github.com/Justar96/ptoon"
+Documentation = "https://github.com/Justar96/ptoon#readme"
+Repository = "https://github.com/Justar96/ptoon"
+"Bug Tracker" = "https://github.com/Justar96/ptoon/issues"
+Changelog = "https://github.com/Justar96/ptoon/blob/main/docs/changelog.rst"
+
+[project.scripts]
+toon-benchmark = "benchmarks.run_benchmarks:main"
+toon-llm-benchmark = "benchmarks.llm_accuracy.__main__:main"
+
 [project.optional-dependencies]
 # Development dependencies (testing, linting, type checking)
 dev = [
@@ -36,6 +47,8 @@ dev = [
     "black>=24.0.0,<26.0.0",
     "ruff>=0.8.0,<1.0.0",
     "mypy>=1.0.0,<2.0.0",
+    "build>=1.0.0,<2.0.0",
+    "twine>=5.0.0,<6.0.0",
 ]
 # Basic benchmark dependencies (token efficiency, speed, memory)
 benchmark = [
@@ -73,6 +86,8 @@ all = [
     "black>=24.0.0,<26.0.0",
     "ruff>=0.8.0,<1.0.0",
     "mypy>=1.0.0,<2.0.0",
+    "build>=1.0.0,<2.0.0",
+    "twine>=5.0.0,<6.0.0",
     "tiktoken>=0.5.0,<1.0.0",
     "faker>=20.0.0,<40.0.0",
     "tqdm>=4.65.0,<5.0.0",
@@ -84,10 +99,6 @@ all = [
     "myst-parser>=2.0.0,<3.0.0",
     "tomli>=2.0.0,<3.0.0; python_version < '3.11'",
 ]
-
-[project.scripts]
-toon-benchmark = "benchmarks.run_benchmarks:main"
-toon-llm-benchmark = "benchmarks.llm_accuracy.__main__:main"
 
 [tool.hatchling.build.targets.wheel]
 packages = ["ptoon", "benchmarks"]
