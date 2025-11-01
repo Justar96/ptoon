@@ -4,7 +4,6 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/ptoon.svg)](https://pypi.org/project/ptoon/)
 [![License](https://img.shields.io/pypi/l/ptoon.svg)](https://github.com/Justar96/ptoon/blob/main/LICENSE)
 [![Downloads](https://static.pepy.tech/badge/ptoon)](https://pepy.tech/project/ptoon)
-[![Tests](https://github.com/Justar96/ptoon/workflows/Tests/badge.svg)](https://github.com/Justar96/ptoon/actions)
 
 A Python implementation of [TOON](https://github.com/johannschopplich/toon) (Token-Oriented Object Notation), a text format optimized for LLM token efficiency.
 
