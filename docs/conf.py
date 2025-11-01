@@ -14,7 +14,7 @@ except ImportError:
 project_root = Path(__file__).parent.parent
 pyproject_path = project_root / "pyproject.toml"
 
-with open(pyproject_path, "rb") as f:
+with pyproject_path.open("rb") as f:
     pyproject_data = tomllib.load(f)
     version = pyproject_data["project"]["version"]
     release = version

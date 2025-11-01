@@ -156,10 +156,9 @@ def normalize_model_name(model: str, provider: str) -> str:
             # Remove version suffixes like -001, -002
             parts = model_lower.split("-")
             # gemini-2.5-flash-001 -> gemini-2.5-flash
-            if len(parts) >= 3:
+            if len(parts) >= 3 and parts[-1].isdigit():
                 # Check if last part is a version number
-                if parts[-1].isdigit():
-                    return "-".join(parts[:-1])
+                return "-".join(parts[:-1])
             return model_lower
 
         # Claude models on Vertex AI - keep as-is (include version)

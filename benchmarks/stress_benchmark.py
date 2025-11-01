@@ -250,7 +250,7 @@ def generate_payload_by_size(target_mb: int, structure_type: str = "tabular") ->
 # ============================================================================
 
 
-class TimeoutException(Exception):
+class TimeoutError(Exception):
     """Raised when operation times out."""
 
     pass
@@ -258,7 +258,7 @@ class TimeoutException(Exception):
 
 def _timeout_handler(signum: int, frame: Any) -> None:
     """Signal handler for timeout."""
-    raise TimeoutException("Operation timed out")
+    raise TimeoutError("Operation timed out")
 
 
 def _worker_target(result_queue: multiprocessing.Queue, func: Callable[..., Any], args: tuple, kwargs: dict) -> None:
@@ -360,7 +360,7 @@ def measure_with_timeout(
             result = func(*args, **kwargs)
             signal.alarm(0)  # Cancel alarm
             duration = time.perf_counter() - start
-        except TimeoutException:
+        except TimeoutError:
             duration = time.perf_counter() - start
             timed_out = True
             result = None

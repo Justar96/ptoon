@@ -107,12 +107,11 @@ class VertexAIProvider(LLMProvider):
             except Exception as e:
                 error_msg = str(e)
                 # Check if it's a rate limit error
-                if "429" in error_msg or "Resource exhausted" in error_msg:
-                    if attempt < max_retries - 1:
-                        # Exponential backoff
-                        wait_time = retry_delay * (2**attempt)
-                        time.sleep(wait_time)
-                        continue
+                if ("429" in error_msg or "Resource exhausted" in error_msg) and attempt < max_retries - 1:
+                    # Exponential backoff
+                    wait_time = retry_delay * (2**attempt)
+                    time.sleep(wait_time)
+                    continue
                 # Re-raise if not rate limit or max retries exceeded
                 raise
 

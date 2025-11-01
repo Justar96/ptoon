@@ -217,12 +217,12 @@ def test_py_typed_marker():
     """Test that py.typed marker file exists."""
     print("\n[Test] py.typed marker")
 
-    import os
+    from pathlib import Path
 
-    module_dir = os.path.dirname(ptoon.__file__)
-    py_typed = os.path.join(module_dir, "py.typed")
+    module_dir = Path(ptoon.__file__).parent
+    py_typed = module_dir / "py.typed"
 
-    assert os.path.exists(py_typed), "py.typed marker file missing"
+    assert py_typed.exists(), "py.typed marker file missing"
     print(f"[✓] py.typed marker exists at: {py_typed}")
 
 
