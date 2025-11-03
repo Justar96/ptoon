@@ -1,35 +1,24 @@
-# ptoon
+# ptoon (Archived)
 
 [![PyPI version](https://badge.fury.io/py/ptoon.svg)](https://pypi.org/project/ptoon/)
 [![Python versions](https://img.shields.io/pypi/pyversions/ptoon.svg)](https://pypi.org/project/ptoon/)
 [![License](https://img.shields.io/pypi/l/ptoon.svg)](https://github.com/Justar96/ptoon/blob/main/LICENSE)
-[![Downloads](https://static.pepy.tech/badge/ptoon)](https://pepy.tech/project/ptoon)
 
 A Python implementation of [TOON](https://github.com/johannschopplich/toon) (Token-Oriented Object Notation), a text format optimized for LLM token efficiency.
 
-## What is TOON?
+**This repository is archived. Development has moved to [`@toon-format/toon-python`](https://github.com/toon-format/toon-python).**
 
-TOON is a text format designed to reduce LLM token consumption by 30-60% compared to JSON while maintaining human readability and semantic clarity. It's optimized for common data patterns in LLM applications:
+---
 
-- **Tabular data** (API responses, database records) - uses column-based format
-- **Structured objects** - removes redundant syntax like quotes and braces
-- **Arrays** - compact inline or list formats based on content
+## Notice
 
-**Key Benefits:**
-- 🎯 **30-60% token reduction** - Direct cost savings on LLM API calls
-- 📖 **Human-readable** - Easy to understand and debug
-- 🔄 **Lossless** - Perfect round-trip encoding/decoding
-- 🐍 **Pure Python** - No runtime dependencies
+This library is no longer maintained here. For the latest updates, documentation, and source code, please refer to:
 
-**When to use TOON:**
-- Large structured datasets in prompts (RAG, analytics, catalogs)
-- Cost-sensitive applications where tokens drive costs
-- Context window optimization (fit more data in limited context)
+➡️ **[github.com/toon-format/toon-python](https://github.com/toon-format/toon-python)**
 
-**When to use JSON:**
-- Strict API contracts (OpenAI function calling, tool use)
-- Tiny payloads (< 100 tokens) where overhead isn't worth it
-- Real-time streaming where encoding latency matters
+If you are looking for the TOON format specification, Python implementation, or related resources, visit the new home above.
+
+---
 
 ## Quick Start
 
